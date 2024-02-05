@@ -10,7 +10,7 @@ import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 
 import Chaine from './pages/chaine-de-valeur';
-// import Risque from './pages/Risque';
+ import Risque from './pages/Risque';
 
 
 // ----------------------------------------------------------------------
@@ -23,7 +23,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
-    //    { path: 'risque', element: <Risque /> },
+        { path: 'risque', element: <Risque /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'chaine-de-valeur', element: <Chaine/> },

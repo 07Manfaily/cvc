@@ -7,6 +7,9 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Box, Button, Card, Container, Typography } from '@mui/material';
 import Graph from 'react-graph-vis';
 import Modal from '@mui/material/Modal';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
 
 // components
 import Iconify from '../components/iconify';
@@ -18,21 +21,25 @@ import { AppTasks, AppOrderTimeline, AppTrafficBySite } from '../sections/@dashb
 // ----------------------------------------------------------------------
 
 export default function Chaine() {
+
+    
     const [openModal, setOpenModal] = useState(false);
     const [selectedNode, setSelectedNode] = useState(null);
 
     const handleOpenModal = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
     const jsondata = Data;
+    
     const nodes = jsondata.map((item) => ({
         id: item.CLI_Emet,
         label: item.CLI_Emet.toString(),
         value: item.MontantXOF,
-        emet: true,
         title: `MontantXOF: ${item.MontantXOF}`,
     }));
 
-    const edges = jsondata.map((item) => ({ from: item.CLI_Emet, to: item.CLI_S, value: item.MontantXOF }));
+    const edges = jsondata.map((item) => ({ 
+        from: item.CLI_Emet, 
+        to: item.CLI_S, value: item.MontantXOF }));
 
     const graph = {
         nodes,
@@ -40,6 +47,9 @@ export default function Chaine() {
     };
 
     const options = {
+        layout: {
+            hierarchical: false
+          },
         nodes: {
             shape: 'dot',
             scaling: {
@@ -54,41 +64,58 @@ export default function Chaine() {
             },
             borderWidth: 7,
             color: {
-                border: 'yellow',
-                background: 'grey',
+                border: 'gray',
+                background: 'red',
+                
             },
+           
         },
         edges: {
+            color: { color: "blue" },
             arrows: {
                 to: {
                     enabled: true,
                     scaleFactor: 1,
-                    type: 'arrow',
-                    color: 'green',
+                    
                 },
                 from: {
                     scaleFactor: 1,
-                    type: 'arrow',
-                    color: 'red',
+             
                 },
             },
             shadow: false,
         },
         interaction: {
             hover: true,
+            dragNodes: true,
+            tooltipDelay: 300,
+            selectable: true,
+            navigationButtons: true,
         },
+ 
         physics: {
+            forceAtlas2Based: {
+              gravitationalConstant: -26,
+              centralGravity: 0.005,
+              springLength: 130,
+              springConstant: 0.18,
+            },
             stabilization: {
                 enabled: true,
                 iterations: 1000,
                 fit: true,
             },
-        },
+            maxVelocity: 146,
+            solver: "forceAtlas2Based",
+            timestep: 0.35,
+         
+          },
+
         configure: {
             enabled: false,
         },
-        height: '600px',
-        width: '500px',
+        height: '500px',
+        width: '1200px',
     };
 
     const handleNodeClick = (event) => {
@@ -138,21 +165,16 @@ export default function Chaine() {
                     </Card>
                 </Grid >
                 <Grid item xs={12} md={6} lg={4}>
-                        <AppOrderTimeline
-                            title="Legende"
-                            list={[...Array(5)].map((_, index) => ({
-                                id: faker.datatype.uuid(),
-                                title: [
-                                    '1983, orders, $4220',
-                                    '12 Invoices have been paid',
-                                    'Order #37745 from September',
-                                    'New order placed #XF-2356',
-                                    'New order placed #XF-2346',
-                                ][index],
-                                type: `order${index + 1}`,
-                                time: faker.date.past(),
-                            }))}
-                        />
+                    
+                    <Card sx={{ backgroundColor: '#CACFC5' }}> 
+                    <CardHeader title={'Légende'}  />      
+                    <CardContent>
+                    <figure>
+                    <figcaption>Clients en S2</figcaption>
+                  </figure>
+                    </CardContent>
+                     </Card>
+                      
                 </Grid>
 
                 </Grid>

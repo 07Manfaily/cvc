@@ -1,36 +1,37 @@
-react-dom.development.js:28439  Uncaught Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-
-Check the render method of `Risque`.
-
-import React from 'react';
-import ReactTable from 'react-table';
+import React, { useState } from 'react';
+import { useTable, useGlobalFilter } from 'react-table';
 import { Link } from 'react-router-dom';
-import { Card, Stack, Container, Typography } from '@mui/material';
+import { Card, Stack, Container, Typography, TextField } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Scrollbar from '../components/scrollbar';
 
 export default function Risque() {
+  const [filterInput, setFilterInput] = useState('');
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value || '';
+    setFilterInput(value);
+  };
 
   const columns = [
     {
       Header: 'N° client',
-      accessor: 'Nc', // String-based value accessors!
+      accessor: 'Nc',
     },
     {
       Header: 'Segment',
       accessor: 'seg',
-      Cell: (props) => <span className="number">{props.value}</span>, // Custom cell components!
     },
     {
       Header: 'F',
       accessor: 'Fc',
     },
     {
-      Header: (props) => <span>Chargé client</span>, // Custom header components!
+      Header: 'Chargé client',
       accessor: 'Chgc',
     },
     {
-      Header: (props) => <span>Priorité</span>, // Custom header components!
+      Header: 'Priorité',
       accessor: 'Pr',
     },
     {
@@ -40,7 +41,7 @@ export default function Risque() {
     {
       Header: '',
       accessor: 'action',
-      Cell: (props) => (
+      Cell: () => (
         <Link to={`/dashboard/chaine-de-valeur/`} className="action-button">
           <button>
             <VisibilityIcon />
@@ -53,33 +54,68 @@ export default function Risque() {
   const data = [
     {
       Nc: '3',
-      seg: 'Clien',
+      seg: 'Client',
       Fc: 'Low Risk',
       Chgc: '2',
       Pr: 'red',
       Dv: '2',
     },
-    
   ];
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+  } = useTable(
+    { columns, data },
+    useGlobalFilter
+  );
+
+  const { globalFilter } = state;
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
           Clients
         </Typography>
-
+        <TextField
+          id="search"
+          label="Search"
+          variant="outlined"
+          value={filterInput}
+          onChange={handleFilterChange}
+        />
       </Stack>
       <Card>
         <Scrollbar>
-       
-           <ReactTable
-            className="table_boucle -striped -highlight"
-            columns={columns}
-            data={data}
-            defaultPageSize={10}
-            filterable
-            defaultFilterMethod={(filter, row) => String(row[filter.id]).startsWith(filter.value)}
-          /> 
+          <table {...getTableProps()} className="table_boucle -striped -highlight">
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {rows.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} key={i}>
+                    {row.cells.map((cell) => {
+                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </Scrollbar>
       </Card>
     </Container>

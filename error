@@ -8,3 +8,60 @@
     at commitRoot (http://localhost:3000/static/js/bundle.js:140331:9)
     at performSyncWorkOnRoot (http://localhost:3000/static/js/bundle.js:139840:7)
     at flushSyncCallbacks (http://localhost:3000/static/js/bundle.js:127849:26)
+
+
+
+[
+    {
+        "Name": "e",
+        "Iban": xxxx",
+        "Clustering_name": "xxx",
+        "Clustering_iban": "xxx"
+    },
+    {
+        "Name": "xxxx",
+        "Iban": "xxxx",
+        "Clustering_name": "xxx",
+        "Clustering_iban": "xxx"
+    },
+    {
+        "Name": "xxx",
+        "Iban": "xxx",
+        "Clustering_name": "xx",
+        "Clustering_iban": "xx"
+    },
+    {
+        "Name": "xxx",
+        "Iban": "xxxx",
+        "Clustering_name": "xx",
+        "Clustering_iban": "xx"
+    },
+    {
+        "Name": "xxxx",
+        "Iban": xxxx",
+        "Clustering_name": "xx",
+        "Clustering_iban": "xx"
+    }
+]
+
+
+const jsondata2 = Data2
+
+
+  const nodesV= jsondata2.map((item) => ({
+    id: item.Clustering_name,
+    label: item.Name.toString(),
+    value: item.Iban,
+    title: `Iban: ${item.Iban}`,
+  }));
+
+  const edgesV = jsondata2.map((item) => ({
+    from: item.Clustering_name,
+    to: item.Clustering_iban,
+    value: item.Iban,
+  }));
+
+  const graphVizualisation = {
+    nodesV,
+    edgesV,
+  };

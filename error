@@ -1,3 +1,63 @@
+[
+    {
+      "CLI_S": 500066619,
+      "CLI_Emet": 500477095.0,
+      "MontantXOF": 1020000.0,
+      "Entreprise": "CONSEIL CAFE CACAO"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 500314452.0,
+      "MontantXOF": 2500000.0,
+      "Entreprise": "SAPH"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 500282943.0,
+      "MontantXOF": 20000000.0,
+      "Entreprise": "Moov Ci"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 500048670.0,
+      "MontantXOF": 1364500.0,
+      "Entreprise": "ANADER"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 500066619.0,
+      "MontantXOF": 100.0,
+      "Entreprise": "Orange"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 711111110.0,
+      "MontantXOF": 2814600.0,
+      "Entreprise": "Orange Bank"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 111305861.0,
+      "MontantXOF": 698700.0,
+      "Entreprise": "SOFTARTISAN"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 111310187.0,
+      "MontantXOF": 300000.0,
+      "Entreprise": "FINANCE SA"
+  },
+  {
+      "CLI_S": 500066619,
+      "CLI_Emet": 116330625.0,
+      "MontantXOF": 200000.0,
+      "Entreprise": "Orange Compagny"
+  }
+  ]
+
+
+
+
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { faker } from "@faker-js/faker";
@@ -20,499 +80,601 @@ import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import Paper from "@mui/material/Paper";
 import Fab from "@mui/material/Fab";
+import Tooltip from '@mui/material/Tooltip';
 
 // components
 import Iconify from "../components/iconify";
 import Data from "./data.json";
-import Data2 from "./ndata.json";
+// import Data2 from "./ndata.json";
 
 // sections
 import {
-  AppTasks,
-  AppOrderTimeline,
-  AppTrafficBySite,
+    AppTasks,
+    AppOrderTimeline,
+    AppTrafficBySite,
 } from "../sections/@dashboard/app";
 
 // ----------------------------------------------------------------------
 
 export default function Chaine() {
-  const [value, setValue] = React.useState("1");
+    const [value, setValue] = React.useState("1");
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [selectedEdge, setSelectedEdge] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedNode, setSelectedNode] = useState(null);
+    const [selectedEdge, setSelectedEdge] = useState(null);
 
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
-  const jsondata = Data;
-  const jsondata2 = Data2;
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
+    const jsondata = Data;
+    // const jsondata2 = Data2;
 
-  // const nodesV= jsondata2.map((item) => ({
-  //   id: item.id,
-  //   label: item.Name.toString(),
-  //   value: item.Iban,
-  //   title: `Iban: ${item.Iban}`,
-  // }));
+    // const nodesV= jsondata2.map((item) => ({
+    //   id: item.id,
+    //   label: item.Name.toString(),
+    //   value: item.Iban,
+    //   title: `Iban: ${item.Iban}`,
+    // }));
 
-  // const edgesV = jsondata2.map((item) => ({
-  //   from: item.Clustering_name,
-  //   to: item.Clustering_iban,
-  // }));
+    // const edgesV = jsondata2.map((item) => ({
+    //   from: item.Clustering_name,
+    //   to: item.Clustering_iban,
+    // }));
 
-  // const graphVizualisation = {
-  //   nodesV,
-  //   edgesV,
-  // };
-  const graphVizualisation = {
-    nodes: [
-      {
-        id: 1,
-        label: "Orange (CI1234)",
-        Iban: "CI1234",
-        Clustering_name: "n1",
-        Clustering_iban: "i1",
-      },
-      {
-        id: 2,
-        label: "Orange mobile (CI1234)",
-        Iban: "CI1234",
-        Clustering_name: "n2",
-        Clustering_iban: "i1",
-      },
-      {
-        id: 3,
-        label: "Orange company (CI1234)",
-        Iban: "CI1234",
-        Clustering_name: "n3",
-        Clustering_iban: "i1",
-      },
-      {
-        id: 4,
-        label: "Orange company (CI3456)",
-        Iban: "CI3456",
-        Clustering_name: "n3",
-        Clustering_iban: "i2",
-      },
-      {
-        id: 5,
-        label: "Orange CI (CI3456)",
-        Iban: "CI3456",
-        Clustering_name: "n4",
-        Clustering_iban: "i2",
-      },
-    ],
-    edges: [
-      { from: 1, to: 2 },
-      { from: 1, to: 3 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 1, to: 5 },
-    ],
-  };
+    // const graphVizualisation = {
+    //   nodesV,
+    //   edgesV,
+    // };
+    const graphVizualisation = {
+        nodes: [
+            {
+                id: 1,
+                label: "Orange (CI1234)",
+                Iban: "CI1234",
+                Clustering_name: "n1",
+                Clustering_iban: "i1",
+            },
+            {
+                id: 2,
+                label: "Orange mobile (CI1234)",
+                Iban: "CI1234",
+                Clustering_name: "n2",
+                Clustering_iban: "i1",
+            },
+            {
+                id: 3,
+                label: "Orange company (CI1234)",
+                Iban: "CI1234",
+                Clustering_name: "n3",
+                Clustering_iban: "i1",
+            },
+            {
+                id: 4,
+                label: "Orange company (CI3456)",
+                Iban: "CI3456",
+                Clustering_name: "n3",
+                Clustering_iban: "i2",
+            },
+            {
+                id: 5,
+                label: "Orange CI (CI3456)",
+                Iban: "CI3456",
+                Clustering_name: "n4",
+                Clustering_iban: "i2",
+            },
+        ],
+        edges: [
+            { from: 1, to: 2 },
+            { from: 1, to: 3 },
+            { from: 2, to: 4 },
+            { from: 2, to: 5 },
+            { from: 1, to: 5 },
+        ],
+    };
 
-  const optionsV = {
-    interaction: {
-      hover: true,
-      dragNodes: true,
-      tooltipDelay: 20,
-      selectable: true,
-      navigationButtons: true,
-    },
-
-    physics: {
-      forceAtlas2Based: {
-        gravitationalConstant: -26,
-        centralGravity: 0.005,
-        springLength: 130,
-        springConstant: 0.18,
-      },
-      stabilization: {
-        enabled: true,
-        iterations: 1000,
-        fit: true,
-      },
-      maxVelocity: 146,
-      solver: "forceAtlas2Based",
-      timestep: 0.35,
-    },
-
-    configure: {
-      enabled: false,
-    },
-    layout: {
-      hierarchical: false,
-    },
-    edges: {
-      width: 1,
-      font: { size: 10 },
-
-      smooth: {
-        type: "dynamic",
-      },
-    },
-    nodes: {
-      shape: "polygon",
-      color: "#FA4F00",
-      scaling: {
-        min: 10,
-        max: 30,
-      },
-      font: {
-        size: 10,
-        face: "Tahoma",
-      },
-    },
-    height: "500px",
-  };
-
-  const eventsV = {
-    select(event) {
-      const { nodesV, edgesV } = event;
-    },
-  };
-
-  const nodes = jsondata.map((item) => ({
-    id: item.CLI_Emet,
-    label: item.CLI_Emet.toString(),
-    value: item.MontantXOF,
-    title: `MontantXOF: ${item.MontantXOF}`,
-  }));
-
-  const edges = jsondata.map((item) => ({
-    from: item.CLI_Emet,
-    to: item.CLI_S,
-    value: item.MontantXOF,
-  }));
-
-  const graph = {
-    nodes,
-    edges,
-  };
-
-  const options = {
-    layout: {
-      hierarchical: false,
-    },
-    nodes: {
-      shape: "dot",
-      scaling: {
-        customScalingFunction: (min, max, total, value) => {
-          return value / (total * 3);
+    const optionsV = {
+        interaction: {
+            hover: true,
+            dragNodes: true,
+            tooltipDelay: 20,
+            selectable: true,
+            navigationButtons: true,
         },
-        min: 5,
-        max: 150,
-      },
-      font: {
-        size: 14,
-      },
-      borderWidth: 4,
-      color: {
-        border: "#73cc7a",
-        background: "red",
-      },
-    },
-    edges: {
-      color: { color: "#788ede" },
-      smooth: {
-        type: "continuous",
-      },
-      arrows: {
-        to: {
-          enabled: true,
-          scaleFactor: 1,
+
+        physics: {
+            forceAtlas2Based: {
+                gravitationalConstant: -26,
+                centralGravity: 0.005,
+                springLength: 130,
+                springConstant: 0.18,
+            },
+            stabilization: {
+                enabled: true,
+                iterations: 1000,
+                fit: true,
+            },
+            maxVelocity: 146,
+            solver: "forceAtlas2Based",
+            timestep: 0.35,
         },
-        from: {
-          scaleFactor: 1,
+
+        configure: {
+            enabled: false,
         },
-      },
-      shadow: false,
-    },
-    interaction: {
-      hover: true,
-      dragNodes: true,
-      tooltipDelay: 300,
-      selectable: true,
-      navigationButtons: true,
-    },
+        layout: {
+            hierarchical: false,
+        },
+        edges: {
+            arrows: {
+                to: { enabled: false },
+                from: { enabled: false }
+            },
+            width: 1,
+            font: { size: 10 },
 
-    physics: {
-      forceAtlas2Based: {
-        gravitationalConstant: -26,
-        centralGravity: 0.005,
-        springLength: 130,
-        springConstant: 0.18,
-      },
-      stabilization: {
-        enabled: true,
-        iterations: 1000,
-        fit: true,
-      },
-      maxVelocity: 146,
-      solver: "forceAtlas2Based",
-      timestep: 0.35,
-    },
+            smooth: {
+                type: "dynamic",
+            },
+        },
+        nodes: {
+            shape: "oval",
+            color: "#02EDB4",
+            scaling: {
+                min: 10,
+                max: 30,
+            },
+            font: {
+                size: 10,
+                face: "Tahoma",
+            },
+        },
+        height: "500px",
+    };
 
-    configure: {
-      enabled: false,
-    },
-    height: "1000px",
-    width: "1000px",
-  };
+    const eventsV = {
+        select(event) {
+            const { nodesV, edgesV } = event;
+        },
+    };
 
-  const handleNodeClick = (event) => {
-    const { nodes } = event;
-    if (nodes.length > 0) {
-      setSelectedNode(nodes[0]);
-      // handleOpenModal();
-    }
-  };
+    const nodes = jsondata.map((item) => ({
+        id: item.CLI_Emet,
+        label: item.Entreprise.toString(),
+        value: item.MontantXOF,
+        title: `MontantXOF: ${item.MontantXOF}`,
+    }));
 
-  const handleEdgeClick = (event) => {
-    const { edges } = event;
-    if (edges.length > 0) {
-      setSelectedEdge(edges[0]);
-      // handleOpenModal();
-    }
-  };
+    const edges = jsondata.map((item) => ({
+        from: item.CLI_Emet,
+        to: item.CLI_S,
+        value: item.MontantXOF,
+    }));
 
-  const events = {
-    click: handleNodeClick,
-    selectEdge: handleEdgeClick,
-  };
+    const graph = {
+        nodes,
+        edges,
+    };
 
-  return (
-    <>
-      <Helmet>
-        <title> Chaine de valeur </title>
-      </Helmet>
+    const options = {
+        layout: {
+            hierarchical: false,
+        },
+        nodes: {
+            shape: "dot",
+            scaling: {
+                customScalingFunction: (min, max, total, value) => {
+                    return value / (total * 3);
+                },
+                min: 5,
+                max: 150,
+            },
+            font: {
+                size: 14,
+            },
+            borderWidth: 4,
+            color: {
+                border: "#73cc7a",
+                background: "red",
+            },
+        },
+        edges: {
+            color: { color: "#788ede" },
+            smooth: {
+                type: "continuous",
+            },
+            arrows: {
+                to: {
+                    enabled: true,
+                    scaleFactor: 1,
+                },
+                from: {
+                    scaleFactor: 1,
+                },
+            },
+            shadow: false,
+        },
+        interaction: {
+            hover: true,
+            dragNodes: true,
+            tooltipDelay: 300,
+            selectable: true,
+            navigationButtons: true,
+        },
 
-      <Grid container spacing={2}>
-        <Grid item xs={7} md={7} lg={7}>
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              boxShadow: 7,
-              borderRadius: 1,
-              border: 1,
-              borderColor: "#e7e0e0",
-            }}
-            id="network"
-          >
-            <Graph graph={graph} options={options} events={events} />
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={5}
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
-          <Box
-            sx={{
-              flexGrow: 1,
-              bgcolor: "background.paper",
-              boxShadow: 3,
-              borderRadius: 0,
-              border: 1,
-              borderColor: "#F0F0F0",
-            }}
-          >
-            <Paper
-              sx={{
-                border: 1,
-                borderColor: "#F0F0F0",
-                bgcolor: "#FABFBF",
-                textAlign: "center",
-                borderRadius: 0,
-                height: "30px",
-              }}
-            >
-              <h5 style={{ margin: "0", padding: "8px" }}>Légende</h5>
-            </Paper>
+        physics: {
+            forceAtlas2Based: {
+                gravitationalConstant: -26,
+                centralGravity: 0.005,
+                springLength: 130,
+                springConstant: 0.18,
+            },
+            stabilization: {
+                enabled: true,
+                iterations: 1000,
+                fit: true,
+            },
+            maxVelocity: 146,
+            solver: "forceAtlas2Based",
+            timestep: 0.35,
+        },
 
-            <Grid
-              container
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="baseline"
-            >
-              <Grid
-                sx={{ pl: 2, mt: 4 }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="flex-start"
-              >
-                <CircleRoundedIcon style={{ color: "red" }} />
-                <ArrowRightAltRoundedIcon />
-                <CircleRoundedIcon style={{ color: "red" }} />{" "}
-                <b style={{ fontSize: "11px" }}>
-                  :Client SGCI, plus le rond devient rouge, plus le montant
-                  d'engagement est important
-                </b>
-              </Grid>
-              <Grid
-                sx={{ pl: 8, mt: 2 }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="flex-start"
-              >
-                <CircleRoundedIcon style={{ color: "gray" }} />
+        configure: {
+            enabled: false,
+        },
+        height: "1000px",
+        width: "1000px",
+    };
 
-                <b style={{ fontSize: "11px" }}>:Client externe SGCI</b>
-              </Grid>
+    const handleNodeClick = (event) => {
+        const { nodes } = event;
+        if (nodes.length > 0) {
+            setSelectedNode(nodes[0]);
+            // handleOpenModal();
+        } else {
+            setSelectedNode(null)
+        }
+    };
 
-              <Grid
-                sx={{ pl: 2, mt: 2 }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="flex-start"
-              >
-                <TripOriginRoundedIcon style={{ color: "green" }} />
+    const handleEdgeClick = (event) => {
+        const { edges } = event;
+        if (edges.length > 0) {
+            setSelectedEdge(edges[0]);
+            // handleOpenModal();
+        } else {
+            setSelectedEdge(null)
+        }
+    };
 
-                <b style={{ fontSize: "11px" }}>/</b>
-                <TripOriginRoundedIcon style={{ color: "yellow" }} />
-                <b style={{ fontSize: "11px" }}>/</b>
-                <TripOriginRoundedIcon style={{ color: "red" }} />
-                <b style={{ fontSize: "11px" }}>
-                  : Client S1 / S2 / S3, il s'agit de l'enveloppe extérieur du
-                  rond
-                </b>
-              </Grid>
+    const events = {
+        click: handleNodeClick,
+        selectEdge: handleEdgeClick,
+    };
 
-              <Grid
-                sx={{ pl: 2, display: "flex", alignItems: "center" }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-              >
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "#8801CF", fontSize: 25 }}
-                />
+    return (
+        <>
+            <Helmet>
+                <title> Chaine de valeur </title>
+            </Helmet>
 
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "#8801CF", fontSize: 40 }}
-                />
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "#8801CF", fontSize: 60 }}
-                />
-                <b style={{ fontSize: "11px" }}>
-                  : Flux entrant vers la PM ciblée.plus le montant est important
-                  plus le trait du flux est epais
-                </b>
-              </Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={7} md={7} lg={7}>
+                    <Box
+                        sx={{
+                            bgcolor: "background.paper",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                        }}
+                        id="network"
+                    >
+                        <Graph graph={graph} options={options} events={events} />
+                    </Box>
+                    <Box sx={{
 
-              <Grid
-                sx={{ pl: 2, display: "flex", alignItems: "center" }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-              >
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "green", fontSize: 25 }}
-                />
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "green", fontSize: 40 }}
-                />
-                <ArrowRightAltRoundedIcon
-                  style={{ color: "green", fontSize: 60 }}
-                />
-                <b style={{ fontSize: "11px" }}>
-                  : Flux sortant vers la PM ciblée.plus le montant est important
-                  plus le trait du flux est epais
-                </b>
-              </Grid>
-              <Grid
-                sx={{ pl: 2, display: "flex", alignItems: "center" }}
-                container
-                direction="row"
-                justifyContent="flex-start"
-              >
-                <PanoramaFishEyeIcon style={{ fontSize: 25 }} />
-                <ArrowRightAltRoundedIcon />
-                <PanoramaFishEyeIcon style={{ fontSize: 40 }} />
-                <b style={{ fontSize: "11px" }}>
-                  :Client SGCI, plus le rond devient rouge, plus le montant
-                  d'engagement est important
-                </b>
-              </Grid>
-            </Grid>
-          </Box>
-          <Box
-            sx={{
-              mt: 4,
-              flexGrow: 1,
-              bgcolor: "background.paper",
-              // boxShadow: 7,
-              borderRadius: 1,
-              border: 1,
-              // borderColor: "black",
-            }}
-          >
-            <TabContext value={value}>
-              <Box
-                sx={
-                  {
-                    //  borderBottom: 1,
-                    //   borderColor: "divider"
-                  }
-                }
-              >
-                <TabList
-                  onChange={handleChange}
-                  aria-label="lab API tabs example"
+                        mt: 4,
+                        bgcolor: 'background.paper',
+                        boxShadow: 7,
+                        borderRadius: 1,
+                        border: 1,
+                        borderColor: "#e7e0e0"
+
+
+                    }}>
+                        {' '}
+                        <center><b><i>Légende</i></b></center>
+                        <Grid container sx={{ mt: 4 }} >
+
+                            <Grid container sx={{ mb: 2 }} direction="row" justifyContent="space-around" alignItems="flex-start">
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <Tooltip title="Client SGCI, plus le rond devient rouge, plus le montant
+                                    d'engagement est important">
+                                        <CircleRoundedIcon style={{ color: '#FD6D6D' }} />
+
+                                    </Tooltip>
+                                    <Tooltip title="Client SGCI, plus le rond devient rouge, plus le montant
+                                    d'engagement est important">
+                                        <CircleRoundedIcon style={{ color: 'red' }} />
+
+                                    </Tooltip>
+
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <Tooltip title="Client externe SGCI">
+                                        <CircleRoundedIcon style={{ color: "gray" }} />
+                                    </Tooltip>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <Tooltip title="Client S1 / S2 / S3, il s'agit de l'enveloppe extérieur du
+                                    rond">
+                                        <TripOriginRoundedIcon style={{ color: "green" }} />
+
+                                        <b style={{ fontSize: "11px" }}>/</b>
+                                        <TripOriginRoundedIcon style={{ color: "yellow" }} />
+                                        <b style={{ fontSize: "11px" }}>/</b>
+                                        <TripOriginRoundedIcon style={{ color: "red" }} />
+                                    </Tooltip>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <Tooltip title="Flux entrant vers la PM ciblée.plus le montant est important
+                                    plus le trait du flux est epaisw">
+                                       
+                                        <ArrowRightAltRoundedIcon
+                                            style={{ color: "#8801CF", fontSize: 60 }}
+                                        />
+                                    </Tooltip>
+                                </Grid>
+
+
+                                <Grid
+                                    justifyContent="flex-start" alignItems="flex-start"
+                                >
+                                    <Tooltip title="Flux sortant vers la PM ciblée.plus le montant est important
+                                    plus le trait du flux est epais">
+                                       
+                                        <ArrowRightAltRoundedIcon
+                                            style={{ color: "green", fontSize: 60 }}
+                                        />
+                                    </Tooltip>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <Tooltip title="Client SGCI, plus le rond devient rouge, plus le montant
+                                    d'engagement est important">
+                                        <PanoramaFishEyeIcon style={{ fontSize: 40 }} />
+                                    </Tooltip>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+                <Grid
+                    item
+                    xs={5}
+                    direction="row"
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
                 >
-                  <Tab label="Informations" value="1" />
-                  <Tab label="graphe de visualisation du voisinage" value="2" />
-                </TabList>
-              </Box>
-              <TabPanel value="1">
-                {selectedNode ? (<>
-                
-                  Noeud sélectionné: {selectedNode}
-                <table style={{ border: "1px solid black" }}>
-                  <tr>
-                    <th style={{ border: "1px solid black" }}>Entreprise</th>
-                    <th style={{ border: "1px solid black" }}>
-                      Niveau de risque
-                    </th>
-                    <th style={{ border: "1px solid black" }}>20000000.0</th>
-                  </tr>
-                  <tr>
-                    <td style={{ border: "1px solid black" }}>Orange</td>
-                    <td style={{ border: "1px solid black" }}>S1</td>
-                    <td style={{ border: "1px solid black" }}>30690000.0</td>
-                  </tr>
-                </table>
-                </>) : 
-                selectedEdge ? (<>
-                
-                Edge sélectionné: {selectedEdge}
-               <table style={{ border: "1px solid black" }}>
-                 <tr>
-                   <th style={{ border: "1px solid black" }}>Emetteur</th>
-                   <th style={{ border: "1px solid black" }}>
-                   bénéficiaire
-                   </th>
-                   <th style={{ border: "1px solid black" }}>Montant des flux échangés</th>
-                 </tr>
-                 <tr>
-                   <td style={{ border: "1px solid black" }}>Orange</td>
-                   <td style={{ border: "1px solid black" }}>Moov</td>
-                   <td style={{ border: "1px solid black" }}>305586964690000.0</td>
-                 </tr>
-               </table>
-               </>) : "aucune information a affiché"}
+                    {/* <Box
+                        sx={{
+                            flexGrow: 1,
+                            bgcolor: "background.paper",
+                            boxShadow: 3,
+                            borderRadius: 0,
+                            border: 1,
+                            borderColor: "#F0F0F0",
+                        }}
+                    >
+                        <Paper
+                            sx={{
+                                border: 1,
+                                borderColor: "#F0F0F0",
+                                bgcolor: "#FABFBF",
+                                textAlign: "center",
+                                borderRadius: 0,
+                                height: "30px",
+                            }}
+                        >
+                            <h5 style={{ margin: "0", padding: "8px" }}>Légende</h5>
+                        </Paper>
+
+                        <Grid
+                            container
+                            direction="column"
+                            justifyContent="flex-start"
+                            alignItems="baseline"
+                        >
+                            <Grid
+                                sx={{ pl: 2, mt: 4 }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="flex-start"
+                            >
+                                <CircleRoundedIcon style={{ color: "red" }} />
+                                <ArrowRightAltRoundedIcon />
+                                <CircleRoundedIcon style={{ color: "red" }} />{" "}
+                                <b style={{ fontSize: "11px" }}>
+                                    :Client SGCI, plus le rond devient rouge, plus le montant
+                                    d'engagement est important
+                                </b>
+                            </Grid>
+                            <Grid
+                                sx={{ pl: 8, mt: 2 }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="flex-start"
+                            >
+                                <CircleRoundedIcon style={{ color: "gray" }} />
+
+                                <b style={{ fontSize: "11px" }}>:Client externe SGCI</b>
+                            </Grid>
+
+                            <Grid
+                                sx={{ pl: 2, mt: 2 }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="flex-start"
+                            >
+                                <TripOriginRoundedIcon style={{ color: "green" }} />
+
+                                <b style={{ fontSize: "11px" }}>/</b>
+                                <TripOriginRoundedIcon style={{ color: "yellow" }} />
+                                <b style={{ fontSize: "11px" }}>/</b>
+                                <TripOriginRoundedIcon style={{ color: "red" }} />
+                                <b style={{ fontSize: "11px" }}>
+                                    : Client S1 / S2 / S3, il s'agit de l'enveloppe extérieur du
+                                    rond
+                                </b>
+                            </Grid>
+
+                            <Grid
+                                sx={{ pl: 2, display: "flex", alignItems: "center" }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                            >
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "#8801CF", fontSize: 25 }}
+                                />
+
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "#8801CF", fontSize: 40 }}
+                                />
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "#8801CF", fontSize: 60 }}
+                                />
+                                <b style={{ fontSize: "11px" }}>
+                                    : Flux entrant vers la PM ciblée.plus le montant est important
+                                    plus le trait du flux est epais
+                                </b>
+                            </Grid>
+
+                            <Grid
+                                sx={{ pl: 2, display: "flex", alignItems: "center" }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                            >
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "green", fontSize: 25 }}
+                                />
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "green", fontSize: 40 }}
+                                />
+                                <ArrowRightAltRoundedIcon
+                                    style={{ color: "green", fontSize: 60 }}
+                                />
+                                <b style={{ fontSize: "11px" }}>
+                                    : Flux sortant vers la PM ciblée.plus le montant est important
+                                    plus le trait du flux est epais
+                                </b>
+                            </Grid>
+                            <Grid
+                                sx={{ pl: 2, display: "flex", alignItems: "center" }}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                            >
+                                <PanoramaFishEyeIcon style={{ fontSize: 25 }} />
+                                <ArrowRightAltRoundedIcon />
+                                <PanoramaFishEyeIcon style={{ fontSize: 40 }} />
+                                <b style={{ fontSize: "11px" }}>
+                                    :Client SGCI, plus le rond devient rouge, plus le montant
+                                    d'engagement est important
+                                </b>
+                            </Grid>
+                        </Grid>
+                    </Box> */}
+                    <Box
+                        sx={{
+                            mt: 4,
+                            flexGrow: 1,
+                            bgcolor: "background.paper",
+                            // boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            // borderColor: "black",
+                        }}
+                    >
+                        <TabContext value={value}>
+                            <Box
+                                sx={
+                                    {
+                                        //  borderBottom: 1,
+                                        //   borderColor: "divider"
+                                    }
+                                }
+                            >
+                                <TabList
+                                    onChange={handleChange}
+                                    aria-label="lab API tabs example"
+                                >
+                                    <Tab label="Informations" value="1" />
+                                    <Tab label="graphe de visualisation du voisinage" value="2" />
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1">
+                                {selectedNode ? (<>
+
+                                    Noeud sélectionné: {selectedNode}
+                                    <table style={{ border: "1px solid black" }}>
+                                        <tr>
+                                            <td style={{ border: "1px solid black" }}>Entreprise</td>
+                                            <td style={{ border: "1px solid black" }}>Niveau de risque</td>
+                                            <td style={{ border: "1px solid black" }}>Montant</td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ border: "1px solid black" }}>Orange</td>
+                                            <td style={{ border: "1px solid black" }}>S1</td>
+                                            <td style={{ border: "1px solid black" }}>30690000.0</td>
+                                        </tr>
+                                    </table>
+
+                                    {/* <table style={{ border: "1px solid black" }}>
+    <tr>
+        <th style={{ border: "1px solid black" }}>Entreprise</th>
+        <td style={{ border: "1px solid black" }}>Orange</td>
+    </tr>
+    <tr>
+        <th style={{ border: "1px solid black" }}>Niveau de risque</th>
+        <td style={{ border: "1px solid black" }}>S1</td>
+    </tr>
+    <tr>
+        <th style={{ border: "1px solid black" }}>Montant</th>
+        <td style={{ border: "1px solid black" }}>30690000.0</td>
+    </tr>
+</table> */}
 
 
-                {/* {selectedEdge ? (<>
+
+
+                                </>) :
+                                    selectedEdge ? (<>
+
+                                        Edge sélectionné: {selectedEdge}
+                                        <table style={{ border: "1px solid black" }}>
+                                            <tr>
+                                                <th style={{ border: "1px solid black" }}>Emetteur</th>
+                                                <th style={{ border: "1px solid black" }}>
+                                                    bénéficiaire
+                                                </th>
+                                                <th style={{ border: "1px solid black" }}>Montant des flux échangés</th>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ border: "1px solid black" }}>Orange</td>
+                                                <td style={{ border: "1px solid black" }}>Moov</td>
+                                                <td style={{ border: "1px solid black" }}>305586964690000.0</td>
+                                            </tr>
+                                        </table>
+                                    </>) : "aucune information a affiché"}
+
+
+                                {/* {selectedEdge ? (<>
                 
                Edge sélectionné: {selectedEdge}
               <table style={{ border: "1px solid black" }}>
@@ -531,27 +693,27 @@ export default function Chaine() {
               </table>
               </>) : "aucune information a affiché"} */}
 
-               
-              </TabPanel>
-              <TabPanel value="2">
-                <div>
-                  <Graph
-                    graph={graphVizualisation}
-                    options={optionsV}
-                    events={eventsV}
-                  />
-                </div>
-              </TabPanel>
-            </TabContext>
-          </Box>
-        </Grid>
-        {/* <Fab variant="extended">
+
+                            </TabPanel>
+                            <TabPanel value="2">
+                                <div>
+                                    <Graph
+                                        graph={graphVizualisation}
+                                        options={optionsV}
+                                        events={eventsV}
+                                    />
+                                </div>
+                            </TabPanel>
+                        </TabContext>
+                    </Box>
+                </Grid>
+                {/* <Fab variant="extended">
         <FilterAltOutlinedIcon />
    
       </Fab> */}
-      </Grid>
+            </Grid>
 
-      {/* <Modal open={openModal} onClose={handleCloseModal}>
+            {/* <Modal open={openModal} onClose={handleCloseModal}>
         <Box
           sx={{
             position: "absolute",
@@ -571,65 +733,68 @@ export default function Chaine() {
           <Button onClick={handleCloseModal}>Fermer</Button>
         </Box>
       </Modal> */}
-    </>
-  );
+        </>
+    );
 }
 
 
 
-import React, { useState } from 'react';
+
+import React from 'react';
 import DataTable from 'react-data-table-component';
 import { useNavigate } from 'react-router-dom';
-import { Card, Stack, Container, Box, Grid, Button, Typography } from '@mui/material';
+import { Card, Stack, Container, Button, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 // import { useNavigate } from 'react-router-dom';
 import Scrollbar from '../components/scrollbar';
-import FilterComponent from '../utils/filter';
+import FilterComponent from '../utils/filter'
+
+
 
 export default function Risque() {
   // Utilisez le hook useNavigate pour la navigation
   // const navigate = useNavigate();
   const navigate = useNavigate();
-
   const columns = [
     {
       name: 'N° client',
-      selector: (row) => row.Nc,
+      selector: row => row.Nc,
     },
     {
-      name: 'Segment',
-      selector: (row) => row.seg,
+      name: 'Nom de l’entreprise',
+      selector:row => row.seg,
       Cell: (props) => <span className="number">{props.value}</span>, // Custom cell components!
     },
     {
-      name: 'FCCCR',
-      selector: (row) => row.Fc,
+     name: ' Montant des engagement',
+      selector: row => row.FC,
     },
     {
-      name: 'Chargé client', // Custom header components!
-      selector: (row) => row.Chgc,
+      name: ' Chiffre d’affaires', // Custom header components!
+      selector: row => row.Chgc,
     },
     {
-      name: 'Priorité', // Custom header components!
-      selector: (row) => row.Pr,
+      name: 'Niveau de risque', // Custom header components!
+      selector: row => row.Pr,
     },
     {
-      name: 'Dernière validation',
-      selector: (row) => row.Dv,
+      name: 'Note NOVA',
+      selector:  row => row.Dv,
     },
     {
       name: 'Action',
       button: true,
-      cell: (row) => (
-        <Button style={{ color: 'black' }} onClick={() => navigate(`/dashboard/chaine-de-valeur`, { replace: true })}>
-          <VisibilityIcon style={{ color: 'gray', fontSize: 30 }} />
+      cell: row => (
+        <Button   style={{ color: 'black'}}  onClick={() =>  navigate(`/dashboard/chaine-de-valeur`, { replace: true })}>
+        <VisibilityIcon style={{ color: '#495F52',  fontSize: 30 }}/>
         </Button>
       ),
     },
   ];
-  let data = [
+
+const data = [
     {
       Nc: '500144273',
       seg: 'Clientèle patrimoniale',
@@ -670,57 +835,11 @@ export default function Risque() {
       Pr: <CircleRoundedIcon style={{ color: 'gray' }} />,
       Dv: '2023-09-15',
     },
-    {
-      Nc: '500581394',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: 'red' }} />,
-      Dv: '2023-09-15',
-    },
-    {
-      Nc: '544581368',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Mid-Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: '093AC8' }} />,
-      Dv: '2023-09-15',
-    },
-    {
-      Nc: '500583368',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Mid-Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: 'green' }} />,
-      Dv: '2023-09-15',
-    },
-    {
-      Nc: '500581377',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Mid-Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: '#C6940D' }} />,
-      Dv: '2023-09-15',
-    },
-    {
-      Nc: '500581394',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: 'gray' }} />,
-      Dv: '2023-09-15',
-    },
-    {
-      Nc: '544581368',
-      seg: 'Clientèle patrimoniale',
-      Fc: 'Mid-Low Risk',
-      Chgc: '282',
-      Pr: <CircleRoundedIcon style={{ color: '#C6940D' }} />,
-      Dv: '2023-09-15',
-    },
+   
+    
   ];
-  data = [...'_'.repeat(400000)].map((_, i) => data[i % data.length]);
-  console.log('data legth', data.length);
+// data = [..."_".repeat(400000)].map((_, i)=> data[i%data.length]);
+// console.log("data legth", data.length);
   const [filterText, setFilterText] = React.useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
   const filteredItems = data.filter((item) => item.Nc && item.Nc.toLowerCase().includes(filterText.toLowerCase()));
@@ -736,51 +855,23 @@ export default function Risque() {
     );
   }, [filterText, resetPaginationToggle]);
   return (
-    <Grid sx={{ ml: 2, mr: 2 }}>
-      <Box  sx={{
-        
-        height:1/2,
-          bgcolor: 'background.paper',
-          boxShadow: 7,
-          borderRadius: 1,
-          border:1,
-          borderColor:"#e7e0e0"
-   
-  
-        }}>
-        {' '}
-        <center><b><i>Légende</i></b></center>
-        <Grid container sx={{mt:4}} >
-  
-            <Grid container sx={{mb:2}}  direction="row"  justifyContent="space-around" alignItems="flex-start">
-              <Grid  justifyContent="flex-start" alignItems="flex-start">
-                <CircleRoundedIcon style={{ color: '#093AC8' }} /> Blue
-              </Grid>
-              <Grid  justifyContent="flex-start" alignItems="flex-start">
-                <CircleRoundedIcon style={{ color: 'red' }} /> Red
-              </Grid>
-              <Grid  justifyContent="flex-start" alignItems="flex-start">
-                <CircleRoundedIcon style={{ color: 'gray' }} /> Gray
-              </Grid>
-              <Grid  justifyContent="flex-start" alignItems="flex-start">
-                <CircleRoundedIcon style={{ color: '#C6940D' }} /> Yellow
-              </Grid>
-              <Grid  justifyContent="flex-start" alignItems="flex-start">
-                <CircleRoundedIcon style={{ color: 'green' }} /> Green
-              </Grid>
-            </Grid>
-      
-        </Grid>
-      </Box>
-      {/* <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+    <>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
-          Les  clients a risque
+          Clients
         </Typography>
-    
-      </Stack> */}
-      <Card sx={{mt:7}}>
+        {/* <Button
+          variant="contained"
+          onClick={() => navigate('/create-product')}
+          startIcon={<Iconify icon="eva:plus-fill" />}
+        >
+          New Product
+        </Button> */}
+      </Stack>
+      <Card>
         <Scrollbar>
           <DataTable
+        
             columns={columns}
             data={filteredItems}
             pagination
@@ -789,10 +880,9 @@ export default function Risque() {
             subHeaderComponent={subHeaderComponentMemo}
             persistTableHead
           />
+          
         </Scrollbar>
       </Card>
-    </Grid>
+    </>
   );
 }
-
-N°client, Nom de l’entreprise, Montant des engagement, Chiffre d’affaires, Niveau de risque, Note NOVA, Niveau de priorité

@@ -9,116 +9,103 @@ import {
   Stack,
   Grid,
   Box,
-  Container,
   Button,
-  Typography,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
-import Tooltip from "@mui/material/Tooltip";
-
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-// import { useNavigate } from 'react-router-dom';
-import Scrollbar from "../components/scrollbar";
 import FilterComponent from "../utils/filter";
 
-export default function Risque() {
-  // Utilisez le hook useNavigate pour la navigation
-  // const navigate = useNavigate();
-  const [error, setError] = useState("");
+const Risque = () => {
+  const navigate = useNavigate();
   const [client, setClient] = useState([]);
+  const [error, setError] = useState("");
+  const [filterText, setFilterText] = useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
-  const getClient = async () => {
-    await axios
-      .get("http://localhost:8000/get_clients")
-      .then((response) => {
-        console.log("reponse of clients: ", response);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/get_clients");
+        console.log("Réponse des clients:", response);
 
         if (response.status === 200) {
           const data = response.data;
-         // setClient(data);
-          const column = data.map((i) => {
-            return {
-              "N° client SGCI": i.CLI_S_SGCI.value,
-              "Cluster Id": i.FINAL_CLUSTERS.value,
-              "Raison social": i.NOMREST_S.value,
-              "Chiffre d'affaires": i.CA_XOF.value,
-              "Montant des engagements": i.Engagement_XOF.value,
-              "Niveau de risque": i.Provi_Stage_Code.value,
-              "Priorité": i.Priority.value,
-              "Notation NOVA": i.NOVA.value,
-            };
-          },
-          setClient(column)
-          );
+          const formattedData = data.map((item) => ({
+            "N° client SGCI": item.CLI_S_SGCI.value,
+            "Cluster Id": item.FINAL_CLUSTERS.value,
+            "Raison social": item.NOMREST_S.value,
+            "Chiffre d'affaires": item.CA_XOF.value,
+            "Montant des engagements": item.Engagement_XOF.value,
+            "Niveau de risque": item.Provi_Stage_Code.value,
+            "Priorité": item.Priority.value,
+            "Notation NOVA": item.NOVA.value,
+          }));
+          setClient(formattedData);
         }
-      })
-      .catch((error) => {
-        console.log("Error lors du traitement:", error);
+      } catch (error) {
+        console.log("Erreur lors du traitement:", error);
         setError("Oups !!!! erreur liée au serveur");
         console.log(
           error.response?.data || "Oups!!!! une erreur s'est produite"
         );
-      });
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleActionClick = (nc) => {
+    navigate(`/dashboard/chaine-de-valeur/${nc}`, { replace: true });
   };
 
-  const navigate = useNavigate();
   const columns = [
     {
       name: "N° client SGCI",
-      selector: 'N° client SGCI',
-      sortable: true
+      selector: (row) => row["N° client SGCI"],
+      sortable: true,
     },
     {
       name: "Cluster Id",
-      selector: "Cluster Id",
-    //  Cell: (props) => <span className="number">{props.value}</span>, 
-      sortable: true
-      // Custom cell components!
+      selector: (row) => row["Cluster Id"],
+      sortable: true,
     },
     {
       name: "Raison social",
-      selector: 'Raison social',
-      sortable: true
+      selector: (row) => row["Raison social"],
+      sortable: true,
     },
     {
-      name: "Chiffre d’affaires", // Custom header components!
-      selector: 'Chiffre d’affaires',
-      sortable: true
+      name: "Chiffre d’affaires",
+      selector: (row) => row["Chiffre d’affaires"],
+      sortable: true,
     },
     {
-      name: "Montant des engagements", //  Custom header components!
-      selector: 'Montant des engagements',
-      sortable: true
+      name: "Montant des engagements",
+      selector: (row) => row["Montant des engagements"],
+      sortable: true,
     },
     {
       name: "Niveau de risque",
-      selector: 'Niveau de risque',
-      sortable: true
+      selector: (row) => row["Niveau de risque"],
+      sortable: true,
     },
     {
       name: "Priorité",
-      selector: 'Priorité',
-      sortable: true
+      selector: (row) => row["Priorité"],
+      sortable: true,
     },
     {
       name: "Notation NOVA",
-      selector: 'Notation NOVA',
-      sortable: true
+      selector: (row) => row["Notation NOVA"],
+      sortable: true,
     },
-    // {
-    //   name: 'Niveau de risque',
-    //   selector:  row => row.nr,
-    // },
     {
       name: "Action",
       button: true,
       cell: (row) => (
         <Button
           style={{ color: "black" }}
-          onClick={() =>
-            navigate(`/dashboard/chaine-de-valeur`, { replace: true })
-          }
+          onClick={() => handleActionClick(row["N° client SGCI"])}
         >
           <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
         </Button>
@@ -126,95 +113,44 @@ export default function Risque() {
     },
   ];
 
-  const data = [
-    {
-      Nc: "500144273",
-      entr: "Orange",
-      mont: "4500000",
-      Ca: "28008967.252",
-      np: <CircleRoundedIcon style={{ color: "red" }} />,
-      nv: "-6",
-      // nr: 'Risque Moyen faible'
-    },
-    {
-      Nc: "700581368",
-      entr: "ANADER",
-      mont: "650000",
-      Ca: "3698782459.00",
-      np: <CircleRoundedIcon style={{ color: "green" }} />,
-      nv: "-4",
-      // nr:'Risque moyen élevé'
-    },
+  const subHeaderComponentMemo = (
+    <FilterComponent
+      onFilter={(e) => setFilterText(e.target.value)}
+      onClear={() => setFilterText("")}
+      filterText={filterText}
+    />
+  );
 
-    {
-      Nc: "475813681",
-      entr: "ACENA",
-      mont: "890000",
-      Ca: "853782459.00",
-      np: <CircleRoundedIcon style={{ color: "orange" }} />,
-      nv: "-7",
-      // nr:'Risque faible'
-    },
-  ];
-  // data = [..."_".repeat(400000)].map((_, i)=> data[i%data.length]);
-  // console.log("data legth", data.length);
-  const [filterText, setFilterText] = React.useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] = React.useState(
-    false
+  const filteredItems = client.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(filterText.toLowerCase())
+    )
   );
-  const filteredItems = data.filter(
-    (item) =>
-      item.Nc && item.Nc.toLowerCase().includes(filterText.toLowerCase())
-  );
-  const subHeaderComponentMemo = React.useMemo(() => {
-    const handleClear = () => {
-      if (filterText) {
-        setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText("");
-      }
-    };
-    return (
-      <FilterComponent
-        onFilter={(e) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}
-      />
-    );
-  }, [filterText, resetPaginationToggle]);
+
   return (
     <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mb={5}
-      >
-        {/* <Typography variant="h4" gutterBottom>
-          Clients
-        </Typography> */}
-        {/* <Button
-          variant="contained"
-          onClick={() => navigate('/create-product')}
-          startIcon={<Iconify icon="eva:plus-fill" />}
-        >
-          New Product
-        </Button> */}
+      <Stack direction="row" justifyContent="space-between" mb={5}>
+        {/* Ajoutez le titre ici si nécessaire */}
       </Stack>
       <Card>
-        <Scrollbar>
-          <DataTable
-            columns={columns}
-            data={client}
-            pagination
-            paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
-            subHeader
-            subHeaderComponent={subHeaderComponentMemo}
-            persistTableHead
-          />
-        </Scrollbar>
+        <DataTable
+          columns={columns}
+          data={filteredItems}
+          pagination
+          paginationResetDefaultPage={resetPaginationToggle}
+          subHeader
+          subHeaderComponent={subHeaderComponentMemo}
+          persistTableHead
+        />
       </Card>
-      <Button size="large" variant="contained" onClick={getClient}>
-        get
+      <Button
+        size="large"
+        variant="contained"
+        onClick={() => setResetPaginationToggle(!resetPaginationToggle)}
+      >
+        Rafraîchir
       </Button>
       <Box
         sx={{
@@ -226,7 +162,6 @@ export default function Risque() {
           borderColor: "#e7e0e0",
         }}
       >
-        {" "}
         <center>
           <b>
             <i>Légende</i>
@@ -241,37 +176,26 @@ export default function Risque() {
             alignItems="flex-start"
           >
             <Grid justifyContent="flex-start" alignItems="flex-start">
-              {/* <Tooltip
-                    title="Client SGCI, plus le rond devient rouge, plus le montant
-                                    d'engagement est important"
-                  >
-                    
-                  </Tooltip> */}
               <CircleRoundedIcon style={{ color: "red" }} />
               <b>Client risqué</b>
             </Grid>
-
             <Grid justifyContent="flex-start" alignItems="flex-start">
               <CircleRoundedIcon style={{ color: "orange" }} />
-              <b>client moyennement risqué</b>
-              {/* <Tooltip
-                    title="Client SGCI, plus le rond devient rouge, plus le montant
-                                    d'engagement est important"
-                  >
-                    <CircleRoundedIcon style={{ color: "blue" }} />
-                  </Tooltip> */}
+              <b>Client moyennement risqué</b>
             </Grid>
-
             <Grid justifyContent="flex-start" alignItems="flex-start">
               <CircleRoundedIcon style={{ color: "green" }} />
-              <b>client peu risqué</b>
+              <b>Client peu risqué</b>
             </Grid>
           </Grid>
         </Grid>
       </Box>
     </>
   );
-}
+};
+
+export default Risque;
+
 
 
 

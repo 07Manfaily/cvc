@@ -1,11 +1,5 @@
-src\utils\filter.jsx
-  Line 6:19:  'filterText' is missing in props validation  react/prop-types
-  Line 6:31:  'onFilter' is missing in props validation    react/prop-types
-  Line 6:41:  'onClear' is missing in props validation     react/prop-types
-
-ERROR in [eslint]
-src\pages\Risque.js
-  Line 44:20:  Unnecessary 'else' after 'return'  no-else-return
+  Line 32:64:  Array.prototype.map() expects a value to be returned at the end of arrow function  array-callback-return
+  Line 32:64:  Expected to return a value at the end of arrow function       
 
 useEffect(() => {
   const fetchData = async () => {

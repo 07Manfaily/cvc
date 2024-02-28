@@ -1,12 +1,14 @@
-const formattedData = Object.keys(data).map((key) => {
-  const item = data[key];
+const formattedData = Object.values(data).map((item) => {
+  const rowData = {};
   if (Array.isArray(item.value) && item.value.length > 0) {
-    return {
-      [item.name]: item.value[0],
-    };
+    item.value.forEach((value, index) => {
+      const key = item.name[index]; // Utilise l'index comme clé
+      rowData[key] = value;
+    });
   }
-  return {}; // Retourne un objet vide si item.value n'est pas un tableau ou s'il est vide
-});    
+  return rowData;
+});
+
 
 useEffect(() => {
   const fetchData = async () => {

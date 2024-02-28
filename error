@@ -1,5 +1,12 @@
-  Line 32:64:  Array.prototype.map() expects a value to be returned at the end of arrow function  array-callback-return
-  Line 32:64:  Expected to return a value at the end of arrow function       
+const formattedData = Object.keys(data).map((key) => {
+  const item = data[key];
+  if (Array.isArray(item.value) && item.value.length > 0) {
+    return {
+      [item.name]: item.value[0],
+    };
+  }
+  return {}; // Retourne un objet vide si item.value n'est pas un tableau ou s'il est vide
+});    
 
 useEffect(() => {
   const fetchData = async () => {

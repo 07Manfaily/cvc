@@ -1,3 +1,24 @@
+const columns = Object.keys(data).map((key) => ({
+  name: data[key].name,
+  selector: (row) => row[data[key].name],
+  sortable: true,
+}));
+
+columns.push({
+  name: "Action",
+  button: true,
+  cell: (row) => (
+    <Button
+      style={{ color: "black" }}
+      onClick={() => handleActionClick(row["N° client SGCI"])}
+    >
+      <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
+    </Button>
+  ),
+});
+
+
+
 const formattedData = Object.values(data).map((item) => {
   const rowData = {};
   if (Array.isArray(item.value) && item.value.length > 0) {

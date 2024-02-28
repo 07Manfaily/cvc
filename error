@@ -1,26 +1,41 @@
-if (response.status === 200) {
-      const formattedData = [];
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/get_clients");
+      console.log("Réponse des clients:", response);
 
-      // Parcourir chaque propriété de response.data
-      for (const key in response.data) {
-        if (response.data.hasOwnProperty(key)) {
-          const item = response.data[key];
-          
-          // Ajouter les valeurs au tableau formattedData
-          formattedData.push({
-            "N° client SGCI": item.value[0], // Supposant que vous voulez la première valeur du tableau value
-            "Cluster Id": key === 'D' ? item.value[0] : '', // Supposant que Cluster ID est dans la propriété D
-            "Raison social": key === 'A' ? item.value[0] : '', // Supposant que Raison social est dans la propriété A
-            "Chiffre d'affaires": key === 'A' ? item.value[0] : '', // Supposant que Chiffres d'affaires est dans la propriété A
-            "Montant des engagements": key === 'C' ? item.value[0] : '', // Supposant que Montant des engagements est dans la propriété C
-            "Niveau de risque": '', // Vous pouvez mettre ici le traitement pour Niveau de risque
-            "Priorité": '', // Vous pouvez mettre ici le traitement pour Priorité
-            "Notation NOVA": '', // Vous pouvez mettre ici le traitement pour Notation NOVA
-          });
-        }
+      if (response.status === 200) {
+        const data = response.data;
+        const formattedData = Object.values(data).map((item) => {
+          if (Array.isArray(item.value) && item.value.length > 0) {
+            return {
+              "N° client SGCI": item.value[0],
+              "Cluster Id": item.value[1],
+              "Raison social": item.value[2],
+              "Chiffre d'affaires": item.value[3],
+              "Montant des engagements": item.value[4],
+              "Niveau de risque": item.value[5],
+              "Priorité": item.value[6],
+              "Notation NOVA": item.value[7],
+            };
+          } else {
+            return {}; // Retourne un objet vide si item.value n'est pas défini ou s'il n'est pas un tableau
+          }
+        });
+        setClient(formattedData);
       }
+    } catch (error) {
+      console.log("Erreur lors du traitement:", error);
+      setError("Oups !!!! erreur liée au serveur");
+      console.log(
+        error.response?.data || "Oups!!!! une erreur s'est produite"
+      );
+    }
+  };
 
-      setClient(formattedData);
+  fetchData();
+}, []);
+
 
 
 

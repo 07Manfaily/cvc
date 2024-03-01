@@ -1,3 +1,17 @@
+  color: function (edge) {
+            if (edge.to === edge.from) {
+                return { color: 'gray', highlight: 'black' }; // Cas où la source et la destination sont les mêmes
+            } else if (edge.to === selectedNode) {
+                return { color: 'red', highlight: 'red' }; // Flèche sortante
+            } else if (edge.from === selectedNode) {
+                return { color: 'blue', highlight: 'blue' }; // Flèche entrante
+            } else {
+                return { color: 'gray', highlight: 'black' }; // Autres flèches
+            }
+        },
+    },
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";

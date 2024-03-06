@@ -1,3 +1,7 @@
+      selector: (row) => { (row.Priority === "Red") ? <ArrowRightAltRoundedIcon style={{ color: "green", fontSize: 25 }}/>  : "" },
+  Line 122:28:  Expected an assignment or function call and instead saw an expression  no-unused-expressions
+
+
 const columns = Object.keys(data).map((key) => ({
   name: data[key].name,
   selector: (row) => row[data[key].name],

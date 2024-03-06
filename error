@@ -7,6 +7,14 @@
 },
 
 
+ selector: (row) => {
+        if (row.Provi_Stage_Code === "01") {
+          return "S1";
+        } else if (row.Provi_Stage_Code === "02"){
+           "S2"
+        }
+      },
+
 
 const columns = Object.keys(data).map((key) => ({
   name: data[key].name,

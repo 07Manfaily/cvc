@@ -1,5 +1,11 @@
-      selector: (row) => { (row.Priority === "Red") ? <ArrowRightAltRoundedIcon style={{ color: "green", fontSize: 25 }}/>  : "" },
-  Line 122:28:  Expected an assignment or function call and instead saw an expression  no-unused-expressions
+      selectoselector: (row) => {
+  if (row.Priority === "Red") {
+    return <ArrowRightAltRoundedIcon style={{ color: "green", fontSize: 25 }}/>;
+  } else {
+    return null; // ou toute autre valeur par défaut que vous souhaitez retourner
+  }
+},
+
 
 
 const columns = Object.keys(data).map((key) => ({

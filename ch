@@ -1,17 +1,3 @@
-  color: function (edge) {
-            if (edge.to === edge.from) {
-                return { color: 'gray', highlight: 'black' }; // Cas où la source et la destination sont les mêmes
-            } else if (edge.to === selectedNode) {
-                return { color: 'red', highlight: 'red' }; // Flèche sortante
-            } else if (edge.from === selectedNode) {
-                return { color: 'blue', highlight: 'blue' }; // Flèche entrante
-            } else {
-                return { color: 'gray', highlight: 'black' }; // Autres flèches
-            }
-        },
-    },
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -43,8 +29,8 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
 import Data from "./data.json";
+import NodeColor from "../utils/changeColor";
 // import Data2 from "./ndata.json";
 
 function createData(Entreprise, Niveau, Montant) {
@@ -117,6 +103,50 @@ export default function Chaine() {
 
     fetchGraph();
   }, []);
+
+
+  useEffect(() => {
+    const fetchGraphVizualisation = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/get_grouping_graph?FINAL_CLUSTERS=${selectedNode.selectedNode}`
+        );
+        console.log("Réponse du graphe de vouisinnage:", response);
+
+        if (response.status === 200) {
+          const data = response.data;
+          const dataset = data[Object.keys(data)[0]].value.map((_, line) => {
+            const row = {};
+            Object.keys(data).forEach((col) => {
+              row[col] = data[col].value[line];
+            });
+            return row;
+          });
+          const getNode = {};
+          dataset.forEach((item) => {
+            getNode[item.startNode_ID] = item;
+          });
+
+          // const getLabel = dataset.map((item) => item.startNode_NAME);
+          // const filterNode = [...new Set(Object.keys(getNode))];
+          setGraphe(dataset);
+          setNode(Object.values(getNode));
+          // setLabel(getLabel);
+
+          console.log("boooo", dataset);
+        }
+      } catch (error) {
+        console.log("Erreur lors du traitement:", error);
+        setError("Oups !!!! erreur liée au serveur");
+        console.log(
+          error.response?.data || "Oups!!!! une erreur s'est produite impossible de recupére le voisignage"
+        );
+      }
+    };
+
+    fetchGraphVizualisation();
+  }, []);
+
 
   const graphVizualisation = {
     nodes: [
@@ -231,26 +261,45 @@ export default function Chaine() {
       const { nodesV, edgesV } = event;
     },
   };
+  const allValueNode = [];
+
+  node.map((i) => (
+   allValueNode.push(i.endNode_Engagement_XOF)
+ ))
+
+
+ const Maximun = Math.max(...allValueNode)
+//  console.log("vaaaaa", allValueNode)
+ console.log("SELECt node", selectedNode)
 
   const nodes = node.map((item) => ({
     id: item.startNode_ID,
     label: item.startNode_NAME,
-    value: item.startNode_TOTAL_CREDIT,
+    value: (item.startNode_ID ===  parseInt(clusterId.clusterId, 10)) ? 1000000: item.startNode_TOTAL_CREDIT, // 
     color: {
-      border:{item.startNode_Provi_Stage_Code === 01 ? "lightgreen" : item.startNode_Provi_Stage_Code === 02 ? "orange" : item.startNode_Provi_Stage_Code === 03 ? "red" : "gray"},
-      background: "black",
+      border:
+        item.startNode_Provi_Stage_Code === "01"
+          ? "lightgreen"
+          : item.startNode_Provi_Stage_Code === "02"
+          ? "orange"
+          : item.startNode_Provi_Stage_Code === "03"
+          ? "red"
+          : "white",
+   background : `rgb(255,${NodeColor(item.startNode_Engagement_XOF, Maximun)},${NodeColor(item.startNode_Engagement_XOF,+Maximun)})`
+     // background: (item.startNode_ID === parseInt(clusterId.clusterId, 10)) ? "#7c85f2": (item.startNode_Engagement_XOF > 1e9) ? "#ac0900" :"#e17c77",
     },
-
+    
   }));
+
 
   const edges = graphe.map((item) => ({
     from: item.startNode_ID,
     to: item.endNode_ID,
-  //  value:item.edge_RATIO_FLUX_RECU
-    
+    color:item.startNode_ID === clusterId.clusterId ? "#8c8cff": "#8cc68c"
+    //  value:item.edge_RATIO_FLUX_RECU
   }));
   // console.log("nodesss", node); item.startNode_Provi_Stage_Code
-
+// console.log("noeuds select", nodes)
   const graph = {
     nodes,
     edges,
@@ -261,44 +310,43 @@ export default function Chaine() {
       hierarchical: false,
     },
     nodes: {
+      borderWidth: 7,
+      borderWidthSelected: 10,
       shape: "dot",
       scaling: {
         customScalingFunction: (min, max, total, value) => {
+        //  console.log("VALUE: ", value, "TOTAL: ", total);
+          if (value === 1000000) {
+            return value/total
+          }
           return value / (total * 3);
         },
-        min: 5,
-        max: 150,
+        // min: 5,
+        // max: 150,
       },
       font: {
         size: 12,
-        color: 'red'
+        color: "red",
       },
-   
-      
     },
     edges: {
-     //  color: { color: "green" }, highlight_from: '#ff0000', highlight_to: '#00ff00'
+      //  color: { color: "green" }, highlight_from: '#ff0000', highlight_to: '#00ff00'
 
-    color: {
-      color:'blue',
-      highlight:'black',
-      hover: 'green',
-      inherit: 'from',
-      opacity:1.0
-    },
+      color: {
+        hover: "black",
+        opacity: 1.0,
+      },
       smooth: {
         type: "continuous",
-        
       },
       arrows: {
         to: {
           enabled: true,
           scaleFactor: 1,
-          color: "red"
+
         },
         from: {
           scaleFactor: 1,
-          color:"green"
         },
       },
       shadow: false,
@@ -349,6 +397,7 @@ export default function Chaine() {
     const { edges } = event;
     if (edges.length > 0) {
       setSelectedEdge(edges[0]);
+
       // handleOpenModal();
     } else {
       setSelectedEdge(null);
@@ -370,7 +419,8 @@ export default function Chaine() {
         <Grid item xs={7} md={7} lg={7}>
           <Box
             sx={{
-              bgcolor: "background.paper",
+              // bgcolor: "background.paper",
+              bgcolor: "#ddd",
               boxShadow: 7,
               borderRadius: 1,
               border: 1,

@@ -1,3 +1,5 @@
+console.log(Math.floor(-5.05));
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";

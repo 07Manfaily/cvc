@@ -1,4 +1,29 @@
-console.log(Math.floor(-5.05));
+ const Max = Math.max(...allValueNode);
+  const Min = Math.min(...allValueNode);
+  console.log("vaaaaa", allValueNode);
+  console.log("vaa max", Max, "vaaa min", Min);
+  console.log("SELECt node", selectedNode);
+
+  const nodes = Object.values(node).map((item) => ({
+    id: item.id,
+    label: item.label,
+    value: item.value,
+    title: item.value,
+
+    //  value: (item.id ===  parseInt(clusterId.clusterId, 10)) ? 1000000: item.value, //
+    color: {
+      border:
+        item.Node_Provi_Stage_Code === "01"
+          ? "lightgreen"
+          : item.Node_Provi_Stage_Code === "02"
+          ? "orange"
+          : item.Node_Provi_Stage_Code === "03"
+          ? "red"
+          : "black",
+          // background : item.Node_IS_CLIENT === 0 ? "gray" : (item.value >1 && item.value <= 1000) ? "#FFE8E8" : item.value === 0 ? "white" : (item.value >1000 && item.value <= 10000) ? "#FACECE" : (item.value >10000 && item.value <= 100000) ? "#FBC0C0" :(item.value >100000 && item.value <= 1000000) ? "#F99191" :(item.value >1000000 && item.value <= 50000000) ? "#F95959":(item.value >50000000 && item.value <= 100000000) ? "#FD4242" :(item.value >100000000 && item.value <= 1000000000) ? "#D10000":(item.value >1000000000) ? "#9C0606":""
+     background:  `${NodeColor(item.value, Min, Max)}`,
+      // background: (item.startNode_ID === parseInt(clusterId.clusterId, 10)) ? "#7c85f2": (item.startNode_Engagement_XOF > 1e9) ? "#ac0900" :"#e17c77",
+    },
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";

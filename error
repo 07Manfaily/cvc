@@ -1,4 +1,94 @@
-    {  node[selectedNode].map((key, i) => {
+import React from 'react';
+import  Graph from 'react-graph-vis';
+
+const MyGraphComponent = () => {
+  // Données JSON
+  const data = [
+    {
+      "id": 1,
+      "IBAN": 500477095.0,
+      "CLUSTERING_NAME": "zouz",
+      "Entreprise": "CONSEIL CAFE CACAO"
+    },
+    {
+      "id": 21,
+      "IBAN": 500477095.0,
+      "CLUSTERING_NAME": "zouzoua",
+      "Entreprise": "SAPH"
+    },
+    {
+      "id": 3,
+      "IBAN": 5047705.0,
+      "CLUSTERING_NAME": "zouz",
+      "Entreprise": "Moov Ci"
+    },
+    {
+      "id": 4,
+      "IBAN": 50477095.0,
+      "CLUSTERING_NAME": "zouz",
+      "Entreprise": "ANADER"
+    }
+  ];
+
+  // Création d'un objet pour regrouper les entreprises par IBAN ou CLUSTERING_NAME
+  const groupedData = {};
+  data.forEach(entry => {
+    const key = entry.IBAN || entry.CLUSTERING_NAME;
+    if (!groupedData[key]) {
+      groupedData[key] = [];
+    }
+    groupedData[key].push(entry);
+  });
+
+  // Création des nœuds pour chaque entreprise unique
+  const nodes = data.map(entry => ({
+    id: entry.id,
+    label: entry.Entreprise,
+    color: 'blue'
+  }));
+
+  // Création des arêtes entre les nœuds ayant le même IBAN ou CLUSTERING_NAME
+  const edges = [];
+  Object.values(groupedData).forEach(group => {
+    if (group.length > 1) {
+      for (let i = 0; i < group.length - 1; i++) {
+        for (let j = i + 1; j < group.length; j++) {
+          edges.push({ from: group[i].id, to: group[j].id });
+        }
+      }
+    }
+  });
+
+  // Configuration du graphe
+  const graph = {
+    nodes,
+    edges
+  };
+
+  // Options de visualisation
+  const options = {
+    layout: {
+      hierarchical: false
+    },
+    edges: {
+      arrows: {
+        to: { enabled: false }
+      },
+      color: '#000000'
+    },
+    height: '500px'
+  };
+
+  return <Graph graph={graph} options={options} />;
+};
+
+export default MyGraphComponent;
+
+
+
+
+
+{  node[selectedNode].map((key, i) => {
            <ListItem disablePadding>
            <ListItemButton>
              <ListItemIcon>

@@ -1,3 +1,53 @@
+               {selectedNode ? (
+                  <>
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="flex-start"
+                      alignItems="baseline"
+                    >
+                      <Typography
+                        sx={{ mt: 4, mb: 2 }}
+                        variant="h6"
+                        component="div"
+                      >
+                        <i>
+                          Identifiant du noeud sélectionné:{" "}
+                          <b style={{ color: "orange" }}>{selectedNode}</b>{" "}
+                        </i>
+                      </Typography>
+                      {Object.keys(node[selectedNode])
+                        .filter((key) => {
+                          return (
+                            key !== "Node_ID" &&
+                            (Object.keys(infoLabel).includes(key) ||
+                              Object.keys(infoLabel).includes(
+                                "start".concat(key)
+                              ))
+                          );
+                        })
+                        .map((key) => {
+                          let field =
+                            infoLabel[key] || infoLabel["start".concat(key)];
+                          field = field.split(" ");
+                          field = field.slice(0, field.length - 1).join(" ");
+                          return (
+                            <Grid
+                              container
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="flex-start"
+                            >
+                              <i> {field} : </i>
+                              <b style={{ fontSize: "16px" }}>
+                                {node[selectedNode][key]}
+                              </b>
+                            </Grid>
+                          );
+                        })}
+                    </Grid>
+
+
 import React from 'react';
 import  Graph from 'react-graph-vis';
 

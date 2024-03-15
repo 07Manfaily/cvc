@@ -1,4 +1,98 @@
-               {selectedNode ? (
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
+import { Grid, Box, Button, Card, Container, Typography } from "@mui/material";
+import Graph from "react-graph-vis";
+import Modal from "@mui/material/Modal";
+import Drawer from '@mui/material/Drawer';
+import TextField from '@mui/material/TextField';
+
+
+
+
+
+export default function RiskChaine() {
+    const style = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 800,
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    };
+
+    const [open, setOpen] = React.useState(false);
+
+    const toggleDrawer = (newOpen) => () => {
+        setOpen(newOpen);
+    };
+    const [value, setValue] = React.useState("1");
+    const [minPrix, setMinPrix] = useState(0);
+    const [maxPrix, setMaxPrix] = useState(101);
+
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(101);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    return (
+        <>
+            <Helmet>
+                <title> Chaine de valeur </title>
+            </Helmet>
+
+            <Button style={{ position: "fixed", top: 900, right: 0, zIndex: 100 }} onClick={toggleDrawer(true)}>Filter</Button>
+            <Box sx={{ width: 250 }} onClick={toggleDrawer(false)}>
+                <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+                    <Grid
+                        container
+                        direction="column"
+                        justifyContent="flex-start"
+                        alignItems="flex-start"
+                    >
+                        <h1>Paramettre de recherche </h1>
+                        <h3>Choisissez parmis les options</h3>
+
+                        <TextField
+                            fullWidth label="fullWidth" id="fullWidth"
+                            size="small"
+                        />
+                    </Grid>
+
+                </Drawer>
+            </Box>
+
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Box
+                        sx={{
+                            // bgcolor: "background.paper",
+                            bgcolor: "#ddd",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                        }}
+                        id="network"
+                    >
+
+                        <h1>hey</h1>
+                    </Box>
+                </Grid>
+
+            </Grid>
+        </>
+    );
+}
+
+
+
+{selectedNode ? (
                   <>
                     <Grid
                       container

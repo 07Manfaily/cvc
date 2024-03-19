@@ -1,3 +1,45 @@
+    <Button onClick={toggleDrawer}>
+                {open ? "Fermer" : "Filter"}
+            </Button>
+
+            {/* Drawer qui s'ouvre lorsqu'il est ouvert */}
+            <Drawer anchor="right" open={open} onClose={toggleDrawer} sx={{ width: 400 }}>
+                <Grid
+                    container
+                    direction="column"
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
+                    sx={{ p: 2 }} // Ajoutez un padding au contenu du Drawer
+                >
+                    <h1>Paramettre de recherche </h1>
+                    <h3>Choisissez parmi les options</h3>
+
+                    <TextField
+                        fullWidth label="Entreprise" id="fullWidth"
+                        size="small"
+                    />
+                    <p>Type client</p>
+                    <Grid container
+                        direction="row"
+                        justifyContent="space-evenly"
+                        alignItems="flex-start">
+                            <b>S1   <Checkbox color="success" /></b>
+                            <b>S2   <Checkbox color="error" /></b>
+
+                            <b>S3   <Checkbox color="warning" /></b>
+
+
+                    </Grid>
+                    <Slider defaultValue={30} aria-label="Disabled slider" />
+
+                </Grid>
+            </Drawer>
+
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";

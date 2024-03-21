@@ -23,8 +23,7 @@
                               <i> {field} : </i>
                               <b style={{ fontSize: "16px" }}>
                                 {isNumber(node[selectedNode][key])
-                                  ? fNumber(node[selectedNode][key])
-                                  :node[selectedNode]["Node_IS_CLIENT"] === 1 ? "client interne": node[selectedNode][key]}
+                                  ? fNumber(node[selectedNode][key])  : key === "Node_IS_CLIENT" ? (node[selectedNode][key] === 1 ? "client interne" : "externe") : node[selectedNode][key]}
                               </b>
                             </Grid>
                           );

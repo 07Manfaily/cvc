@@ -1,4 +1,46 @@
-  {Object.keys(node[selectedNode])
+export function fNumber(number) {
+  return numeral(number).format();
+}
+
+export function fCurrency(number) {
+  const format = number ? numeral(number).format('$0,0.00') : '';
+
+  return result(format, '.00');
+}
+
+export function fPercent(number) {
+  const format = number ? numeral(Number(number) / 100).format('0.00%') : '';
+
+  return result(format, '.0');
+}
+
+
+// import Data2 from "./ndata.json";
+function isNumber(value) {
+  return !isNaN(value);
+}
+
+
+{selectedNode ? (
+                  <>
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="flex-start"
+                      alignItems="baseline"
+                    >
+                      <Typography
+                        sx={{ mt: -2, mb: 2 }}
+                        style={{ fontSize: "1.2em" }}
+                        variant="h6"
+                        component="div"
+                      >
+
+                       Noeud sélectionné:{" "}
+                        <b style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }}>{(node[selectedNode].label).toLowerCase()}</b>{" "}
+
+                      </Typography>
+                      {Object.keys(node[selectedNode])
                         .filter((key) => {
                           return (
                             key !== "Node_ID" &&
@@ -20,15 +62,20 @@
                               justifyContent="space-between"
                               alignItems="flex-start"
                             >
-                              <i> {field} : </i>
-                              <b style={{ fontSize: "16px" }}>
-                                {isNumber(node[selectedNode][key])
-                                  ? fNumber(node[selectedNode][key])  : key === "Node_IS_CLIENT" ? (node[selectedNode][key] === 1 ? "client interne" : "externe") : node[selectedNode][key]}
+                             <b style={{fontFamily: 'Montserrat'}}>{field.includes("Client SGCI") ? "Type client" : field.includes("NAER") ? "Domaine d'activité" :field.includes("PM") ? "Catégorie":field} </b> 
+                              <b style={{ fontSize: "1em" , fontFamily: 'Montserrat'}}>
+                                {key.includes("Node_IS_CLIENT") ? 
+                                  (node[selectedNode][key] === 1 ? "Interne SGCI" : "Hors SGCI")
+                                   :key.includes("PM") ? 
+                                   (node[selectedNode][key] === 1 ? "Personne Morale" : "Personne physique"):
+                                   isNumber(node[selectedNode][key])
+                                  ? fNumber(node[selectedNode][key])
+                                  : node[selectedNode][key].toLowerCase()}
                               </b>
                             </Grid>
                           );
                         })}
-
+                    </Grid>
 
 
 const Max = Math.max(...allValueNode);

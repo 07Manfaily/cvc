@@ -1,4 +1,38 @@
- const Max = Math.max(...allValueNode);
+  {Object.keys(node[selectedNode])
+                        .filter((key) => {
+                          return (
+                            key !== "Node_ID" &&
+                            (Object.keys(infoLabel).includes(key) ||
+                              Object.keys(infoLabel).includes(
+                                "start".concat(key)
+                              ))
+                          );
+                        })
+                        .map((key) => {
+                          let field =
+                            infoLabel[key] || infoLabel["start".concat(key)];
+                          field = field.split(" ");
+                          field = field.slice(0, field.length - 1).join(" ");
+                          return (
+                            <Grid
+                              container
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="flex-start"
+                            >
+                              <i> {field} : </i>
+                              <b style={{ fontSize: "16px" }}>
+                                {isNumber(node[selectedNode][key])
+                                  ? fNumber(node[selectedNode][key])
+                                  :node[selectedNode]["Node_IS_CLIENT"] === 1 ? "client interne": node[selectedNode][key]}
+                              </b>
+                            </Grid>
+                          );
+                        })}
+
+
+
+const Max = Math.max(...allValueNode);
   const Min = Math.min(...allValueNode);
   console.log("vaaaaa", allValueNode);
   console.log("vaa max", Max, "vaaa min", Min);

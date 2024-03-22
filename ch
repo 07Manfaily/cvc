@@ -1,7 +1,3 @@
-function isNumber(value) {
-  return typeof value === 'number' && !isNaN(value);
-}
-
 {selectedNode ? (
   <>
     <Grid
@@ -47,7 +43,9 @@ function isNumber(value) {
                   (node[selectedNode][key] === 1 ? "Interne SGCI" : "Hors SGCI")
                    :key.includes("PM") ? 
                    (node[selectedNode][key] === 1 ? "Personne Morale" : "Personne physique"):
-                   isNumber(node[selectedNode][key])
+                   key.startsWith("Ratio")
+                  ? fPercent(node[selectedNode][key])
+                  : isNumber(node[selectedNode][key])
                   ? (Number.isInteger(node[selectedNode][key]) ? fNumber(node[selectedNode][key]) : fPercent(node[selectedNode][key]))
                   : node[selectedNode][key].toLowerCase()}
               </b>

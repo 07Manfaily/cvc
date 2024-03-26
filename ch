@@ -1,3 +1,55 @@
+const handleOpen = () => {
+  setModalLoading(true); // Mettre l'état de chargement spécifique au modal à true avant la requête
+  setOpen(true); // Ouvrir le modal
+
+  // Appeler fetchGraph
+  fetchGraph()
+    .then(() => {
+      setModalLoading(false); // Mettre l'état de chargement spécifique au modal à false une fois la requête terminée
+      handleClose(); // Fermer le modal une fois que les données sont chargées avec succès
+    })
+    .catch((error) => {
+      setModalLoading(false); // Mettre l'état de chargement spécifique au modal à false en cas d'erreur
+      console.error("Erreur lors du chargement des données:", error);
+    });
+};
+
+
+// Ajoutez un nouvel état pour suivre l'état de chargement
+const [loading, setLoading] = useState(false);
+
+// Modifiez fetchGraph pour qu'il mette à jour l'état de chargement
+const fetchGraph = async () => {
+  try {
+    setLoading(true); // Mettre l'état de chargement à true avant la requête
+
+    const response = await axios.get(
+      `/api/risk/get-neighborhood?FINAL_CLUSTERS=${clusterId.clusterId}&depth=${level}`
+    );
+
+    // Traitez la réponse
+
+  } catch (error) {
+    // Gérez les erreurs
+  } finally {
+    setLoading(false); // Mettre l'état de chargement à false une fois la requête terminée
+  }
+};
+
+// Utilisez un useEffect pour appeler fetchGraph lorsque le composant est monté ou lorsque le niveau change
+useEffect(() => {
+  fetchGraph();
+}, [level]); // Assurez-vous de passer [level] comme dépendance pour que fetchGraph soit appelé à chaque fois que le niveau change
+
+// Affichez le loader tant que la requête est en cours
+{loading && <LoaderComponent />}
+
+// Affichez le graphique une fois que la requête est terminée
+{!loading && <Graph graph={graph} options={options} events={events} />}
+
+
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -228,25 +280,8 @@ export default function RiskChaine() {
         if (response.status === 200) {
           const data = response.data.data;
           setGrapheVoisinage([])
-          // const dataVoisinage = data[Object.keys(data)[0]].value.map(
-          //   (_, line) => {
-          //     const row = {};
-          //     Object.keys(data).forEach((col) => {
-          //       row[col] = data[col].value[line];
-          //     });
-          //     return row;
-          //   }
-          // );
-          // const getNodeVoisinage = {};
-          // dataVoisinage.forEach((item) => {
-          //   getNodeVoisinage[item.IBAN] = item;
-          // });
-
           setGrapheVoisinage(data);
           console.log("voisinage", data)
-          // setNodeVoisinage(Object.values(getNodeVoisinage));
-
-          //  console.log(" groupage", dataVoisinage);
         }
         if (response.status === 201) {
           setVrai(true)

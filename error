@@ -1,669 +1,337 @@
-    <Button onClick={toggleDrawer}>
-                {open ? "Fermer" : "Filter"}
-            </Button>
+      <Grid
+        container
+        xs={5}
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+      >
+      <Box
+          sx={{
 
-            {/* Drawer qui s'ouvre lorsqu'il est ouvert */}
-            <Drawer anchor="right" open={open} onClose={toggleDrawer} sx={{ width: 400 }}>
-                <Grid
+            bgcolor: "background.paper",
+            boxShadow: 3,
+            borderRadius: 0,
+            border: 1,
+            borderColor: "#F0F0F0",
+          }}
+        >
+          <Paper
+            sx={{
+              border: 1,
+              borderColor: "#F0F0F0",
+              bgcolor: "#FABFBF",
+              textAlign: "center",
+              borderRadius: 0,
+              height: "30px",
+            }}
+          >
+            <h5 style={{ margin: "0", padding: "8px" }}>Légende</h5>
+          </Paper>
+          <Grid
+            container
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="baseline"
+          >
+            <Grid
+              sx={{ pl: 2, mt: 4 }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <CircleRoundedIcon style={{ color: "#F59494" }} />
+              <ArrowRightAltRoundedIcon />
+              <CircleRoundedIcon style={{ color: "red" }} />{" "}
+              <b style={{ fontSize: "11px" }}>
+                :Client SGCI, plus le rond devient rouge, plus le montant
+                d'engagement est important
+              </b>
+            </Grid>
+            <Grid
+              sx={{ pl: 8, mt: 2 }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <CircleRoundedIcon style={{ color: "gray" }} />
+
+              <b style={{ fontSize: "11px" }}>:Client externe SGCI</b>
+            </Grid>
+            <Grid
+              sx={{ pl: 2, mt: 2 }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <TripOriginRoundedIcon style={{ color: "lightgreen" }} />
+
+              <b style={{ fontSize: "11px" }}>/</b>
+              <TripOriginRoundedIcon style={{ color: "orange" }} />
+              <b style={{ fontSize: "11px" }}>/</b>
+              <TripOriginRoundedIcon style={{ color: "red" }} />
+              <b style={{ fontSize: "11px" }}>
+                : Client S1 / S2 / S3, il s'agit de l'enveloppe extérieur du
+                rond
+              </b>
+            </Grid>
+            <Grid
+              sx={{ pl: 2, display: "flex", alignItems: "center" }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+            >
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#009E3A", fontSize: 25 }}
+              />
+
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#009E3A", fontSize: 40 }}
+              />
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#009E3A", fontSize: 60 }}
+              />
+              <b style={{ fontSize: "11px" }}>
+                : Flux entrant vers la PM ciblée.plus le montant est important
+                plus le trait du flux est epais
+              </b>
+            </Grid>
+            <Grid
+              sx={{ pl: 2, display: "flex", alignItems: "center" }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+            >
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#0081B9", fontSize: 25 }}
+              />
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#0081B9", fontSize: 40 }}
+              />
+              <ArrowRightAltRoundedIcon
+                style={{ color: "#0081B9", fontSize: 60 }}
+              />
+              <b style={{ fontSize: "11px" }}>
+                : Flux sortant vers la PM ciblée.plus le montant est important
+                plus le trait du flux est epais
+              </b>
+            </Grid>
+            <Grid
+              sx={{ pl: 2, display: "flex", alignItems: "center" }}
+              container
+              direction="row"
+              justifyContent="flex-start"
+            >
+              <PanoramaFishEyeIcon style={{ fontSize: 25 }} />
+              <ArrowRightAltRoundedIcon />
+              <PanoramaFishEyeIcon style={{ fontSize: 40 }} />
+              <b style={{ fontSize: "11px" }}>
+                :importance des flux totaux créditeurs de la PM. Plus le
+                montant des flux reçus par <br />
+                la PM est important, plus la taille du rond est grande
+              </b>
+            </Grid>
+          </Grid>
+        </Box>
+        <Box
+          sx={{
+            mt: 4,
+
+            bgcolor: "background.paper",
+            // boxShadow: 7,
+            borderRadius: 1,
+            border: 1,
+            // borderColor: "black",
+          }}
+        >
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleChange}
+                aria-label="lab API tabs example"
+              >
+                <Tab label="Informations" value="1" />
+                <Tab label="visualisation du voisinage" value="2" />
+                <Tab label="Explicabilité" value="3" />
+
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              {selectedNode ? (
+                <>
+                  <Grid
                     container
                     direction="column"
                     justifyContent="flex-start"
-                    alignItems="flex-start"
-                    sx={{ p: 2 }} // Ajoutez un padding au contenu du Drawer
-                >
-                    <h1>Paramettre de recherche </h1>
-                    <h3>Choisissez parmi les options</h3>
-
-                    <TextField
-                        fullWidth label="Entreprise" id="fullWidth"
-                        size="small"
-                    />
-                    <p>Type client</p>
-                    <Grid container
-                        direction="row"
-                        justifyContent="space-evenly"
-                        alignItems="flex-start">
-                            <b>S1   <Checkbox color="success" /></b>
-                            <b>S2   <Checkbox color="error" /></b>
-
-                            <b>S3   <Checkbox color="warning" /></b>
-
-
-                    </Grid>
-                    <Slider defaultValue={30} aria-label="Disabled slider" />
-
-                </Grid>
-            </Drawer>
-
-
-
-
-
-
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Helmet } from "react-helmet-async";
-import { Grid, Box, Button, Card, Container, Typography } from "@mui/material";
-import Graph from "react-graph-vis";
-import Modal from "@mui/material/Modal";
-import Drawer from '@mui/material/Drawer';
-import TextField from '@mui/material/TextField';
-
-
-
-
-
-export default function RiskChaine() {
-    const style = {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: 800,
-        bgcolor: "background.paper",
-        border: "2px solid #000",
-        boxShadow: 24,
-        p: 4,
-    };
-
-    const [open, setOpen] = React.useState(false);
-
-    const toggleDrawer = (newOpen) => () => {
-        setOpen(newOpen);
-    };
-    const [value, setValue] = React.useState("1");
-    const [minPrix, setMinPrix] = useState(0);
-    const [maxPrix, setMaxPrix] = useState(101);
-
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(101);
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-    return (
-        <>
-            <Helmet>
-                <title> Chaine de valeur </title>
-            </Helmet>
-
-            <Button style={{ position: "fixed", top: 900, right: 0, zIndex: 100 }} onClick={toggleDrawer(true)}>Filter</Button>
-            <Box sx={{ width: 250 }} onClick={toggleDrawer(false)}>
-                <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-                    <Grid
-                        container
-                        direction="column"
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
+                    alignItems="baseline"
+                  >
+                    <Typography
+                      sx={{ mt: -2, mb: 2 }}
+                      style={{ fontSize: "1.2em" }}
+                      variant="h6"
+                      component="div"
                     >
-                        <h1>Paramettre de recherche </h1>
-                        <h3>Choisissez parmis les options</h3>
-
-                        <TextField
-                            fullWidth label="fullWidth" id="fullWidth"
-                            size="small"
-                        />
-                    </Grid>
-
-                </Drawer>
-            </Box>
-
-
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={12} lg={12}>
-                    <Box
-                        sx={{
-                            // bgcolor: "background.paper",
-                            bgcolor: "#ddd",
-                            boxShadow: 7,
-                            borderRadius: 1,
-                            border: 1,
-                            borderColor: "#e7e0e0",
-                        }}
-                        id="network"
-                    >
-
-                        <h1>hey</h1>
-                    </Box>
-                </Grid>
-
-            </Grid>
-        </>
-    );
-}
-
-
-
-{selectedNode ? (
-                  <>
+                      Noeud sélectionné:{" "}
+                      <b style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }}>{(node[selectedNode].label).toLowerCase()}</b>{" "}
+                    </Typography>
+                    {Object.keys(node[selectedNode])
+                      .filter((key) => {
+                        return (
+                          key !== "Node_ID" &&
+                          (Object.keys(infoLabel).includes(key) ||
+                            Object.keys(infoLabel).includes(
+                              "start".concat(key)
+                            ))
+                        );
+                      })
+                      .map((key) => {
+                        let field =
+                          infoLabel[key] || infoLabel["start".concat(key)];
+                        field = field.split(" ");
+                        field = field.slice(0, field.length - 1).join(" ");
+                        return (
+                          <Grid
+                            container
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="flex-start"
+                          >
+                            <b style={{ fontFamily: 'Montserrat' }}>{field.includes("Client SGCI") ? "Type client" : field.includes("NAER") ? "Domaine d'activité" : field.includes("PM") ? "Catégorie" : field} </b>
+                            <b style={{ fontSize: "1em", fontFamily: 'Montserrat' }}>
+                              {formatKeyResponse(key, node[selectedNode][key])}
+                            </b>
+                          </Grid>
+                        );
+                      })}
+                  </Grid>
+                </>
+              ) : selectedEdge ? (
+                <>
+                  <Grid
+                    container
+                    direction="column"
+                    justifyContent="flex-start"
+                    alignItems="baseline"
+                  >
                     <Grid
                       container
-                      direction="column"
-                      justifyContent="flex-start"
-                      alignItems="baseline"
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="flex-start"
                     >
-                      <Typography
-                        sx={{ mt: 4, mb: 2 }}
-                        variant="h6"
-                        component="div"
-                      >
-                        <i>
-                          Identifiant du noeud sélectionné:{" "}
-                          <b style={{ color: "orange" }}>{selectedNode}</b>{" "}
-                        </i>
-                      </Typography>
-                      {Object.keys(node[selectedNode])
-                        .filter((key) => {
-                          return (
-                            key !== "Node_ID" &&
-                            (Object.keys(infoLabel).includes(key) ||
-                              Object.keys(infoLabel).includes(
-                                "start".concat(key)
-                              ))
-                          );
-                        })
-                        .map((key) => {
-                          let field =
-                            infoLabel[key] || infoLabel["start".concat(key)];
-                          field = field.split(" ");
-                          field = field.slice(0, field.length - 1).join(" ");
-                          return (
-                            <Grid
-                              container
-                              direction="row"
-                              justifyContent="space-between"
-                              alignItems="flex-start"
-                            >
-                              <i> {field} : </i>
-                              <b style={{ fontSize: "16px" }}>
-                                {node[selectedNode][key]}
-                              </b>
-                            </Grid>
-                          );
-                        })}
+                      <Grid>
+                        Beneficiare :
+                        <b sx={{ mt: 4, mb: 2 }}
+                          style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                          {`${selectedEdge["startNode_NAME"].toLowerCase()} `}
+                        </b>
+                      </Grid>
+                      <Grid>
+                        Recepteur : <b sx={{ ml: 4, mb: 2 }}
+                          style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                          {` ${selectedEdge["endNode_NAME"].toLowerCase()}`}
+                        </b>
+                      </Grid>
+
+
                     </Grid>
 
 
-import React from 'react';
-import  Graph from 'react-graph-vis';
+                    {Object.keys(selectedEdge)
+                      .filter((key) => {
+                        return key.startsWith("edge");
+                      })
+                      .map((key) => {
+                        return (
+                          <Grid
+                            sx={{ mt: 4 }}
+                            container
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="flex-start"
+                          >
+                            <b style={{ fontFamily: 'Montserrat', fontSize: "1em" }}>{infoLabel[key]} :</b>
+                            <b style={{ fontSize: "1em" }}>
+                              {formatKeyResponse(key, selectedEdge[key])}
 
-const MyGraphComponent = () => {
-  // Données JSON
-  const data = [
-    {
-      "id": 1,
-      "IBAN": 500477095.0,
-      "CLUSTERING_NAME": "zouz",
-      "Entreprise": "CONSEIL CAFE CACAO"
-    },
-    {
-      "id": 21,
-      "IBAN": 500477095.0,
-      "CLUSTERING_NAME": "zouzoua",
-      "Entreprise": "SAPH"
-    },
-    {
-      "id": 3,
-      "IBAN": 5047705.0,
-      "CLUSTERING_NAME": "zouz",
-      "Entreprise": "Moov Ci"
-    },
-    {
-      "id": 4,
-      "IBAN": 50477095.0,
-      "CLUSTERING_NAME": "zouz",
-      "Entreprise": "ANADER"
-    }
-  ];
-
-  // Création d'un objet pour regrouper les entreprises par IBAN ou CLUSTERING_NAME
-  const groupedData = {};
-  data.forEach(entry => {
-    const key = entry.IBAN || entry.CLUSTERING_NAME;
-    if (!groupedData[key]) {
-      groupedData[key] = [];
-    }
-    groupedData[key].push(entry);
-  });
-
-  // Création des nœuds pour chaque entreprise unique
-  const nodes = data.map(entry => ({
-    id: entry.id,
-    label: entry.Entreprise,
-    color: 'blue'
-  }));
-
-  // Création des arêtes entre les nœuds ayant le même IBAN ou CLUSTERING_NAME
-  const edges = [];
-  Object.values(groupedData).forEach(group => {
-    if (group.length > 1) {
-      for (let i = 0; i < group.length - 1; i++) {
-        for (let j = i + 1; j < group.length; j++) {
-          edges.push({ from: group[i].id, to: group[j].id });
-        }
-      }
-    }
-  });
-
-  // Configuration du graphe
-  const graph = {
-    nodes,
-    edges
-  };
-
-  // Options de visualisation
-  const options = {
-    layout: {
-      hierarchical: false
-    },
-    edges: {
-      arrows: {
-        to: { enabled: false }
-      },
-      color: '#000000'
-    },
-    height: '500px'
-  };
-
-  return <Graph graph={graph} options={options} />;
-};
-
-export default MyGraphComponent;
+                              {/* {selectedEdge[key]} */}
+                            </b>
+                          </Grid>
+                        );
+                      })}
+                  </Grid>
+                </>
+              ) : (
+                <Alert variant="filled" severity="warning">
+                  Aucune informations disponible veuillez cliquer sur un nœuds ou une arêtes
+                </Alert>
+              )}
+            </TabPanel>
+            <TabPanel value="2">
 
 
+              {loadvisualization ?
+                <Grid container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"   >
+                  <ThreeCircles
 
+                    visible={true}
+                    height="50"
+                    width="70"
+                    color="#FF1E1E"
+                    ariaLabel="three-circles-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </Grid>
 
+                :
+                graphevoisinage.length > 0 ? (
+                  <Graph graph={graphVizualisation} options={optionsV} />
+                ) : (
+                  <Alert variant="filled" severity="warning">
+                    {errorVisualisation}
+                  </Alert>
+                )}
+            </TabPanel>
+            <TabPanel value="3">
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+              >
+                {explicability
+                  ? Object.entries(explicability).map(([key, value]) => (
+                    <Accordion defaultExpanded key={key}>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel3-content"
+                        id="panel3-header"
+                      >
+                        <b
+                          style={{
+                            color: "#FA3500",
+                            fontFamily: "system-ui",
+                          }}
+                        >
+                          {" "}
+                          {key}
+                        </b>
+                      </AccordionSummary>
+                      <AccordionDetails style={{ fontFamily: "math" }}>
+                        {value.message}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))
+                  : "aucune info a affiché"}
+              </Grid>
+            </TabPanel>
 
-{  node[selectedNode].map((key, i) => {
-           <ListItem disablePadding>
-           <ListItemButton>
-             <ListItemIcon>
-              element
-             </ListItemIcon>
-             <ListItemText primary="Inbox" />
-           </ListItemButton>
-         </ListItem>
-        } ) 
-       }
-          
-
- selector: (row) => {
-        if (row.Provi_Stage_Code === "01") {
-          return "S1";
-        } else if (row.Provi_Stage_Code === "02"){
-           "S2"
-        }
-      },
-
-
-const columns = Object.keys(data).map((key) => ({
-  name: data[key].name,
-  selector: (row) => row[data[key].name],
-  sortable: true,
-}));
-
-columns.push({
-  name: "Action",
-  button: true,
-  cell: (row) => (
-    <Button
-      style={{ color: "black" }}
-      onClick={() => handleActionClick(row["N° client SGCI"])}
-    >
-      <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
-    </Button>
-  ),
-});
-
-
-
-const formattedData = Object.values(data).map((item) => {
-  const rowData = {};
-  if (Array.isArray(item.value) && item.value.length > 0) {
-    item.value.forEach((value, index) => {
-      const key = item.name[index]; // Utilise l'index comme clé
-      rowData[key] = value;
-    });
-  }
-  return rowData;
-});
-
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/get_clients");
-      console.log("Réponse des clients:", response);
-
-      if (response.status === 200) {
-        const data = response.data;
-        const formattedData = Object.values(data).map((item) => {
-          if (Array.isArray(item.value) && item.value.length > 0) {
-            return {
-              "N° client SGCI": item.value[0],
-              "Cluster Id": item.value[1],
-              "Raison social": item.value[2],
-              "Chiffre d'affaires": item.value[3],
-              "Montant des engagements": item.value[4],
-              "Niveau de risque": item.value[5],
-              "Priorité": item.value[6],
-              "Notation NOVA": item.value[7],
-            };
-          } else {
-            return {}; // Retourne un objet vide si item.value n'est pas défini ou s'il n'est pas un tableau
-          }
-        });
-        setClient(formattedData);
-      }
-    } catch (error) {
-      console.log("Erreur lors du traitement:", error);
-      setError("Oups !!!! erreur liée au serveur");
-      console.log(
-        error.response?.data || "Oups!!!! une erreur s'est produite"
-      );
-    }
-  };
-
-  fetchData();
-}, []);
-
-
-
-
-
-
-----risque---
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-import {
-  Card,
-  Stack,
-  Grid,
-  Box,
-  Button,
-} from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
-import FilterComponent from "../utils/filter";
-
-const Risque = () => {
-  const navigate = useNavigate();
-  const [client, setClient] = useState([]);
-  const [error, setError] = useState("");
-  const [filterText, setFilterText] = useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/get_clients");
-        console.log("Réponse des clients:", response);
-
-        if (response.status === 200) {
-          const data = response.data;
-          const formattedData = data.map((item) => ({
-            "N° client SGCI": item.CLI_S_SGCI.value,
-            "Cluster Id": item.FINAL_CLUSTERS.value,
-            "Raison social": item.NOMREST_S.value,
-            "Chiffre d'affaires": item.CA_XOF.value,
-            "Montant des engagements": item.Engagement_XOF.value,
-            "Niveau de risque": item.Provi_Stage_Code.value,
-            "Priorité": item.Priority.value,
-            "Notation NOVA": item.NOVA.value,
-          }));
-          setClient(formattedData);
-        }
-      } catch (error) {
-        console.log("Erreur lors du traitement:", error);
-        setError("Oups !!!! erreur liée au serveur");
-        console.log(
-          error.response?.data || "Oups!!!! une erreur s'est produite"
-        );
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleActionClick = (nc) => {
-    navigate(`/dashboard/chaine-de-valeur/${nc}`, { replace: true });
-  };
-
-  const columns = [
-    {
-      name: "N° client SGCI",
-      selector: (row) => row["N° client SGCI"],
-      sortable: true,
-    },
-    {
-      name: "Cluster Id",
-      selector: (row) => row["Cluster Id"],
-      sortable: true,
-    },
-    {
-      name: "Raison social",
-      selector: (row) => row["Raison social"],
-      sortable: true,
-    },
-    {
-      name: "Chiffre d’affaires",
-      selector: (row) => row["Chiffre d’affaires"],
-      sortable: true,
-    },
-    {
-      name: "Montant des engagements",
-      selector: (row) => row["Montant des engagements"],
-      sortable: true,
-    },
-    {
-      name: "Niveau de risque",
-      selector: (row) => row["Niveau de risque"],
-      sortable: true,
-    },
-    {
-      name: "Priorité",
-      selector: (row) => row["Priorité"],
-      sortable: true,
-    },
-    {
-      name: "Notation NOVA",
-      selector: (row) => row["Notation NOVA"],
-      sortable: true,
-    },
-    {
-      name: "Action",
-      button: true,
-      cell: (row) => (
-        <Button
-          style={{ color: "black" }}
-          onClick={() => handleActionClick(row["N° client SGCI"])}
-        >
-          <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
-        </Button>
-      ),
-    },
-  ];
-
-  const subHeaderComponentMemo = (
-    <FilterComponent
-      onFilter={(e) => setFilterText(e.target.value)}
-      onClear={() => setFilterText("")}
-      filterText={filterText}
-    />
-  );
-
-  const filteredItems = client.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(filterText.toLowerCase())
-    )
-  );
-
-  return (
-    <>
-      <Stack direction="row" justifyContent="space-between" mb={5}>
-        {/* Ajoutez le titre ici si nécessaire */}
-      </Stack>
-      <Card>
-        <DataTable
-          columns={columns}
-          data={filteredItems}
-          pagination
-          paginationResetDefaultPage={resetPaginationToggle}
-          subHeader
-          subHeaderComponent={subHeaderComponentMemo}
-          persistTableHead
-        />
-      </Card>
-      <Button
-        size="large"
-        variant="contained"
-        onClick={() => setResetPaginationToggle(!resetPaginationToggle)}
-      >
-        Rafraîchir
-      </Button>
-      <Box
-        sx={{
-          mt: 8,
-          bgcolor: "background.paper",
-          boxShadow: 7,
-          borderRadius: 1,
-          border: 1,
-          borderColor: "#e7e0e0",
-        }}
-      >
-        <center>
-          <b>
-            <i>Légende</i>
-          </b>
-        </center>
-        <Grid container sx={{ mt: 4 }}>
-          <Grid
-            container
-            sx={{ mb: 2 }}
-            direction="row"
-            justifyContent="space-around"
-            alignItems="flex-start"
-          >
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "red" }} />
-              <b>Client risqué</b>
-            </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "orange" }} />
-              <b>Client moyennement risqué</b>
-            </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "green" }} />
-              <b>Client peu risqué</b>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Box>
-    </>
-  );
-};
-
-export default Risque;
-
-
-
-
-
-
-
-
-Risque.js:24 
- Warning: N° client SGCI is a string based column selector which has been deprecated as of v7 and will be removed in v8. Instead, use a selector function e.g. row => row[field]...
-setTimeout (async)		
-$ReactRefreshModuleRuntime$	@	Risque.js:24
-./src/pages/Risque.js	@	Risque.js:24
-options.factory	@	react refresh:6
-__webpack_require__	@	bootstrap:22
-_requireSelf	@	hot module replacement:101
-apply	@	jsonp chunk loading:444
-(anonymous)	@	hot module replacement:342
-internalApply	@	hot module replacement:340
-(anonymous)	@	hot module replacement:277
-waitForBlockingPromises	@	hot module replacement:232
-(anonymous)	@	hot module replacement:275
-Promise.then (async)		
-(anonymous)	@	hot module replacement:274
-Promise.then (async)		
-(anonymous)	@	hot module replacement:255
-Promise.then (async)		
-hotCheck	@	hot module replacement:246
-Show 26 more frames
-
-data
-: 
-A
-: 
-{name: "Chiffres d'affaires", value: Array(196)}
-B
-: 
-{name: 'N° client SGCI', value: Array(196)}
-C
-: 
-{name: 'Montant des engagements', value: Array(196)}
-D
-: 
-{name: 'Cluster ID', value: Array(196)}
-
-
-const getClient = async() => {
-    await axios.get('http://localhost:3000/get')
-    .then((response) => {
-      console.log("reponse of clients: ", response);
-      
-      if (response.status === 200) {
-        const data = response.data;
-        setClient(data);
-      
-           } 
-
-      })
-      .catch((error) => {
-        console.log('Error lors du traitement:', error);
-        setError('Oups !!!! erreur liée au serveur');
-        console.log(error.response?.data || "Oups!!!! une erreur s'est produite");
-      });
-  }
-
-  
-  const navigate = useNavigate();
-  const columns = [
-    
-    {
-      name: 'Action',
-      button: true,
-      cell: row => (
-        <Button   style={{ color: 'black'}}  onClick={() =>  navigate(`/dashboard/chaine-de-valeur`, { replace: true })}>
-        <VisibilityIcon style={{ color: '#495F52',  fontSize: 30 }}/>
-        </Button>
-      ),
-    },
-  ];
-
-const data = [
-   
-   
-   
-    
-  ];
-
-
- <DataTable
-        
-            columns={columns}
-            data={filteredItems}
-            pagination
-            paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
-            subHeader
-            subHeaderComponent={subHeaderComponentMemo}
-            persistTableHead
-          />
+          </TabContext>
+        </Box>
+      </Grid>

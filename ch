@@ -1,3 +1,357 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
+import { Grid, Box, Button, Card, Container, Typography } from "@mui/material";
+import Graph from "react-graph-vis";
+import Modal from "@mui/material/Modal";
+import Drawer from '@mui/material/Drawer';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import Slider from '@mui/material/Slider';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import SendIcon from '@mui/icons-material/Send';
+import { getCookie } from '../utils/getCookies'
+import { Vortex } from 'react-loader-spinner';
+
+
+
+export default function RiskChaine() {
+    const style = {
+        position: "absolute",
+        top: "50%",
+        left: "80%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        height: 750,
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    };
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [clientCode, setClientCode] = React.useState("")
+    const [weight, setWeight] = React.useState(1)
+    const [direction, setDirection] = React.useState(1);
+    const [level, setLevel] = React.useState(2);
+    const [riskCategory, setRiskCategory] = React.useState([]);
+    const [slide, setSlide] = React.useState(1);
+    const [graphe, setGraphe] = React.useState([])
+    const [node, setNode] = React.useState(new Set())
+    const [loading, setLoading] = useState(false);
+
+
+
+    const handleChangeCodeClient = (event) => {
+        setClientCode(event.target.value);
+    };
+    const handleChangeDirection = (event) => {
+        setDirection(event.target.value);
+    };
+
+    const handleChangeLevel = (event) => {
+        setLevel(event.target.value);
+    };
+
+    const handleChangeWeight = (event) => {
+
+        setWeight(event.target.value);
+
+    };
+    const handleChangeRiskCategory = (event) => {
+        setRiskCategory([...riskCategory, event.target.value]);
+    };
+    const handleChangeSlide = (event) => {
+        setSlide(event.target.value);
+    };
+
+    const fetchGraph = async () => {
+        handleClose()
+        try {
+            const response = await axios.post("/api/graph",
+                {
+                    "client_code_id": clientCode,
+                    "direction": direction,
+                    "ftop_value": weight ? 0 : 1,
+                    "ftransaction_weight": weight ? 1 : 0,
+                    "fvalue": slide,
+                    "level": level,
+                    "risk_category": riskCategory
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                },
+
+            );
+           // setGraphe(response.data.data)
+            if (response.status === 200) {
+                setGraphe(response.data.data)
+                setLoading(false)
+              //  setClientCode("")
+                setWeight(1)
+                setDirection(1)
+                setLevel(2)
+                setRiskCategory([])
+                setSlide(1)
+
+            }
+            const noeuds = new Set(response.data.data.map((rel) => {
+                return [
+                    rel.emitter_code_id,
+                    rel.receiver_code_id
+
+                ]
+            }).reduce((a, b) => a.concat(b), []
+
+            ))
+            setNode(noeuds);
+            console.log("les nodes", noeuds)
+        }
+        catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+    const nodes = [...node].map((i) => {
+        return {
+            id: i,
+            label: i,
+            shape: i === parseInt(clientCode, 10) ? "diamond" : "ellipse",
+
+            
+    
+        }
+    })
+ 
+    const edges = graphe.map((i) => {
+        return {
+            from: i.emitter_code_id,
+            to: i.receiver_code_id,
+            color: "#009E3A"
+        }
+    })
+
+    const graph = {
+        nodes,
+        edges
+    };
+    const events = {
+        select: function(event) {
+          var { nodes, edges } = event;
+        }
+      };
+
+    const 
+    options = {
+        nodes: {
+       
+          font: {
+            size: 10,
+            face: "Tahoma",
+          },
+        },
+        physics: {
+          forceAtlas2Based: {
+            gravitationalConstant: -80,
+            centralGravity: 0.005,
+            springLength: 50,
+            springConstant: 0.15,
+          },
+          maxVelocity: 146,
+          solver: "forceAtlas2Based",
+          timestep: 0.35,
+          stabilization: { iterations: 300 },
+        },
+        interaction: { hover: true },
+        edges: {
+          width: 1,
+          font: { size: 10 },
+          smooth: {
+            type: "continuous",
+          },
+        },
+
+      };
+  
+
+    return (
+        <>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Grid
+                        container
+                        direction="column"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        sx={{ p: 2 }} // Ajoutez un padding au contenu du Drawer
+                    >
+                        <h2>Paramettre de recherche </h2>
+                        <Grid sx={{ mt: 4 }}>
+                            {/* <p>Choisissez parmis les options</p> */}
+
+                            <TextField sx={{ minWidth: 270 }}
+                                fullWidth label="Code client"
+                                id="fullWidth"
+                                size="small"
+                                value={clientCode}
+                                onChange={handleChangeCodeClient}
+                            />
+                        </Grid>
+                        <Grid sx={{ mt: 4 }}>
+                            <p>Type client</p>
+                            <Grid container
+                                direction="row"
+                                justifyContent="space-evenly"
+                                alignItems="flex-start">
+                                <b>S1 <Checkbox onChange={handleChangeRiskCategory} value={1} color="success" /></b>
+                                <b>S2 <Checkbox onChange={handleChangeRiskCategory} value={2} color="warning" /></b>
+                                <b>S3 <Checkbox onChange={handleChangeRiskCategory} value={3} color="error" /></b>
+                                <b>hors <Checkbox onChange={handleChangeRiskCategory} value={4} style={{ color: "gray" }} /></b>
+
+                            </Grid>
+                        </Grid>
+                        <Grid sx={{ mt: 4 }} >
+                            <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                                <InputLabel id="demo-select-small-label">Type d'opération</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={direction}
+                                    label="Age"
+                                    onChange={handleChangeDirection}
+                                >
+                                    <MenuItem value={1}>Credit</MenuItem>
+                                    <MenuItem value={-1}>Debit</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid sx={{ mt: 4 }}>
+                            <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                                <InputLabel id="demo-select-small-label">Profondeur</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={level}
+                                    label="Niveau"
+                                    onChange={handleChangeLevel}
+                                >
+                                    <MenuItem value={1}>Niveau1</MenuItem>
+                                    <MenuItem value={2}>Niveau2</MenuItem>
+                                    <MenuItem value={3}>Niveau3</MenuItem>
+                                    <MenuItem value={4}>Niveau4</MenuItem>
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid sx={{ mt: 4 }}>
+                            <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                                <InputLabel id="demo-select-small-label">Poids de la transaction</InputLabel>
+
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={weight}
+                                    label="Niveau"
+                                    onChange={handleChangeWeight}
+                                >
+                                    <MenuItem value={1}>Poids de la transaction</MenuItem>
+                                    <MenuItem value={0}>Top valeur</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid sx={{ mt: 4, width: 320 }} >
+                            <Slider style={{ color: "#0D7C00", }} defaultValue={1} marks
+                                min={1}
+                                onChange={handleChangeSlide}
+                                value={slide}
+                                max={100} aria-label="Default" valueLabelDisplay="auto" />
+
+                        </Grid>
+                        <Button sx={{ mt: 4 }} onClick={fetchGraph} style={{ backgroundColor: '#135A38', width: 300 }} variant="contained" endIcon={<SendIcon />}>
+                            Lancer
+                        </Button>
+
+
+
+                    </Grid>
+                </Box>
+            </Modal>
+            <Helmet>
+                <title> Chaine de valeur </title>
+            </Helmet>
+            <Button variant="contained" style={{ backgroundColor: "red", position: "fixed", top: 900, right: 0, zIndex: 100 }} onClick={handleOpen}>
+                {open ? "Fermer" : "Filter"}
+            </Button>
+            {/* <Button style={{ position: "fixed", top: 900, right: 0, zIndex: 100 }} onClick={toggleDrawer(true)}>Filter</Button> */}
+
+
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Box
+                        sx={{
+                            // bgcolor: "background.paper",
+                            bgcolor: "#ddd",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                            height:"100vh"
+                        }}
+                        id="network"
+                    >
+                        {loading ? 
+                    
+                    <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+            
+                  >
+                    <Vortex
+                      visible={true}
+                      height="80"
+                      width="200"
+                      ariaLabel="vortex-loading"
+                      wrapperStyle={{}}
+                      wrapperClass="vortex-wrapper"
+                      colors={['red', 'green', 'blue', 'yellow', 'orange', 'black']}
+                    /></Grid> :   <Graph graph={graph} options={options} events={events} />
+                    }
+                        
+
+                      
+
+                    </Box>
+                </Grid>
+
+            </Grid>
+        </>
+    );
+}
+
+
+
+
+
+
+
+
+
+
 const handleOpen = () => {
   setModalLoading(true); // Mettre l'état de chargement spécifique au modal à true avant la requête
   setOpen(true); // Ouvrir le modal

@@ -1,112 +1,109 @@
- const getTransaction = async (emitter,receiver) => {
+const getTransaction = async (emitter, receiver) => {
+    try {
+        const response = await axios.post(
+            "/api/transaction",
+            {
+                "emitter": emitter,
+                "receiver": receiver
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                }
+            }
+        );
 
-        try {
-            const response = await axios.post("/api/transaction",
-                {
-                    
-                    "emitter": emitter,
-                    "receiver": receiver
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-                    }
-                },
-
-            );
-        //  if(response.status === 200){
-        //     setTransaction(response.data)
-        //  }
-         const transac = Object.entries(response.data).map(([key, value]) => {
-            return {key: value}
-         })
-         setTransaction(transac)
-           console.log("transaction:",transac)
-
-        }
-        catch (error) {
-            console.log("Erreur lors du traitement:", error);
-        }
+        const transac = response.data.map((item, index) => {
+            return { id: index, ...item }; // Ajoutez un id pour chaque élément
+        });
+        setTransaction(transac);
+        console.log("transaction:", transac);
+    } catch (error) {
+        console.log("Erreur lors du traitement:", error);
     }
+}
 
-   const handleEdgeClick = (event) => {
-        const edge = event.edges;
-        if (edge.length > 0) {
-            setOpe(true)
-            const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
-            const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
-           getTransaction(emet, receiv)
-            console.log("receiver", receiv);
-            console.log("emmeteur", emet);
-        } 
-    };
+const handleEdgeClick = (event) => {
+    const edge = event.edges;
+    if (edge.length > 0) {
+        setOpe(true)
+        const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+        const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+        getTransaction(emet, receiv)
+        console.log("receiver", receiv);
+        console.log("emmeteur", emet);
+    }
+};
 
-  const columns = [
-        {
-          name: "N° client SGCI",
-          selector: (row) => row.CLI_S_SGCI,
-          maxWidth: "140px",
-        },
-        
-        
-      ];
-    
-    const subHeaderComponentMemo = (
-        <FilterComponent
-          onFilter={(e) => setFilterText(e.target.value)}
-          onClear={() => setFilterText("")}
-          filterText={filterText}
-        />
-      );
-    
-      const filteredItems = transaction? transaction.filter((item) =>
-        Object.values(item).some(
-          (value) =>
+const columns = [
+    {
+        name: "Clé",
+        selector: "key",
+        sortable: true
+    },
+    {
+        name: "Valeur",
+        selector: "value",
+        sortable: true
+    }
+];
+
+const subHeaderComponentMemo = (
+    <FilterComponent
+        onFilter={(e) => setFilterText(e.target.value)}
+        onClear={() => setFilterText("")}
+        filterText={filterText}
+    />
+);
+
+const filteredItems = transaction ? transaction.filter((item) =>
+    Object.values(item).some(
+        (value) =>
             typeof value === "string" &&
             value.toLowerCase().includes(filterText.toLowerCase())
-        )
-      ) : "";
-    
-    return (
-        <>
-              {/* Modal for transaction */}
-              <Modal
-                open={ope}
-                onClose={handleClos}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <center>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h6"
-                      component="h2"
-                    >
-                 Details des transactions
-                    </Typography>
-                 
-                  </center>
+    )
+) : [];
 
-                  <Grid
+return (
+    <>
+        {/* Modal for transaction */}
+        <Modal
+            open={ope}
+            onClose={handleClos}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+                <center>
+                    <Typography
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                    >
+                        Détails des transactions
+                    </Typography>
+                </center>
+
+                <Grid
                     sx={{ mt: 7 }}
                     container
                     direction="column"
                     justifyContent="space-between"
                     alignItems="flex-start"
-                  >
-                       <DataTable
-                  columns={columns}
-                  data={filteredItems}
-                  pagination
-                  paginationResetDefaultPage={resetPaginationToggle}
-                  subHeader
-                  subHeaderComponent={subHeaderComponentMemo}
-                  persistTableHead
-                />
-                 
-                  </Grid>
-               
-                </Box>
-              </Modal>
+                >
+                    <DataTable
+                        columns={columns}
+                        data={filteredItems}
+                        pagination
+                        paginationResetDefaultPage={resetPaginationToggle}
+                        subHeader
+                        subHeaderComponent={subHeaderComponentMemo}
+                        persistTableHead
+                    />
+                </Grid>
+
+            </Box>
+        </Modal>
+    </>
+);

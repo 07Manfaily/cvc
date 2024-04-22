@@ -1,337 +1,112 @@
-      <Grid
-        container
-        xs={5}
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-      >
-      <Box
-          sx={{
+ const getTransaction = async (emitter,receiver) => {
 
-            bgcolor: "background.paper",
-            boxShadow: 3,
-            borderRadius: 0,
-            border: 1,
-            borderColor: "#F0F0F0",
-          }}
-        >
-          <Paper
-            sx={{
-              border: 1,
-              borderColor: "#F0F0F0",
-              bgcolor: "#FABFBF",
-              textAlign: "center",
-              borderRadius: 0,
-              height: "30px",
-            }}
-          >
-            <h5 style={{ margin: "0", padding: "8px" }}>Légende</h5>
-          </Paper>
-          <Grid
-            container
-            direction="column"
-            justifyContent="flex-start"
-            alignItems="baseline"
-          >
-            <Grid
-              sx={{ pl: 2, mt: 4 }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <CircleRoundedIcon style={{ color: "#F59494" }} />
-              <ArrowRightAltRoundedIcon />
-              <CircleRoundedIcon style={{ color: "red" }} />{" "}
-              <b style={{ fontSize: "11px" }}>
-                :Client SGCI, plus le rond devient rouge, plus le montant
-                d'engagement est important
-              </b>
-            </Grid>
-            <Grid
-              sx={{ pl: 8, mt: 2 }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <CircleRoundedIcon style={{ color: "gray" }} />
+        try {
+            const response = await axios.post("/api/transaction",
+                {
+                    
+                    "emitter": emitter,
+                    "receiver": receiver
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                },
 
-              <b style={{ fontSize: "11px" }}>:Client externe SGCI</b>
-            </Grid>
-            <Grid
-              sx={{ pl: 2, mt: 2 }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <TripOriginRoundedIcon style={{ color: "lightgreen" }} />
+            );
+        //  if(response.status === 200){
+        //     setTransaction(response.data)
+        //  }
+         const transac = Object.entries(response.data).map(([key, value]) => {
+            return {key: value}
+         })
+         setTransaction(transac)
+           console.log("transaction:",transac)
 
-              <b style={{ fontSize: "11px" }}>/</b>
-              <TripOriginRoundedIcon style={{ color: "orange" }} />
-              <b style={{ fontSize: "11px" }}>/</b>
-              <TripOriginRoundedIcon style={{ color: "red" }} />
-              <b style={{ fontSize: "11px" }}>
-                : Client S1 / S2 / S3, il s'agit de l'enveloppe extérieur du
-                rond
-              </b>
-            </Grid>
-            <Grid
-              sx={{ pl: 2, display: "flex", alignItems: "center" }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-            >
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#009E3A", fontSize: 25 }}
-              />
+        }
+        catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
 
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#009E3A", fontSize: 40 }}
-              />
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#009E3A", fontSize: 60 }}
-              />
-              <b style={{ fontSize: "11px" }}>
-                : Flux entrant vers la PM ciblée.plus le montant est important
-                plus le trait du flux est epais
-              </b>
-            </Grid>
-            <Grid
-              sx={{ pl: 2, display: "flex", alignItems: "center" }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-            >
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#0081B9", fontSize: 25 }}
-              />
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#0081B9", fontSize: 40 }}
-              />
-              <ArrowRightAltRoundedIcon
-                style={{ color: "#0081B9", fontSize: 60 }}
-              />
-              <b style={{ fontSize: "11px" }}>
-                : Flux sortant vers la PM ciblée.plus le montant est important
-                plus le trait du flux est epais
-              </b>
-            </Grid>
-            <Grid
-              sx={{ pl: 2, display: "flex", alignItems: "center" }}
-              container
-              direction="row"
-              justifyContent="flex-start"
-            >
-              <PanoramaFishEyeIcon style={{ fontSize: 25 }} />
-              <ArrowRightAltRoundedIcon />
-              <PanoramaFishEyeIcon style={{ fontSize: 40 }} />
-              <b style={{ fontSize: "11px" }}>
-                :importance des flux totaux créditeurs de la PM. Plus le
-                montant des flux reçus par <br />
-                la PM est important, plus la taille du rond est grande
-              </b>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box
-          sx={{
-            mt: 4,
+   const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+            const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+           getTransaction(emet, receiv)
+            console.log("receiver", receiv);
+            console.log("emmeteur", emet);
+        } 
+    };
 
-            bgcolor: "background.paper",
-            // boxShadow: 7,
-            borderRadius: 1,
-            border: 1,
-            // borderColor: "black",
-          }}
-        >
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                onChange={handleChange}
-                aria-label="lab API tabs example"
+  const columns = [
+        {
+          name: "N° client SGCI",
+          selector: (row) => row.CLI_S_SGCI,
+          maxWidth: "140px",
+        },
+        
+        
+      ];
+    
+    const subHeaderComponentMemo = (
+        <FilterComponent
+          onFilter={(e) => setFilterText(e.target.value)}
+          onClear={() => setFilterText("")}
+          filterText={filterText}
+        />
+      );
+    
+      const filteredItems = transaction? transaction.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(filterText.toLowerCase())
+        )
+      ) : "";
+    
+    return (
+        <>
+              {/* Modal for transaction */}
+              <Modal
+                open={ope}
+                onClose={handleClos}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
               >
-                <Tab label="Informations" value="1" />
-                <Tab label="visualisation du voisinage" value="2" />
-                <Tab label="Explicabilité" value="3" />
-
-              </TabList>
-            </Box>
-            <TabPanel value="1">
-              {selectedNode ? (
-                <>
-                  <Grid
-                    container
-                    direction="column"
-                    justifyContent="flex-start"
-                    alignItems="baseline"
-                  >
+                <Box sx={style}>
+                  <center>
                     <Typography
-                      sx={{ mt: -2, mb: 2 }}
-                      style={{ fontSize: "1.2em" }}
+                      id="modal-modal-title"
                       variant="h6"
-                      component="div"
+                      component="h2"
                     >
-                      Noeud sélectionné:{" "}
-                      <b style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }}>{(node[selectedNode].label).toLowerCase()}</b>{" "}
+                 Details des transactions
                     </Typography>
-                    {Object.keys(node[selectedNode])
-                      .filter((key) => {
-                        return (
-                          key !== "Node_ID" &&
-                          (Object.keys(infoLabel).includes(key) ||
-                            Object.keys(infoLabel).includes(
-                              "start".concat(key)
-                            ))
-                        );
-                      })
-                      .map((key) => {
-                        let field =
-                          infoLabel[key] || infoLabel["start".concat(key)];
-                        field = field.split(" ");
-                        field = field.slice(0, field.length - 1).join(" ");
-                        return (
-                          <Grid
-                            container
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="flex-start"
-                          >
-                            <b style={{ fontFamily: 'Montserrat' }}>{field.includes("Client SGCI") ? "Type client" : field.includes("NAER") ? "Domaine d'activité" : field.includes("PM") ? "Catégorie" : field} </b>
-                            <b style={{ fontSize: "1em", fontFamily: 'Montserrat' }}>
-                              {formatKeyResponse(key, node[selectedNode][key])}
-                            </b>
-                          </Grid>
-                        );
-                      })}
-                  </Grid>
-                </>
-              ) : selectedEdge ? (
-                <>
+                 
+                  </center>
+
                   <Grid
+                    sx={{ mt: 7 }}
                     container
                     direction="column"
-                    justifyContent="flex-start"
-                    alignItems="baseline"
+                    justifyContent="space-between"
+                    alignItems="flex-start"
                   >
-                    <Grid
-                      container
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                    >
-                      <Grid>
-                        Beneficiare :
-                        <b sx={{ mt: 4, mb: 2 }}
-                          style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
-                          {`${selectedEdge["startNode_NAME"].toLowerCase()} `}
-                        </b>
-                      </Grid>
-                      <Grid>
-                        Recepteur : <b sx={{ ml: 4, mb: 2 }}
-                          style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
-                          {` ${selectedEdge["endNode_NAME"].toLowerCase()}`}
-                        </b>
-                      </Grid>
-
-
-                    </Grid>
-
-
-                    {Object.keys(selectedEdge)
-                      .filter((key) => {
-                        return key.startsWith("edge");
-                      })
-                      .map((key) => {
-                        return (
-                          <Grid
-                            sx={{ mt: 4 }}
-                            container
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="flex-start"
-                          >
-                            <b style={{ fontFamily: 'Montserrat', fontSize: "1em" }}>{infoLabel[key]} :</b>
-                            <b style={{ fontSize: "1em" }}>
-                              {formatKeyResponse(key, selectedEdge[key])}
-
-                              {/* {selectedEdge[key]} */}
-                            </b>
-                          </Grid>
-                        );
-                      })}
+                       <DataTable
+                  columns={columns}
+                  data={filteredItems}
+                  pagination
+                  paginationResetDefaultPage={resetPaginationToggle}
+                  subHeader
+                  subHeaderComponent={subHeaderComponentMemo}
+                  persistTableHead
+                />
+                 
                   </Grid>
-                </>
-              ) : (
-                <Alert variant="filled" severity="warning">
-                  Aucune informations disponible veuillez cliquer sur un nœuds ou une arêtes
-                </Alert>
-              )}
-            </TabPanel>
-            <TabPanel value="2">
-
-
-              {loadvisualization ?
-                <Grid container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"   >
-                  <ThreeCircles
-
-                    visible={true}
-                    height="50"
-                    width="70"
-                    color="#FF1E1E"
-                    ariaLabel="three-circles-loading"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                  />
-                </Grid>
-
-                :
-                graphevoisinage.length > 0 ? (
-                  <Graph graph={graphVizualisation} options={optionsV} />
-                ) : (
-                  <Alert variant="filled" severity="warning">
-                    {errorVisualisation}
-                  </Alert>
-                )}
-            </TabPanel>
-            <TabPanel value="3">
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="flex-start"
-              >
-                {explicability
-                  ? Object.entries(explicability).map(([key, value]) => (
-                    <Accordion defaultExpanded key={key}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel3-content"
-                        id="panel3-header"
-                      >
-                        <b
-                          style={{
-                            color: "#FA3500",
-                            fontFamily: "system-ui",
-                          }}
-                        >
-                          {" "}
-                          {key}
-                        </b>
-                      </AccordionSummary>
-                      <AccordionDetails style={{ fontFamily: "math" }}>
-                        {value.message}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))
-                  : "aucune info a affiché"}
-              </Grid>
-            </TabPanel>
-
-          </TabContext>
-        </Box>
-      </Grid>
+               
+                </Box>
+              </Modal>

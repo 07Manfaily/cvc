@@ -36,18 +36,14 @@ const handleEdgeClick = (event) => {
     }
 };
 
-const columns = [
-    {
-        name: "Clé",
-        selector: "key",
+// Créer les colonnes basées sur les noms des clés de la réponse
+const columns = transaction && transaction.length > 0 ? Object.keys(transaction[0]).map((key) => {
+    return {
+        name: key.toUpperCase(), // Utiliser les noms de clés de la réponse
+        selector: key,
         sortable: true
-    },
-    {
-        name: "Valeur",
-        selector: "value",
-        sortable: true
-    }
-];
+    };
+}) : [];
 
 const subHeaderComponentMemo = (
     <FilterComponent

@@ -1,4 +1,10 @@
-
+  const columns = column.map((col) => {
+        return {
+            name: col.to_display,
+            selector: (row) => row[col["key"]],
+            omit:checkedItems 
+        }
+    }
     const [checkedItems, setCheckedItems] = useState({}); // État local pour suivre les éléments cochés
 
     // Fonction pour gérer le changement de l'état des cases à cocher

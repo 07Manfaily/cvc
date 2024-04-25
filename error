@@ -1,4 +1,5 @@
-  const columns = column.map((col) => {
+   // Filtrer les colonnes pour masquer celles dont la case est cochée
+    const filteredColumns = columns.filter(col => !checkedItems[col.key]);  const columns = column.map((col) => {
         return {
             name: col.to_display,
             selector: (row) => row[col["key"]],

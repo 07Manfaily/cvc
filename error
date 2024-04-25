@@ -1,105 +1,37 @@
-const getTransaction = async (emitter, receiver) => {
-    try {
-        const response = await axios.post(
-            "/api/transaction",
-            {
-                "emitter": emitter,
-                "receiver": receiver
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-                }
-            }
-        );
+  function returnColumn() {
 
-        const transac = response.data.map((item, index) => {
-            return { id: index, ...item }; // Ajoutez un id pour chaque élément
-        });
-        setTransaction(transac);
-        console.log("transaction:", transac);
-    } catch (error) {
-        console.log("Erreur lors du traitement:", error);
+        return (
+
+            column.length > 0 ? column.map((col) => {
+                <ListItem key={col.key} component="div" disablePadding>
+
+                    <ListItemText primary={"col.to_display"} />
+
+                </ListItem>
+            })
+                : "");
+
+
+
     }
-}
+<Accordion>
+                        <AccordionSummary
 
-const handleEdgeClick = (event) => {
-    const edge = event.edges;
-    if (edge.length > 0) {
-        setOpe(true)
-        const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
-        const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
-        getTransaction(emet, receiv)
-        console.log("receiver", receiv);
-        console.log("emmeteur", emet);
-    }
-};
+                            aria-controls="panel3-content"
+                            id="panel3-header"
+                        >
+                            <FilterListIcon />
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <FixedSizeList
+                                height={400}
+                                width={360}
+                                itemSize={46}
+                                itemCount={column.length}
+                                overscanCount={5}
+                            >
+                                {returnColumn}
+                            </FixedSizeList>
+                        </AccordionDetails>
 
-// Créer les colonnes basées sur les noms des clés de la réponse
-const columns = transaction && transaction.length > 0 ? Object.keys(transaction[0]).map((key) => {
-    return {
-        name: key.toUpperCase(), // Utiliser les noms de clés de la réponse
-        selector: key,
-        sortable: true
-    };
-}) : [];
-
-const subHeaderComponentMemo = (
-    <FilterComponent
-        onFilter={(e) => setFilterText(e.target.value)}
-        onClear={() => setFilterText("")}
-        filterText={filterText}
-    />
-);
-
-const filteredItems = transaction ? transaction.filter((item) =>
-    Object.values(item).some(
-        (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(filterText.toLowerCase())
-    )
-) : [];
-
-return (
-    <>
-        {/* Modal for transaction */}
-        <Modal
-            open={ope}
-            onClose={handleClos}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <Box sx={style}>
-                <center>
-                    <Typography
-                        id="modal-modal-title"
-                        variant="h6"
-                        component="h2"
-                    >
-                        Détails des transactions
-                    </Typography>
-                </center>
-
-                <Grid
-                    sx={{ mt: 7 }}
-                    container
-                    direction="column"
-                    justifyContent="space-between"
-                    alignItems="flex-start"
-                >
-                    <DataTable
-                        columns={columns}
-                        data={filteredItems}
-                        pagination
-                        paginationResetDefaultPage={resetPaginationToggle}
-                        subHeader
-                        subHeaderComponent={subHeaderComponentMemo}
-                        persistTableHead
-                    />
-                </Grid>
-
-            </Box>
-        </Modal>
-    </>
-);
+                    </Accordion>

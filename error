@@ -1,31 +1,40 @@
-   // Filtrer les colonnes pour masquer celles dont la case est cochée
-    const filteredColumns = columns.filter(col => !checkedItems[col.key]);  const columns = column.map((col) => {
+ const columns = column.map((col) => {
         return {
             name: col.to_display,
-            selector: (row) => row[col["key"]],
-            omit:checkedItems 
+            selector: (row) => row[col["key"]]
         }
     }
-    const [checkedItems, setCheckedItems] = useState({}); // État local pour suivre les éléments cochés
+    
+    )
+    const filteredColumns = columns.filter(col => !checkedItems[col.key]);
+    const subHeaderComponentMemo = (
+        <FilterComponent
+            onFilter={(e) => setFilterText(e.target.value)}
+            onClear={() => setFilterText("")}
+            filterText={filterText}
+        />
+    );
 
-    // Fonction pour gérer le changement de l'état des cases à cocher
-    const handleCheckboxChange = (key) => {
-        setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
-    };
-function returnColumn() {
+    const filteredItems = transaction ? transaction.filter((item) =>
+        Object.values(item).some(
+            (value) =>
+                typeof value === "string" &&
+                value.toLowerCase().includes(filterText.toLowerCase())
+        )
+    ) : [];
 
-        return (
+    return (
+        <>
+            {/* Modal for transaction */}
+            <Modal
+                open={ope}
+                onClose={handleClos}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
 
-           {columns.map((col) => (
-                        <ListItem key={col.key} component="div" disablePadding>
-                            <Checkbox
-                                checked={checkedItems[col.key] || false}
-                                onChange={() => handleCheckboxChange(col.key)}
-                            />
-                            <ListItemText primary={col.to_display} />
-                        </ListItem>
-                    ))}
-<Accordion>
+                    <Accordion>
                         <AccordionSummary
 
                             aria-controls="panel3-content"
@@ -35,10 +44,10 @@ function returnColumn() {
                         </AccordionSummary>
                         <AccordionDetails>
                             <FixedSizeList
-                                height={400}
-                                width={360}
+                                height={200}
+                                width={300}
                                 itemSize={46}
-                                itemCount={column.length}
+                                itemCount={1}
                                 overscanCount={5}
                             >
                                 {returnColumn}
@@ -46,3 +55,41 @@ function returnColumn() {
                         </AccordionDetails>
 
                     </Accordion>
+
+
+                    <Grid
+                        sx={{ mt: 7 }}
+                        container
+                        direction="column"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                    >
+                        <DataTable
+                            title="Détails des transactions"
+                            columns={columns}
+                            data={filteredItems}
+                            pagination
+
+                            progressPending={loadtable}
+                            progressComponent={<FidgetSpinner
+                                backgroundColor="black"
+                                ballColors={["#EB2400", "red", "red"]}
+                                visible={loadtable}
+                                height="70"
+                                width="70"
+                                ariaLabel="fidget-spinner-loading"
+                                wrapperStyle={{}}
+                                wrapperClass="fidget-spinner-wrapper"
+
+                            />}
+                            paginationResetDefaultPage={resetPaginationToggle}
+                            subHeader
+                            fixedHeader
+                            fixedHeaderScrollHeight="500px"
+                            subHeaderComponent={subHeaderComponentMemo}
+
+                        />
+                    </Grid>
+
+                </Box>
+            </Modal>

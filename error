@@ -1,19 +1,23 @@
-  function returnColumn() {
+
+    const [checkedItems, setCheckedItems] = useState({}); // État local pour suivre les éléments cochés
+
+    // Fonction pour gérer le changement de l'état des cases à cocher
+    const handleCheckboxChange = (key) => {
+        setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
+    };
+function returnColumn() {
 
         return (
 
-            column.length > 0 ? column.map((col) => {
-                <ListItem key={col.key} component="div" disablePadding>
-
-                    <ListItemText primary={"col.to_display"} />
-
-                </ListItem>
-            })
-                : "");
-
-
-
-    }
+           {columns.map((col) => (
+                        <ListItem key={col.key} component="div" disablePadding>
+                            <Checkbox
+                                checked={checkedItems[col.key] || false}
+                                onChange={() => handleCheckboxChange(col.key)}
+                            />
+                            <ListItemText primary={col.to_display} />
+                        </ListItem>
+                    ))}
 <Accordion>
                         <AccordionSummary
 

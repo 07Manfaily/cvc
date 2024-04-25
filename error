@@ -1,4 +1,20 @@
- const columns = column.map((col) => {
+const columns = column.map((col) => {
+    return {
+        name: col.to_display,
+        selector: (row) => {
+            if (checkedItems[col.key]) {
+                return null; // Omettre la colonne si elle est cochée
+            }
+            return row[col.key];
+        }
+    };
+});
+
+const filteredColumns = columns.filter(col => !checkedItems[col.key]);
+
+
+
+const columns = column.map((col) => {
         return {
             name: col.to_display,
             selector: (row) => row[col["key"]]

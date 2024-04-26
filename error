@@ -1,4 +1,29 @@
- const [client, setClient] = useState();
+const columns = client ? [
+  ...Object.keys(client[0]).map(col => ({
+    name: col,
+    selector: col,
+    maxWidth: "140px",
+  })),
+  {
+    name: 'Actions',
+    cell: (row) => (
+      <Button
+        style={{ color: "black" }}
+        onClick={() => handleActionClick(row.FINAL_CLUSTERS, 2)}
+      >
+        <VisibilityIcon style={{ color: "#495F52", fontSize: 20 }} />
+      </Button>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+    width: "70px"
+  }
+] : [];
+
+
+
+const [client, setClient] = useState();
 
   useEffect(() => {
     const fetchData = async () => {

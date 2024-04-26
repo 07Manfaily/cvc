@@ -1,111 +1,66 @@
-const columns = column.map((col) => {
-    return {
-        name: col.to_display,
-        selector: (row) => {
-            if (checkedItems[col.key]) {
-                return null; // Omettre la colonne si elle est cochée
-            }
-            return row[col.key];
+ const [client, setClient] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+
+        const response = await axios.get("/api/factoring/get-client");
+        console.log("Réponse des clients affacturage:", response.data.data);
+
+        if (response.status === 200) {
+          setLoading(false)
+          const data = response.data.data;
+          const table = response.data.data.map((e) => {
+            let newData = {}
+            Object.keys(e).forEach(key => {
+              newData[key] = e[key]
+            });
+            return newData;
+          })
+          setClient(table)
+
         }
+
+        console.log("tableau:", client);
+
+      } catch (error) {
+        console.log("Erreur lors du traitement:", error);
+        setError("Oups !!!! erreur liée au serveur");
+        console.log(
+          error.response?.data || "Oups!!!! une erreur s'est produite"
+        );
+      }
     };
-});
 
-const filteredColumns = columns.filter(col => !checkedItems[col.key]);
+    fetchData();
+  }, []);
 
-
-
-const columns = column.map((col) => {
-        return {
-            name: col.to_display,
-            selector: (row) => row[col["key"]]
-        }
-    }
-    
-    )
-    const filteredColumns = columns.filter(col => !checkedItems[col.key]);
-    const subHeaderComponentMemo = (
-        <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={() => setFilterText("")}
-            filterText={filterText}
-        />
-    );
-
-    const filteredItems = transaction ? transaction.filter((item) =>
-        Object.values(item).some(
-            (value) =>
-                typeof value === "string" &&
-                value.toLowerCase().includes(filterText.toLowerCase())
-        )
-    ) : [];
-
-    return (
-        <>
-            {/* Modal for transaction */}
-            <Modal
-                open={ope}
-                onClose={handleClos}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-
-                    <Accordion>
-                        <AccordionSummary
-
-                            aria-controls="panel3-content"
-                            id="panel3-header"
-                        >
-                            <FilterListIcon />
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <FixedSizeList
-                                height={200}
-                                width={300}
-                                itemSize={46}
-                                itemCount={1}
-                                overscanCount={5}
-                            >
-                                {returnColumn}
-                            </FixedSizeList>
-                        </AccordionDetails>
-
-                    </Accordion>
+  const handleActionClick = (nc, level) => {
+    navigate(`/dashboard/chaine-de-valeur/${nc}/${level}`, { replace: true });
+  };
 
 
-                    <Grid
-                        sx={{ mt: 7 }}
-                        container
-                        direction="column"
-                        justifyContent="space-between"
-                        alignItems="flex-start"
-                    >
-                        <DataTable
-                            title="Détails des transactions"
-                            columns={columns}
-                            data={filteredItems}
-                            pagination
+  const columns = Object.client(client[0]).map(col => ({
 
-                            progressPending={loadtable}
-                            progressComponent={<FidgetSpinner
-                                backgroundColor="black"
-                                ballColors={["#EB2400", "red", "red"]}
-                                visible={loadtable}
-                                height="70"
-                                width="70"
-                                ariaLabel="fidget-spinner-loading"
-                                wrapperStyle={{}}
-                                wrapperClass="fidget-spinner-wrapper"
+    name: col,
+    selector: (row) => row[col],
+    maxWidth: "140px",
+    button: true,
+    cell: (row) => (
+      <Button
+        style={{ color: "black" }}
+        onClick={() => handleActionClick(row.FINAL_CLUSTERS, 2)}
+      >
+        <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
+      </Button>
+    ),
 
-                            />}
-                            paginationResetDefaultPage={resetPaginationToggle}
-                            subHeader
-                            fixedHeader
-                            fixedHeaderScrollHeight="500px"
-                            subHeaderComponent={subHeaderComponentMemo}
 
-                        />
-                    </Grid>
 
-                </Box>
-            </Modal>
+  }));
+
+
+
+
+

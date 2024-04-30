@@ -1,46 +1,42 @@
-  const downloadFile = async (emitter, receiver) => {
-        try {
-            const response = await axios.post(
-                "/api/graph/download",
-                {
-                    "emitter": emetteur,
-                    "receiver": receveur
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-                    }
-                }
-            );
-
-          
-         if(response.status === 200){
-            setDataDownload(response.data)
-         }
-  
-
-            console.log("download:", response.data);
-
-
-        } catch (error) {
-            console.log("Erreur lors du traitement:", error);
-        }
-    }
-
-                        <ExportToExcel apiData={dataDownload} fileName={fileName} />
-import React from 'react'
+import React, { useState } from 'react';
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import {Button} from "@mui/material";
-
+import axios from 'axios';
+import { Button } from "@mui/material";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-
 export const ExportToExcel = ({ apiData, fileName }) => {
-  const fileType =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const [dataDownload, setDataDownload] = useState(null);
+
+  const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
   const fileExtension = ".xlsx";
+
+  const downloadFile = async (emitter, receiver) => {
+    try {
+      const response = await axios.post(
+        "/api/graph/download",
+        {
+          "emitter": emitter,
+          "receiver": receiver
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        setDataDownload(response.data);
+        exportToCSV(response.data, fileName);
+      }
+
+      console.log("download:", response.data);
+    } catch (error) {
+      console.log("Erreur lors du traitement:", error);
+    }
+  };
 
   const exportToCSV = (apiData, fileName) => {
     const ws = XLSX.utils.json_to_sheet(apiData);
@@ -50,20 +46,19 @@ export const ExportToExcel = ({ apiData, fileName }) => {
     FileSaver.saveAs(data, fileName + fileExtension);
   };
 
+  const handleExportClick = () => {
+    // Vérifiez si vous avez des valeurs d'émetteur et de destinataire avant de télécharger
+    if (dataDownload && fileName) {
+      exportToCSV(dataDownload, fileName);
+    } else {
+      // Si les données ou le nom de fichier sont manquants, demandez-les à l'utilisateur ou affichez un message d'erreur
+      console.log("Données ou nom de fichier manquants.");
+    }
+  };
+
   return (
-    <Button  onClick={(e) => exportToCSV(apiData, fileName)} style={{ backgroundColor: "#274e13"}}><FileDownloadIcon style={{ color: "white" }}/></Button>
-
-
+    <Button onClick={handleExportClick} style={{ backgroundColor: "#274e13" }}>
+      <FileDownloadIcon style={{ color: "white" }} />
+    </Button>
   );
-};   const handleEdgeClick = (event) => {
-        const edge = event.edges;
-        if (edge.length > 0) {
-            setOpe(true)
-            const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
-            const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
-            getTransaction(emet, receiv)
-            setEmetteur(emet)
-            setReceveur(receiv)
-
-        }
-    };
+};

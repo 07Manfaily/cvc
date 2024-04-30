@@ -1,91 +1,69 @@
-const columns = client ? [
-  ...Object.keys(client[0]).map(col => ({
-    name: col,
-    selector: col,
-    maxWidth: "140px",
-  })),
-  {
-    name: 'Actions',
-    cell: (row) => (
-      <Button
-        style={{ color: "black" }}
-        onClick={() => handleActionClick(row.FINAL_CLUSTERS, 2)}
-      >
-        <VisibilityIcon style={{ color: "#495F52", fontSize: 20 }} />
-      </Button>
-    ),
-    ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
-    width: "70px"
-  }
-] : [];
+  const downloadFile = async (emitter, receiver) => {
+        try {
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": emetteur,
+                    "receiver": receveur
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                }
+            );
+
+          
+         if(response.status === 200){
+            setDataDownload(response.data)
+         }
+  
+
+            console.log("download:", response.data);
 
 
-
-const [client, setClient] = useState();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-
-        const response = await axios.get("/api/factoring/get-client");
-        console.log("Réponse des clients affacturage:", response.data.data);
-
-        if (response.status === 200) {
-          setLoading(false)
-          const data = response.data.data;
-          const table = response.data.data.map((e) => {
-            let newData = {}
-            Object.keys(e).forEach(key => {
-              newData[key] = e[key]
-            });
-            return newData;
-          })
-          setClient(table)
-
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
         }
+    }
 
-        console.log("tableau:", client);
+                        <ExportToExcel apiData={dataDownload} fileName={fileName} />
+import React from 'react'
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
+import {Button} from "@mui/material";
 
-      } catch (error) {
-        console.log("Erreur lors du traitement:", error);
-        setError("Oups !!!! erreur liée au serveur");
-        console.log(
-          error.response?.data || "Oups!!!! une erreur s'est produite"
-        );
-      }
-    };
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-    fetchData();
-  }, []);
 
-  const handleActionClick = (nc, level) => {
-    navigate(`/dashboard/chaine-de-valeur/${nc}/${level}`, { replace: true });
+export const ExportToExcel = ({ apiData, fileName }) => {
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+
+  const exportToCSV = (apiData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(apiData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
   };
 
-
-  const columns = Object.client(client[0]).map(col => ({
-
-    name: col,
-    selector: (row) => row[col],
-    maxWidth: "140px",
-    button: true,
-    cell: (row) => (
-      <Button
-        style={{ color: "black" }}
-        onClick={() => handleActionClick(row.FINAL_CLUSTERS, 2)}
-      >
-        <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
-      </Button>
-    ),
+  return (
+    <Button  onClick={(e) => exportToCSV(apiData, fileName)} style={{ backgroundColor: "#274e13"}}><FileDownloadIcon style={{ color: "white" }}/></Button>
 
 
+  );
+};   const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+            const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+            getTransaction(emet, receiv)
+            setEmetteur(emet)
+            setReceveur(receiv)
 
-  }));
-
-
-
-
-
+        }
+    };

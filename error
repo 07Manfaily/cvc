@@ -1,41 +1,62 @@
-    const edges = graphe.map((i) => {
+const edges = graphe.map((i) => {
+    return {
+        from: i.emitter_code_id,
+        to: i.receiver_code_id,
+        color: {
+            inherit: 'from',
+        },
+        smooth: {
+            enabled: true,
+            type: "continuous",
+            roundness: 0.5
+        },
+    };
+}).concat(
+    Object.values(node).filter(n => n.number_deposit > 0).map((n) => {
         return {
-            from: i.emitter_code_id,
-            to: i.receiver_code_id,
-            color: {
-                inherit: 'from',
-            },
-            smooth: {
-                enabled: true,
-                type: "continuous",
-                roundness: 0.5
-            },
-        }
-    }).concat(Object.values(node).filter(n => n.number_deposit>0).map((n)=>{
-        return{
             "from": n.code_id,
             "to": n.code_id,
             "label": n.cash_deposit,
             width: 2,
-            color:"red",
-        }
-    })).concat( Object.values(node).filter(n => n.number_withdrawal>0).map((n)=>{
-        return{
+            color: "red",
+            dashes: true,
+            arrows: {
+                to: {
+                    enabled: true,
+                    scaleFactor: 0.5,
+                }
+            }
+        };
+    }),
+    Object.values(node).filter(n => n.number_withdrawal > 0).map((n) => {
+        return {
             "from": n.code_id,
             "to": n.code_id,
             "label": n.cash_withdrawal,
             width: 2,
-        
-            color:"blue",
-            smooth: {
-                enabled: true,
-                type: "vertical",
-                roundness: 0.95
-              },
-              arrowStrikethrough:true
-    
-        }
-    }))
+            color: "blue",
+            dashes: true,
+            arrows: {
+                to: {
+                    enabled: true,
+                    scaleFactor: 0.5,
+                }
+            },
+            // Pour faire une légère rotation
+            font: {
+                strokeWidth: 0,
+                strokeColor: "#ffffff",
+                align: "horizontal",
+                color: "#ffffff",
+            },
+        };
+    })
+);
+
+<Graph
+    graph={{ nodes: nodes, edges: edges }}
+    options={options}
+/>
 
 
 const downloadFile = async () => {

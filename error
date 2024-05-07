@@ -1,107 +1,75 @@
-const edges = graphe.map((i) => {
-    return {
-        from: i.emitter_code_id,
-        to: i.receiver_code_id,
-        color: {
-            inherit: 'from',
-        },
-        smooth: {
-            enabled: true,
-            type: "continuous",
-            roundness: 0.5
-        },
+    const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+            const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+            getTransaction(emet, receiv)
+            setEmetteur(emet)
+            setReceveur(receiv)
+            console.log("valeur:", emet)
+
+        }
     };
-}).concat(
-    Object.values(node).filter(n => n.number_deposit > 0).map((n) => {
+
+    const events = {
+        selectEdge: handleEdgeClick,
+    };
+
+
+
+
+
+   const edges = graphe.map((i) => {
         return {
+            from: i.emitter_code_id,
+            to: i.receiver_code_id,
+            color: {
+                inherit: 'from',
+            },
+            smooth: {
+                enabled: true,
+                type: "continuous",
+                roundness: 0.5
+            },
+            x:42
+        }
+    }).concat(Object.values(node).filter(n => n.number_deposit>0).map((n)=>{
+        return{
             "from": n.code_id,
             "to": n.code_id,
             "label": n.cash_deposit,
             width: 2,
-            color: "red",
-            dashes: true,
             arrows: {
                 to: {
                     enabled: true,
-                    scaleFactor: 0.5,
+                    scaleFactor: 1,
                 }
-            }
-        };
-    }),
-    Object.values(node).filter(n => n.number_withdrawal > 0).map((n) => {
-        return {
+            },
+         arrowScaleFactor:0.5 ,
+         lineWidth:12,
+        color:"orange",
+
+        }
+    })).concat( Object.values(node).filter(n => n.number_withdrawal>0).map((n)=>{
+        return{
             "from": n.code_id,
             "to": n.code_id,
             "label": n.cash_withdrawal,
             width: 2,
-            color: "blue",
-            dashes: true,
-            arrows: {
-                to: {
-                    enabled: true,
-                    scaleFactor: 0.5,
-                }
-            },
-            // Pour faire une légère rotation
-            font: {
-                strokeWidth: 0,
-                strokeColor: "#ffffff",
-                align: "horizontal",
-                color: "#ffffff",
-            },
-        };
-    })
-);
-
-<Graph
-    graph={{ nodes: nodes, edges: edges }}
-    options={options}
-/>
-
-
-const downloadFile = async () => {
-        try {
-            await fetch(
-                "/api/graph/download",
-                {
-                    method: "POST",
-                    mode: "cors",
-
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-                    },
-                    body: JSON.stringify({
-                        "emitter": emetteur,
-                        "receiver": receveur
-                    })
-                },
-
-            ).then((response) => {
-                console.log("response", response)
-                return response.blob()
-            }).then((data) => {
-                console.log("data de boris et sadia", data)
-                var file = window.URL.createObjectURL(data);
-                window.location.assign(file);
-            }).catch()
-
-
-
-
-
-        } catch (error) {
-            console.log("Erreur lors du traitement:", error);
+            color:"blue",
         }
-    }
+    }))
 
-    const downloadFile = async () => {
+  const getTransaction = async (emitter, receiver) => {
+
         try {
+            setLoadTable(true)
             const response = await axios.post(
-                "/api/graph/download",
+                "/api/transaction",
                 {
-                    "emitter": emetteur,
-                    "receiver": receveur
+                    "emitter": emitter,
+                    "receiver": receiver
                 },
                 {
                     headers: {
@@ -111,16 +79,20 @@ const downloadFile = async () => {
                 }
             );
 
+            if (response.status === 200) {
+                setLoadTable(false)
+            }
+            const column = response.data.columns;
+            const transaction = response.data.transactions;
+            setColumn(column)
+            setTransaction(transaction)
 
-       
-                return response.blob()
-                var file = window.URL.createObjectURL(response.data);
-                console.log("data de boris et sadia", response.data)
-                var file = window.URL.createObjectURL(response.data);
-                window.location.assign(file);
-            
+            console.log("column:", column);
+
 
         } catch (error) {
             console.log("Erreur lors du traitement:", error);
         }
     }
+
+

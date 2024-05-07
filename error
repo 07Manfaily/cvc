@@ -1,4 +1,22 @@
-    const handleEdgeClick = (event) => {
+const handleEdgeClick = (event) => {
+    const edge = event.edges;
+    if (edge.length > 0) {
+        setOpe(true)
+        const clickedEdge = edges.find((_edge) => _edge.id === edge[0]);
+        if (clickedEdge.color === "orange") {
+            // Arête de dépôt
+            getTransaction(clickedEdge.from, clickedEdge.to, 1);
+        } else if (clickedEdge.color === "blue") {
+            // Arête de retrait
+            getTransaction(clickedEdge.from, clickedEdge.to, -1);
+        } else {
+            // Arête normale
+            getTransaction(clickedEdge.from, clickedEdge.to, 0);
+        }
+        setEmetteur(clickedEdge.from);
+        setReceveur(clickedEdge.to);
+    }
+};    const handleEdgeClick = (event) => {
         const edge = event.edges;
         if (edge.length > 0) {
             setOpe(true)

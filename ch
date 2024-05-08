@@ -1,6 +1,481 @@
-useEffect(() => {
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Grid, Box, Button, Drawer, Stack, Typography, Divider, IconButton } from "@mui/material";
+import Graph from "react-graph-vis";
+import DataTable from "react-data-table-component";
+import Modal from "@mui/material/Modal";
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import Slider from '@mui/material/Slider';
+import MenuItem from '@mui/material/MenuItem';
+import FilterComponent from "../utils/filter";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import SendIcon from '@mui/icons-material/Send';
+import { getCookie } from '../utils/getCookies'
+import { Vortex } from 'react-loader-spinner';
+import { FidgetSpinner } from 'react-loader-spinner';
+import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
+import FilterAltOffTwoToneIcon from '@mui/icons-material/FilterAltOffTwoTone';
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import Iconify from '../components/iconify';
+import Scrollbar from '../components/scrollbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { FixedSizeList } from 'react-window';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { fNumber } from "src/utils/formatNumber";
+export default function RiskChaine() {
+    const style = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 1170,
+
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    };
+
+    const [open, setOpen] = React.useState(false);
+    const [ope, setOpe] = React.useState(false);
+    const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+    const [filterText, setFilterText] = useState("");
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleOpe = () => setOpe(true);
+    const handleClos = () => setOpe(false);
+    const [clientCode, setClientCode] = React.useState("")
+    const [weight, setWeight] = React.useState(1)
+    const [direction, setDirection] = React.useState(1);
+    const [level, setLevel] = React.useState(2);
+    const [riskCategory, setRiskCategory] = React.useState([]);
+    const [slide, setSlide] = React.useState(1);
+    const [graphe, setGraphe] = React.useState([])
+    const [node, setNode] = React.useState({})
+    const [loading, setLoading] = useState(false);
+    const [loadtable, setLoadTable] = useState(true);
+    const [alert, setAlert] = useState(false);
+    const [selectedEdge, setSelectedEdge] = useState(null);
+    const [transaction, setTransaction] = useState([]);
+    const [column, setColumn] = useState([]);
+    const [emetteur, setEmetteur] = useState();
+    const [receveur, setReceveur] = useState();
+    const [balance, setBalance] = useState();
+    const [LoadDownload, setLoadDownload] = useState(false);
+    const [LoadDownloadGraph, setLoadDownloadGraph] = useState(false);
+    const [checkedItems, setCheckedItems] = useState({});
+    const [tag, setTag] = useState("");
+    const [message, setMessage] = useState("")
+    const [typeToast, setTypeToast] = useState("")
+
+
+
+    // Fonction pour gérer le changement de l'état des cases à cocher
+    const handleCheckboxChange = (key) => {
+        setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
+    };
+
+    const handleChangeCodeClient = (event) => {
+        setClientCode(event.target.value);
+    };
+    const handleChangeDirection = (event) => {
+        setDirection(event.target.value);
+    };
+
+    const handleChangeLevel = (event) => {
+        setLevel(event.target.value);
+    };
+
+    const handleChangeWeight = (event) => {
+
+        setWeight(event.target.value);
+
+    };
+    const handleChangeRiskCategory = (event) => {
+        setRiskCategory([...riskCategory, event.target.value]);
+    };
+    const handleChangeSlide = (event) => {
+        setSlide(event.target.value);
+    };
+
+    const fetchGraph = async () => {
+        setLoading(true)
+        handleClose()
+        try {
+            const response = await axios.post("/api/graph",
+                {
+                    "client_code_id": clientCode,
+                    "direction": direction,
+                    "ftop_value": weight ? 0 : 1,
+                    "ftransaction_weight": weight ? 1 : 0,
+                    "fvalue": slide,
+                    "level": level,
+                    "risk_category": riskCategory
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                },
+
+            );
+
+            if (response.status === 200) {
+                setLoading(false)
+                setGraphe(response.data.data)
+                setClientCode("")
+                setWeight(1)
+                setDirection(1)
+                setLevel(2)
+                setRiskCategory([])
+                setSlide(1)
+                console.log("reponse", response)
+            }
+            if (response.status === 200 && response.data.data.length > 0) {
+                setBalance(response.data.balance.mean)
+            } else {
+                setBalance("")
+            }
+
+            if (response.status === 200 && response.data.data.length === 0) {
+                setAlert(true)
+                setMessage("Aucune transaction disponible pour ce client veuillez saisir un autre code client !")
+
+            } else {
+                setAlert(false)
+                setMessage("")
+            }
+            const noeuds = new Set(response.data.data.map((rel) => {
+                return [
+                    rel.emitter_code_id,
+                    rel.receiver_code_id
+                ]
+            }).reduce((a, b) => a.concat(b), []
+
+            ))
+            const nodeInfos = {}
+            response.data.data.forEach((relation) => {
+                ["receiver", "emitter"].forEach((_type) => {
+                    let _id = _type + "_code_id";
+                    _id = relation[_id]
+                    let info = nodeInfos[_id];
+                    if (!info) {
+                        info = {};
+                        Object.keys(relation).forEach(k => {
+                            if (k.startsWith(_type)) {
+                                let field = k.split(_type + "_").slice(1).join(_type);
+                                info[field] = relation[k];
+                            }
+                        });
+                        nodeInfos[_id] = info;
+                    }
+                })
+            })
+            setNode(nodeInfos)
+            console.log("nodeInfos:", nodeInfos)
+            // setNode(noeuds);
+            console.log("les nodes du graphe", noeuds)
+        }
+        catch (error) {
+            setLoading(false)
+            setAlert(true)
+
+            setMessage(error.message)
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+    const getTransaction = async (emitter, receiver, tag) => {
+
+        try {
+            setLoadTable(true)
+            const response = await axios.post(
+                "/api/transaction",
+                {
+                    "emitter": emitter,
+                    "receiver": receiver,
+                    "cash_transaction": tag
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                }
+            );
+
+            if (response.status === 200) {
+                setLoadTable(false)
+            }
+            const column = response.data.columns;
+            const transaction = response.data.transactions;
+            setColumn(column)
+            setTransaction(transaction)
+
+            console.log("column:", column);
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+
+    const downloadGrapheFile = async () => {
+        try {
+            setLoadDownloadGraph(true)
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": direction === 1 ? null : clientCode,
+                    "receiver": direction === -1 ? null : clientCode
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    },
+                    responseType: 'blob'
+                }
+            );
+
+
+            if (response.status === 200) {
+                setLoadDownloadGraph(false)
+                var file = window.URL.createObjectURL(response.data);
+                window.location.assign(file);
+            }
+
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+    const downloadFile = async () => {
+        try {
+            setLoadDownload(true)
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": emetteur,
+                    "receiver": receveur,
+                    "cash_transaction": tag === "deposit" ? 1 : tag === "withdrawal" ? -1 : 0
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    },
+                    responseType: 'blob'
+                }
+            );
+
+            console.log("tag download", tag)
+            if (response.status === 200) {
+                setLoadDownload(false)
+                var file = window.URL.createObjectURL(response.data);
+
+                window.location.assign(file);
+            }
+
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+
+    function returnColumn() {
+
+        return (
+
+            column.map((col) => (
+                <ListItem key={col.key} component="div" disablePadding>
+                    <Checkbox
+                        checked={checkedItems[col.key] || false}
+                        onChange={() => handleCheckboxChange(col.key)}
+                    />
+                    <ListItemText primary={col.to_display} />
+                </ListItem>
+            )));
+
+
+
+    }
+
+    const nodes = Object.values(node).map((n) => {
+        return {
+            id: n.code_id,
+            label: n.client_name,
+            title: n.client_name,
+            shape: n.code_id === parseInt(clientCode, 10) ? "star" : "dot",
+            color: {
+                border: n.risk_category === 1 ? "#3D8E42" : n.risk_category === 2 ? "#A49F00" : n.risk_category === 3 ? "#FB0400" : n.risk_category === 4 ? "gray" : n.risk_category === null ? "gray" : "white",
+                background: n.risk_category === 1 ? "#3D8E42" : n.risk_category === 2 ? "#A49F00" : n.risk_category === 3 ? "#FB0400" : n.risk_category === 4 ? "gray" : n.risk_category === null ? "gray" : "white",
+                highlight: {
+                    background: '#005B89',
+
+                }
+            },
+            size: n.code_id === parseInt(clientCode, 10) ? 16 : 14,
+
+
+
+        }
+    })
+
+
+
+    console.log("nodesss", nodes, "real node", node)
+
+
+    const edges = graphe.map((i) => {
+        return {
+            from: i.emitter_code_id,
+            to: i.receiver_code_id,
+            color: {
+                inherit: 'from',
+            },
+            smooth: {
+                enabled: true,
+                type: "continuous",
+                roundness: 0.5
+            },
+            tag: "normal"
+        }
+    }).concat(Object.values(node).filter(n => n.number_deposit > 0).map((n) => {
+        return {
+            "from": n.code_id,
+            "to": n.code_id,
+            "label": n.cash_deposit,
+            tag: "deposit",
+            width: 2,
+            arrows: {
+                to: {
+                    enabled: true,
+                    scaleFactor: 1,
+                }
+            },
+            arrowScaleFactor: 0.5,
+            lineWidth: 12,
+            color: "orange",
+
+        }
+    })).concat(Object.values(node).filter(n => n.number_withdrawal > 0).map((n) => {
+        return {
+            "from": n.code_id,
+            "to": n.code_id,
+            "label": n.cash_withdrawal,
+            tag: "withdrawal",
+            width: 2,
+            color: "blue",
+        }
+    }))
+
+    const graph = {
+        nodes,
+        edges
+    };
+
+
+    const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const clickedEdge = edges.find((_edge) => _edge.id === edge[0]);
+            if (clickedEdge.tag === "deposit") {
+                // Arête de dépôt
+                getTransaction(clickedEdge.from, clickedEdge.to, 1);
+            } else if (clickedEdge.tag === "withdrawal") {
+                // Arête de retrait
+                getTransaction(clickedEdge.from, clickedEdge.to, -1);
+            } else {
+                // Arête normale
+                getTransaction(clickedEdge.from, clickedEdge.to, 0);
+            }
+            setEmetteur(clickedEdge.from);
+            setReceveur(clickedEdge.to);
+            setTag(clickedEdge.tag)
+            console.log("valeur from", clickedEdge.from);
+            console.log(" tag", clickedEdge.tag);
+
+        }
+    };
+
+
+
+    // const handleEdgeClick = (event) => {
+    //     const edge = event.edges;
+    //     if (edge.length > 0) {
+    //         setOpe(true)
+    //         const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+    //         const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+    //         getTransaction(emet, receiv)
+    //         setEmetteur(emet)
+    //         setReceveur(receiv)
+    //         console.log("valeur:", emet)
+
+    //     }
+    // };
+
+    const events = {
+        selectEdge: handleEdgeClick,
+    };
+
+    const options = {
+        nodes: {
+            font: {
+                size: 12,
+                face: "verdana",
+                color: "black"
+            },
+        },
+
+        physics: {
+            enabled: false,
+            forceAtlas2Based: {
+                // gravitationalConstant: -50,
+                // centralGravity: 0.005,
+                // springLength: 50,
+                springConstant: 0.15,
+            },
+            // maxVelocity: 176,
+            solver: "forceAtlas2Based",
+            // timestep: 0.35,
+            stabilization: { iterations: 900 },
+        },
+
+        interaction: { hover: true },
+        edges: {
+            color: {
+                hover: "black",
+                opacity: 1.0,
+            },
+
+        },
+        height: "100%",
+        width: "100%"
+
+    };
+
     if (alert) {
-        toast.warn("Aucune transaction disponible pour ce client veuillez saisir un autre code client !", {
+        toast.warn(message, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -10,261 +485,415 @@ useEffect(() => {
             progress: undefined,
             theme: "dark"
         });
+        setAlert(false)
     }
-}, [alert]);
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Card, Stack, Grid, Box, Button } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
-import FilterComponent from "../utils/filter";
-import { fNumber } from "../utils/formatNumber";
-import { Puff} from 'react-loader-spinner';
+
+    //     { 
+    //         if (checkedItems[col.key])
+    //         { return null } 
+    //         return row[col["key"]]
+    // }
+    // }
+
+    const columns = column.map((col) => {
+        return {
+            name: col.to_display,
+            selector: (row) => row[col.key],
+            omit: checkedItems[col.key] ? true : false
 
 
+        };
+    });
 
-const Risque = () => {
-  const navigate = useNavigate();
-  const [client, setClient] = useState([]);
-  const [clt, setClt] = useState([]);
-  const [error, setError] = useState("");
-  const [filterText, setFilterText] = useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-
-        const response = await axios.get("/api/risk/get-clients");
-        console.log("Réponse des clients:", response);
-
-        if (response.status === 200) {
-          setLoading(false)
-          const data = response.data.data;
-          const dataset = data[Object.keys(data)[0]].value.map((_, line) => {
-            const row = {};
-            Object.keys(data).forEach((col) => {
-              row[col] = data[col].value[line];
-            });
-            return row;
-          });
-           const row = {};
-          const d =response.data.data 
-          //  const t =   Object.keys(d).map((col) => {
-          //  return{ "colo":col }
-          // });
-          setClient(dataset);
-       
-          console.log("test", dataset);
-
-          // const clientId = data.CLI_S_SGCI.value;
-          // const clusterId = data.FINAL_CLUSTERS.value;
-          // const socialRaison = data.NOMREST_S.value;
-          // const niveauRisque = data.Provi_Stage_Code.value;
-          // const nova = data.NOVA.value;
-          // const montantEngagement = data.Engagement_XOF.value;
-          // const cA = data.CA_XOF.value;
-          // const priority = data.Priority.value;
-          // const cellData = [];
-          // let i = 0;
-          // for (i; i < clientId.length; i += 1) {
-          //   const newData = {
-          //     CLI_S_SGCI: clientId[i],
-          //     FINAL_CLUSTERS: clusterId[i],
-          //     NOMREST_S: socialRaison[i],
-          //     CA_XOF: cA[i],
-          //     Engagement_XOF: montantEngagement[i],
-          //     Provi_Stage_Code: niveauRisque[i],
-          //     Priority: priority[i],
-          //     NOVA: nova[i],
-          //   };
-          //   cellData.push(row);
-          // }
-
-          // });
-        }
-      } catch (error) {
-        setLoading(false)
-        console.log("Erreur lors du traitement:", error);
-        setError("Oups !!!! erreur liée au serveur");
-        console.log(
-          error.response?.data || "Oups!!!! une erreur s'est produite"
-        );
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleActionClick = (nc, level) => {
-    navigate(`/dashboard/chaine-de-valeur/${nc}/${level}`, { replace: true });
-  };
-
-  const columns = [
-    {
-      name: "N° client SGCI",
-      selector: (row) => row.CLI_S_SGCI,
-      maxWidth: "140px",
-    },
-
-    {
-      name: "Raison social",
-      selector: (row) => row.NOMREST_S,
-      maxWidth: "400px",
-    },
-    {
-      name: "Chiffre d’affaires",
-      selector: (row) => fNumber(row.CA_XOF),
-      maxWidth: "220px",
-    },
-    {
-      name: "Montant des engagements",
-      selector: (row) => fNumber(row.Engagement_XOF),
-      sortable: true,
-      maxWidth: "250px",
-    },
-    {
-      name: "Niveau de risque",
-      selector: (row) => {
-        if (row.Provi_Stage_Code === "01") {
-          return <b>S1</b>;
-        } if (row.Provi_Stage_Code === "02") {
-          return <b>S2</b>;
-        } if (row.Provi_Stage_Code === "03") {
-          return <b>S3</b>;
-        } if (row.Provi_Stage_Code === "04") {
-          return <b>S4</b>;
-        }
-        return "";
-      },
-      // selector: (row) => row.Provi_Stage_Code,
-      maxWidth: "127px",
-    },
-    {
-      name: "Priorité",
-      // selector: (row) => row.Priority,
-
-      selector: (row) => (
-        <CircleRoundedIcon style={{ color: `${row.Priority}` }} />
-      ),
-
-      maxWidth: "20px",
-    },
-    {
-      name: "Notation NOVA",
-      selector: (row) => row.NOVA,
-      maxWidth: "119px",
-    },
-    {
-      name: "Action",
-      button: true,
-      cell: (row) => (
-        <Button
-          style={{ color: "black" }}
-          onClick={() => handleActionClick(row.FINAL_CLUSTERS, 2)}
-        >
-          <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
-        </Button>
-      ),
-    },
-  ];
-
-  const subHeaderComponentMemo = (
-    <FilterComponent
-      onFilter={(e) => setFilterText(e.target.value)}
-      onClear={() => setFilterText("")}
-      filterText={filterText}
-    />
-  );
-
-  const filteredItems = client.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(filterText.toLowerCase())
-    )
-  );
-
-  return (
-    <>
-
-
-      {/* <Stack direction="row" justifyContent="space-between" mb={5}>
-                <h1>   Liste des clients en dégradation</h1>
-              </Stack> */}
-      <Card>
-
-        <DataTable
-          title="Liste des clients en dégradation"
-          columns={columns}
-          data={filteredItems}
-          progressPending={loading}
-          progressComponent={<Puff
-            visible={true}
-            height="80"
-            width="80"
-            color="red"
-            ariaLabel="puff-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-          />}
-          pagination
-          paginationResetDefaultPage={resetPaginationToggle}
-          subHeader
-          fixedHeader
-          fixedHeaderScrollHeight="500px"
-          subHeaderComponent={subHeaderComponentMemo}
-          persistTableHead
+    const filteredColumns = columns.filter(col => !checkedItems[col.key]);
+    const subHeaderComponentMemo = (
+        <FilterComponent
+            onFilter={(e) => setFilterText(e.target.value)}
+            onClear={() => setFilterText("")}
+            filterText={filterText}
         />
-      </Card>
-      <Box
-        sx={{
-          mt: 8,
-          bgcolor: "background.paper",
-          boxShadow: 7,
-          borderRadius: 1,
-          border: 1,
-          borderColor: "#e7e0e0",
-        }}
-      >
-        <center>
-          <b>
-            <i>Légende</i>
-          </b>
-        </center>
-        <Grid container sx={{ mt: 4 }}>
-          <Grid
-            container
-            sx={{ mb: 2 }}
-            direction="row"
-            justifyContent="space-around"
-            alignItems="flex-start"
-          >
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "red" }} />
-              <b>Client fortement prioritaire</b>
+    );
+
+    const filteredItems = transaction ? transaction.filter((item) =>
+        Object.values(item).some(
+            (value) =>
+                typeof value === "string" &&
+                value.toLowerCase().includes(filterText.toLowerCase())
+        )
+    ) : [];
+
+    return (
+        <>
+            {/* Modal for transaction */}
+            <Modal
+                open={ope}
+                onClose={handleClos}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                    >
+                        <Accordion>
+                            <AccordionSummary
+
+                                aria-controls="panel3-content"
+                                id="panel3-header"
+                            >
+                                Filtrer par colonne <FilterListIcon />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <FixedSizeList
+                                    height={200}
+                                    width={300}
+                                    itemSize={46}
+                                    itemCount={1}
+                                    overscanCount={5}
+                                >
+                                    {returnColumn}
+                                </FixedSizeList>
+                            </AccordionDetails>
+
+                        </Accordion>
+                        <LoadingButton
+                            loading={LoadDownload}
+                            loadingPosition="start"
+                            variant="outlined"
+                            onClick={downloadFile} style={{ backgroundColor: "#274e13" }}><FileDownloadIcon style={{ color: "white" }} />
+                        </LoadingButton>
+
+
+                        <Grid
+                            sx={{ mt: 7 }}
+                            container
+                            direction="column"
+                            justifyContent="space-between"
+                            alignItems="flex-start"
+                        >
+                            <DataTable
+                                title="Détails des transactions"
+                                columns={filteredColumns}
+                                data={filteredItems}
+                                pagination
+
+                                progressPending={loadtable}
+                                progressComponent={<FidgetSpinner
+                                    backgroundColor="black"
+                                    ballColors={["#EB2400", "red", "red"]}
+                                    visible={loadtable}
+                                    height="70"
+                                    width="70"
+                                    ariaLabel="fidget-spinner-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="fidget-spinner-wrapper"
+
+                                />}
+                                paginationResetDefaultPage={resetPaginationToggle}
+                                subHeader
+                                fixedHeader
+                                fixedHeaderScrollHeight="500px"
+                                subHeaderComponent={subHeaderComponentMemo}
+
+                            />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+
+            <Drawer
+                anchor="right"
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: { width: 370, border: 'none', overflow: 'hidden' },
+                }}
+            >
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1, py: 2 }}>
+                    <Typography variant="subtitle1" sx={{ ml: 1 }}>
+                        Paramettre de recherche
+                    </Typography>
+                    <IconButton onClick={handleClose}>
+                        <Iconify icon="eva:close-fill" />
+                    </IconButton>
+                </Stack>
+
+                <Divider />
+
+                <Scrollbar>
+                    <Stack spacing={8} sx={{ p: 3 }}>
+
+
+                        <TextField sx={{ minWidth: 270 }}
+                            fullWidth label="Code client"
+                            id="fullWidth"
+                            size="small"
+                            value={clientCode}
+                            onChange={handleChangeCodeClient}
+                        />
+
+                        <Grid >
+                            <p>Type client</p>
+                            <Grid container
+                                direction="row"
+                                justifyContent="space-evenly"
+                                alignItems="flex-start">
+                                <b>S1 <Checkbox onChange={handleChangeRiskCategory} value={1} color="success" /></b>
+                                <b>S2 <Checkbox onChange={handleChangeRiskCategory} value={2} color="warning" /></b>
+                                <b>S3 <Checkbox onChange={handleChangeRiskCategory} value={3} color="error" /></b>
+                                <b>hors <Checkbox onChange={handleChangeRiskCategory} value={4} style={{ color: "gray" }} /></b>
+
+                            </Grid>
+                        </Grid>
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Type d'opération</InputLabel>
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={direction}
+                                label="Age"
+                                onChange={handleChangeDirection}
+                            >
+                                <MenuItem value={1}>Credit</MenuItem>
+                                <MenuItem value={-1}>Debit</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Profondeur</InputLabel>
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={level}
+                                label="Niveau"
+                                onChange={handleChangeLevel}
+                            >
+                                <MenuItem value={1}>Niveau1</MenuItem>
+                                <MenuItem value={2}>Niveau2</MenuItem>
+                                <MenuItem value={3}>Niveau3</MenuItem>
+                                <MenuItem value={4}>Niveau4</MenuItem>
+
+                            </Select>
+                        </FormControl>
+
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Poids de la transaction</InputLabel>
+
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={weight}
+                                label="Niveau"
+                                onChange={handleChangeWeight}
+                            >
+                                <MenuItem value={1}>Poids de la transaction</MenuItem>
+                                <MenuItem value={0}>Top valeur</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+
+                        <Box> <Typography id="non-linear-slider" gutterBottom>
+
+                            Valeur: <b style={{ color: "#09954A" }}><i>{slide} {weight === 1 ? "%" : ""}</i></b>
+                        </Typography><Slider sx={{ height: 40, color: "black" }}
+                            defaultValue={1}
+                            marks
+                            min={1}
+                            onChange={handleChangeSlide}
+                            value={slide}
+                            max={100} aria-label="Default" valueLabelDisplay="auto" />
+                        </Box>
+
+
+                        <Button onClick={fetchGraph} style={{ backgroundColor: '#000000', width: 300 }} variant="contained" endIcon={<SendIcon />}>
+                            <b style={{ color: "red" }}>Lancer</b>
+                        </Button>
+                    </Stack>
+                </Scrollbar>
+
+
+
+
+
+            </Drawer>
+
+
+
+            <Grid
+                container
+                direction="row"
+                justifyContent="CENTER"
+                alignItems="flex-start"
+                style={{ position: "fixed", top: 'calc(100% / 7)', right: 'calc(100% / 4.2)', zIndex: 100 }}
+
+            >
+                {balance ? <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+                    Solde du client : <b style={{ color: "red" }}>{fNumber(balance).replace(",", " ")} </b> <b>XOF</b>
+                </Box> : ""}
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="flex-start"
+                    style={{ position: "fixed", top: 'calc(100% / 7)', right: 'calc(100% / 20)', zIndex: 100 }}
+                >
+                    {graphe.length > 0 ? <LoadingButton
+                        loading={LoadDownloadGraph}
+                        loadingPosition="start"
+                        variant="outlined"
+                        onClick={downloadGrapheFile} style={{ backgroundColor: "#274e13" }}><FileDownloadIcon style={{ color: "white" }} />
+                    </LoadingButton> : ""}
+                    <Button sx={{ ml: 2 }} variant="contained" style={{ backgroundColor: "black" }} onClick={handleOpen}>
+                        {open ? <FilterAltOffTwoToneIcon style={{ color: "red" }} /> : <FilterAltTwoToneIcon style={{ color: "red", fontSize: 25 }} />}
+                    </Button>
+
+                </Grid>
             </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "orange" }} />
-              <b>Client peu prioritaire</b>
-            </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <CircleRoundedIcon style={{ color: "green" }} />
-              <b>Client moyennement prioritaire</b>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Box>
 
 
 
-    </>
-  );
-};
 
-export default Risque;
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Box
+                        sx={{
+                            // bgcolor: "background.paper",
+                            bgcolor: "#ddd",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                            height: "100vh"
+                        }}
+                        id="network"
+                    >
+                        {selectedEdge ?
+
+                            <Grid
+                                container
+                                direction="column"
+                                justifyContent="flex-start"
+                                alignItems="baseline"
+                            >
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="flex-start"
+                                >
+                                    <Grid>
+                                        to :
+                                        <b sx={{ mt: 4, mb: 2 }}
+                                            style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                                            {`${selectedEdge.to} `}
+                                        </b>
+                                    </Grid>
+                                    <Grid>
+                                        from : <b sx={{ ml: 4, mb: 2 }}
+                                            style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                                            {` ${selectedEdge.from}`}
+                                        </b>
+                                    </Grid>
+
+
+                                </Grid>
+                            </Grid> : ""
+                        }
+
+
+                        <ToastContainer position="top-center"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="dark"
+                        />
+
+                        {loading ?
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Vortex
+                                    visible={loading}
+                                    height="80"
+                                    width="200"
+                                    ariaLabel="vortex-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="vortex-wrapper"
+                                    colors={['red', 'green', 'blue', 'yellow', 'orange', 'black']}
+                                />
+                            </Grid> :
+
+
+                            <Graph graph={graph} options={options} events={events} />}
+                    </Box>
+                    <Box
+                        sx={{
+                            mt: 5,
+
+                            bgcolor: "background.paper",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                        }}
+                    >
+
+                        <center>
+                            <b style={{ fontFamily: 'Montserrat' }}>
+                                Légende
+                            </b>
+                        </center>
+                        <Grid container sx={{ mt: 4, mb: 4 }}>
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="space-around"
+                                alignItems="flex-start"
+                            >
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <StarOutlineIcon />
+                                    <b>Forme du client recherché</b>
+
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "green" }} />
+                                    <b>Client S1</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "#A49F00" }} />
+                                    <b>Client S2</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "red" }} />
+                                    <b>Client S3</b>
+                                </Grid>
+
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "gray" }} />
+                                    <b>Client Hors SGCI</b>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+
+
+            </Grid >
+        </>
+    );
+}

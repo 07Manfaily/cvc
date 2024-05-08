@@ -1,1 +1,236 @@
+import React, { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Card, Grid, Typography, Box, Button } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import FilterComponent from "../utils/filter";
+import { tPercent, tPercentNone } from "../utils/formatNumber";
+import { Puff } from 'react-loader-spinner';
+import { ToastContainer, toast } from 'react-toastify';
+import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
+
+const Affacturage = () => {
+  const navigate = useNavigate();
+  const [alert, setAlert] = useState(false);
+  const [error, setError] = useState("");
+  const [filterText, setFilterText] = useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+
+        const response = await axios.get("/api/factoring/get-client");
+        console.log("Réponse des clients affacturage:", response.data.data);
+        if (response.data.data.length === 0) {
+          setAlert(true)
+        }
+        if (response.status === 200) {
+          setLoading(false)
+          const data = response.data.data;
+          // const table = response.data.data.map((e) => {
+          //   let newData = {}
+          //   Object.keys(e).forEach(key => {
+          //     newData[key] = e[key]
+          //   });
+          //   return newData;
+          // })
+          setClient(data)
+
+        }
+
+        console.log("tableau:", client);
+
+      } catch (error) {
+        setLoading(false)
+
+        console.log("Erreur lors du traitement:", error);
+        if (error.response.status === 500) {
+          setAlert(true)
+          setError("Oups !!!! erreur liée au serveur");
+        }
+
+        console.log(
+          error.response?.data || "Oups!!!! une erreur s'est produite"
+        );
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleActionClick = (code) => {
+    navigate(`/dashboard/affacturage-chaine/${code}`, { replace: true });
+  };
+
+
+  const columns = client ? [
+    ...Object.keys(client[0]).map(col => ({
+      name: col ? col : "*******",
+      selector: (row) => row[col] === row["Proba de prediction"] ? LinearProgressWithLabel(row["Proba de prediction"], tPercent(row["Proba de prediction"])) : row[col],
+      //|| row[col] === row["Proba de prediction"] ? tPercent(row["Proba de prediction"]) : ""
+      // cell: (row) => row[col] === "prediction_probability" ? tPercent(row[col]) : row[col]
+
+    })),
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <Button
+          style={{ color: "black" }}
+          onClick={() => handleActionClick(row["Code Client"], 2)}
+        >
+          <VisibilityIcon style={{ color: "#495F52", fontSize: 20 }} />
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+      width: "70px"
+    }
+  ] : [];
+
+
+
+  toast.warn({ error }, {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark"
+  });
+
+  // const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  //   height: 10,
+  //   borderRadius: 5,
+  //   [`&.${linearProgressClasses.colorPrimary}`]: {
+  //     backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  //   },
+  //   [`& .${linearProgressClasses.bar}`]: {
+  //     borderRadius: 5,
+  //     backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
+  //   },
+  // }));
+
+
+  function LinearProgressWithLabel(val1, val2) {
+    return (
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <LinearProgress style={{
+          height: 17, width: 100,
+          borderRadius: 5
+        }} variant="buffer" color={ (val1 * 100) < 50 ? "error" : (val1 * 100) > 50 ? "success" : ""} value={(val1 * 100)} />
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="caption" component="div" color="text.secondary">
+            <b style={{ color: "black", fontFamily: 'Math', fontSize: 12 }}> {val2} </b>
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
+
+  const subHeaderComponentMemo = (
+    <FilterComponent
+      onFilter={(e) => setFilterText(e.target.value)}
+      onClear={() => setFilterText("")}
+      filterText={filterText}
+    />
+  );
+  const conditionalRowStyles = client ? Object.keys(client[0]).map(col => ({
+    when: (row) => row[col],
+    style: {
+      // backgroundColor: '#3a5260',
+      // color: 'white',
+      '&:hover': {
+        cursor: 'pointer',
+        color: 'white',
+        backgroundColor:'#4C7A75'
+      },
+    },
+  })) : [];
+
+const filteredItems = client ? client.filter((item) =>
+  Object.values(item).some(
+    (value) =>
+      typeof value === "string" &&
+      value.toLowerCase().includes(filterText.toLowerCase())
+  )
+) : [];
+
+return (
+  <>
+
+
+    {/* <Stack direction="row" justifyContent="space-between" mb={5}>
+                <h1>   Liste des clients en dégradation</h1>
+              </Stack> */}
+    <Card>
+
+      {alert ? (
+        <ToastContainer position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />) : ""}
+      <DataTable
+        title="Liste des clients a affacturage"
+        columns={columns}
+        data={filteredItems}
+        conditionalRowStyles={conditionalRowStyles}
+        progressPending={loading}
+        progressComponent={<Puff
+          visible={true}
+          height="80"
+          width="80"
+          color="red"
+          ariaLabel="puff-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />}
+        pagination
+        paginationResetDefaultPage={resetPaginationToggle}
+        subHeader
+        fixedHeader
+        fixedHeaderScrollHeight="500px"
+        subHeaderComponent={subHeaderComponentMemo}
+        persistTableHead
+      />
+    </Card>
+
+
+
+
+  </>
+);
+};
+
+export default Affacturage;
 

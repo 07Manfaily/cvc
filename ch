@@ -1,3 +1,17 @@
+useEffect(() => {
+    if (alert) {
+        toast.warn("Aucune transaction disponible pour ce client veuillez saisir un autre code client !", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark"
+        });
+    }
+}, [alert]);
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";

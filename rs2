@@ -1,4 +1,12 @@
-   const val = eligibilityValue.every(iter => iter.valeur === 1);
+const [eligibilityValue, setEligibilityValue] = useState([]);
+
+// Mettez à jour la valeur de eligibilityValue lorsque les boutons radio sont cochés
+const handleRadioChange = (index, value) => {
+  const updatedEligibilityValue = [...eligibilityValue];
+  updatedEligibilityValue[index] = value;
+  setEligibilityValue(updatedEligibilityValue);
+
+const val = eligibilityValue.every(iter => iter.valeur === 1);
 
 const elegibilityValue = [
     ...document.querySelectorAll(

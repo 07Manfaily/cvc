@@ -1,4 +1,6 @@
- const elegibilityValue = [
+   const val = eligibilityValue.every(iter => iter.valeur === 1);
+
+const elegibilityValue = [
     ...document.querySelectorAll(
       "#eligibility-criteria-container .MuiPaper-root",
     ),

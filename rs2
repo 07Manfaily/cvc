@@ -1,91 +1,3359 @@
-const [eligibilityValue, setEligibilityValue] = useState([]);
-
-// Mettez à jour la valeur de eligibilityValue lorsque les boutons radio sont cochés
-const handleRadioChange = (index, value) => {
-  const updatedEligibilityValue = [...eligibilityValue];
-  updatedEligibilityValue[index] = value;
-  setEligibilityValue(updatedEligibilityValue);
-
-const val = eligibilityValue.every(iter => iter.valeur === 1);
-
-const elegibilityValue = [
-    ...document.querySelectorAll(
-      "#eligibility-criteria-container .MuiPaper-root",
-    ),
-  ].map((critera) => {
-      return {
-        label: critera.querySelector("textarea").getAttribute("name").replace("-comment", ''),
-        comment: critera.querySelector("textarea").value,
-        value: critera.querySelector("input[type=radio]:checked")
-          ? critera.querySelector("input[type=radio]:checked").value
-          : null,
-      };
-    })
+import React, { useState } from "react";
+import {
+  Grid,
+  Typography,
+  AccordionDetails,
+  Accordion,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  FormControl,
+  AccordionSummary,
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
+import { TextareaAutosize } from "@mui/base/TextareaAutosize";
+import { Divider } from "@material-ui/core";
+import useStyles from "../dashboard/styles";
+import Widget from "../../components/Widget/Widget";
+import clsx from "clsx";
+import CommentIcon from "@material-ui/icons/Comment";
 
 
- const handleSendControlEligibite = async () => {
-    setLoading(true);
-    await axios
-      .post(
-        "/api/panel/eligibility/set",
-        { "number_client":  matricule,
-        "data":  elegibilityValue},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
-          },
-        },
-      )
-      .then((response) => {
-        console.log("reponse de send control eligibilité: ", response);
-        const val = elegibilityValue.reduce((sum, iter) => iter.value === 1 && sum, true);
-        console.log("val :", val);
-        if (val) {
-          setShowAlert(false);
-        }else{
-          setShowAlert(true)
-        }
+export default function ControlEligibilite({ props }) {
+  const [CommentPrc, setCommentPrc] = useState("");
+  const [CommentKyc, setCommentKyc] = useState("");
+  const [CommentCroLocal, setCommentCroLocal] = useState("");
+  const [CommentRevu, setCommentRevu] = useState("");
+  const [CommentS1, setCommentS1] = useState("");
+  const [CommentRevuAbsent, setCommentRevuAbsent] = useState("");
+  const [CommentNature, setCommentNature] = useState("");
+  const [CommentEvolutionCa, setCommentEvolutionCa] = useState("");
+  const [CommentLegislative, setCommentLegislative] = useState("");
+  const [CommentChange, setCommentChange] = useState("");
+  const [CommentLastRevue, setCommentLastRevue] = useState("");
+  const [CommentEF, setCommentEF] = useState("");
+  const [CommentFP, setCommentFP] = useState("");
+  const [CommentEbitda, setCommentEbitda] = useState("");
+  const [CommentRatio, setCommentRatio] = useState("");
+  const [CommentCovenantF, setCommentCovenantF] = useState("");
+  const [CommentOctroi, setCommentOctroi] = useState("");
+  const [CommentCoreBank, setCommentCoreBank] = useState("");
+  const [CommentFluxMoyenMensuelle, setCommentFluxMoyenMensuelle] = useState("");
+  const [CommentAImpaye, setCommentAImpaye] = useState("");
+  const [CommentAbDepass, setCommentAbDepass] = useState("");
+  const [CommentTypologie, setCommentTypologie] = useState("");
+  const [CommentRenouvel, setCommentRenouvel] = useState("");
+  const [CommentMtCb, setCommentMtCb] = useState("");
+  const [CommentMtSignificative, setCommentMtSignificative] = useState("");
+  const [radioPrc, setRadioPrc] = useState("");
+  const [radioKyc, setRadioKyc] = useState("");
+  const [radioCroLocal, setRadioCroLocal] = useState("");
+  const [radioRevu, setRadioRevu] = useState("");
+  const [radioS1, setRadioS1] = useState("");
+  const [radioRevuAbsent, setRadioRevuAbsent] = useState("");
+  const [radioNature, setRadioNature] = useState("");
+  const [radioEvolutionCa, setRadioEvolutionCa] = useState("");
+  const [radioLegislative, setRadioLegislative] = useState("");
+  const [radioChange, setRadioChange] = useState("");
+  const [radioLastRevue, setRadioLastRevue] = useState("");
+  const [radioEF, setRadioEF] = useState("");
+  const [radioFP, setRadioFP] = useState("");
+  const [radioEbitda, setRadioEbitda] = useState("");
+  const [radioRatio, setRadioRatio] = useState("");
+  const [radioCovenantF, setRadioCovenantF] = useState("");
+  const [radioOctroi, setRadioOctroi] = useState("");
+  const [radioCoreBank, setRadioCoreBank] = useState("");
+  const [radioFluxMoyenMensuelle, setRadioFluxMoyenMensuelle] = useState("");
+  const [radioAImpaye, setRadioAImpaye] = useState("");
+  const [radioAbDepass, setRadioAbDepass] = useState("");
+  const [radioTypologie, setRadioTypologie] = useState("");
+  const [radioRenouvel, setRadioRenouvel] = useState("");
+  const [radioMtCb, setRadioMtCb] = useState("");
+  const [radioMtSignificative, setRadioMtSignificative] = useState("");
+  const classes = useStyles();
+
+  //[...document.querySelectorAll("#eligibility-criteria-container .nMuiPaper-root")].map((critera)=>{return {"criteria": critera.querySelector("textarea").getAttribute("name"), "comment": critera.querySelector("textarea").value, "value": critera.querySelector("input[type=radio]:checked")? critera.querySelector("input[type=radio]:checked").value: null}})
+  //[...document.querySelectorAll("#eligibility-criteria-container .MuiPaper-root")].map((critera)=>{return {"criteria": critera.querySelector("textarea").getAttribute("name"), "comment": critera.querySelector("textarea").value, "value": critera.querySelector("input[type=radio]:checked")? critera.querySelector("input[type=radio]:checked").value: null}}).reduce((sum, iter)=>iter.value==="OK" && sum, true)
+
+
+  return (
+    <Grid item xs={12} md={12}>
+      <Widget
+        title="	CONTROLES D’ELIGIBILITE A LA REVUE SIMPLIFIEE"
+        upperTitle
+        className={classes.card}
+        bodyClass={classes.fullHeightBody}
+      >
      
-      })
-      .catch((error) => {
-        console.log("Error lors du traitement de control eligibilité:", error);
-        setError(error.response?.data || "Oups!!!! une erreur s'est produite");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
 
-const handleComplete = async () => {
-    const RADIO = elegibilityValue.reduce((sum, iter) => iter.value === 1 && sum, true);
-    console.log("valeur radio", RADIO);
-  const newCompleted = new Set(completed);
-    newCompleted.add(activeStep);
-    setCompleted(newCompleted);
-    if (completed.size !== totalSteps() - skippedSteps()) {
-      handleNext();
-    }
-    if (activeStep === 0){
-      await handleSendControlEligibite()
-    }
-    if (activeStep === 3) {
-      await handleSendEngagement();
-    }
+         <div id="eligibility-criteria-container">
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      KYC valide et fiche de contrôle conformité dûment remplie
+                    </b>
+                  </Typography>
+                  {CommentKyc.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
 
-    if (activeStep === 2) {
-      await handleSendInside();
-    }
+                  <ul>
+                    <li>
+                      <i>
+                        <b>Vérifier la date de validité du KYC du client</b>{" "}
+                      </i>
+                    </li>
 
-    if (
-      (activeStep === 0 ||
-        activeStep === 1 ||
-        activeStep === 2 ||
-        activeStep === 3) &&
-      RADIO
-    ) {
-      setShowAlert(false);
-    } else {
-      setShowAlert(true);
+                    <li>
+                      <i>
+                        <b>
+                          Identifier le niveau de risque à partir de la
+                          classification FCCR
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="kyc-valide-comment"
+                        value={CommentKyc}
+                        onChange={(e) => setCommentKyc(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      {props.controlEligibilte !==
+                      null ? (
+                        <RadioGroup
+                          row
+                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          name="kyc-valide"
+                        >
+                          <FormControlLabel
+                            value={0}
+                            control={
+                              <Radio
+                                onChange={(e) => setRadioKyc(e.target.value)}
+                                checked={
+                                  props.controlEligibilte.kyc_validity
+                                    .condition !== null &&
+                                  !props.controlEligibilte.kyc_validity
+                                    .condition
+                                }
+                                style={{ color: "red" }}
+                              />
+                            }
+                            label="Non Ok"
+                          />
+                          <FormControlLabel
+                            value={1}
+                            control={
+                              <Radio
+                                onChange={(e) => setRadioKyc(e.target.value)}
+                                checked={
+                                  props.controlEligibilte.kyc_validity.condition
+                                }
+                                style={{ color: "green" }}
+                              />
+                            }
+                            label="Ok"
+                          />
+                        </RadioGroup>
+                      ) : (
+                        <>
+                          <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="kyc-valide"
+                          >
+                            <FormControlLabel
+                              value={0}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioKyc(e.target.value)}
+                                  style={{ color: "red" }}
+                                />
+                              }
+                              label="Non Ok"
+                            />
+                            <FormControlLabel
+                              value={1}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioKyc(e.target.value)}
+                                  style={{ color: "green" }}
+                                />
+                              }
+                              label="Ok"
+                            />
+                          </RadioGroup>
+                        </>
+                      )}
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>PCRU local</b>
+                  </Typography>
+                  {CommentPrc.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verification du PCRU local (Le PCRU local est un
+                          garant, il suit la procédure d'octroi de prêt)
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="prcu-local-comment"
+                        value={CommentPrc}
+                        onChange={(e) => setCommentPrc(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      {props.controlEligibilte !== null ? (
+                        <RadioGroup
+                          row
+                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          name="prcu-local"
+                        >
+                          <FormControlLabel
+                            value={0}
+                            control={
+                              <Radio
+                                onChange={(e) => setRadioPrc(e.target.value)}
+                                checked={
+                                  props.controlEligibilte.local_pcru
+                                    .condition !== null &&
+                                  !props.controlEligibilte.local_pcru.condition
+                                }
+                                style={{ color: "red" }}
+                              />
+                            }
+                            label="Non Ok"
+                          />
+                          <FormControlLabel
+                            value={1}
+                            control={
+                              <Radio
+                                onChange={(e) => setRadioPrc(e.target.value)}
+                                checked={
+                                  props.controlEligibilte.local_pcru.condition
+                                }
+                                style={{ color: "green" }}
+                              />
+                            }
+                            label="Ok"
+                          />
+                        </RadioGroup>
+                      ) : (
+                        <>
+                          <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="prcu-local"
+                          >
+                            <FormControlLabel
+                              value={0}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioPrc(e.target.value)}
+                                  style={{ color: "red" }}
+                                />
+                              }
+                              label="Non Ok"
+                            />
+                            <FormControlLabel
+                              value={1}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioPrc(e.target.value)}
+                                  style={{ color: "green" }}
+                                />
+                              }
+                              label="Ok"
+                            />
+                          </RadioGroup>
+                        </>
+                      )}
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>Contrepartie en S1</b>
+                  </Typography>
+                  {CommentS1.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verification de la contrepatie en S1 (la Contrepartie
+                          en S1 correspond à l'entreprise qui sollicite le prêt)
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="s1-comment"
+                        value={CommentS1}
+                        onChange={(e) => setCommentS1(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      {props.controlEligibilte !== null ? (
+                        <>
+                          <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="s1"
+                          >
+                            <FormControlLabel
+                              value={0}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioS1(e.target.value)}
+                                  //  disabled={props.controlEligibilte.local_pcru && props.controlEligibilte.local_pcru.condition === true }
+                                  checked={
+                                    props.controlEligibilte
+                                      .financial_compensation_S1.condition !==
+                                      null &&
+                                    !props.controlEligibilte
+                                      .financial_compensation_S1.condition
+                                  }
+                                  style={{ color: "red" }}
+                                />
+                              }
+                              label="Non Ok"
+                            />
+                            <FormControlLabel
+                              value={1}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioS1(e.target.value)}
+                                  // disabled={props.controlEligibilte.local_pcru && props.controlEligibilte.local_pcru.condition === false }
+                                  checked={
+                                    props.controlEligibilte
+                                      .financial_compensation_S1.condition
+                                  }
+                                  style={{ color: "green" }}
+                                />
+                              }
+                              label="Ok"
+                            />
+                          </RadioGroup>
+                        </>
+                      ) : (
+                        <>
+                          <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="s1"
+                          >
+                            <FormControlLabel
+                              value={0}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioS1(e.target.value)}
+                                  style={{ color: "red" }}
+                                />
+                              }
+                              label="Non Ok"
+                            />
+                            <FormControlLabel
+                              value={1}
+                              control={
+                                <Radio
+                                  onChange={(e) => setRadioS1(e.target.value)}
+                                  style={{ color: "green" }}
+                                />
+                              }
+                              label="Ok"
+                            />
+                          </RadioGroup>
+                        </>
+                      )}
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>Dans la LAD du CRO local</b>
+                  </Typography>
+                  {CommentCroLocal.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>Accord du (CRO) Directeur Des risques du crédit</b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="accord-cro-comment"
+                        value={CommentCroLocal}
+                        onChange={(e) => setCommentCroLocal(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="accord-cro"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioCroLocal(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioCroLocal(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      La précédente revue était une revue complète
+                    </b>
+                  </Typography>
+                  {CommentRevu.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier si le précédent dossier a suivi le processus
+                          de revue normal
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="revue-comment"
+                        value={CommentRevu}
+                        onChange={(e) => setCommentRevu(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="revue-complete"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRevu(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRevu(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      A la précédente revue, absence de demande expresse par
+                      RISQ de faire une nouvelle revue complète
+                    </b>
+                  </Typography>
+                  {CommentRevuAbsent.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>Un dossier qui a suivi le circuit normal</b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-revue-absent"
+                        value={CommentRevuAbsent}
+                        onChange={(e) => setCommentRevuAbsent(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="revue-absent"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioRevuAbsent(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioRevuAbsent(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Nature d'activité de la contrepartie inchangée
+                    </b>
+                  </Typography>
+                  {CommentNature.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier si notre client n'a pas changé d'activité
+                          d'une année à l'autre
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment_nature"
+                        value={CommentNature}
+                        onChange={(e) => setCommentNature(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="nature"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioNature(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioNature(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Evolution du CA sur 1 an comprise entre -10% et +20%{" "}
+                    </b>
+                  </Typography>
+                  {CommentEvolutionCa.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Rejeter le renouvellement d'un client ayant une
+                          évolution brusque de son CA d'une année à l'autre
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment_evolution-CA"
+                        value={CommentEvolutionCa}
+                        onChange={(e) => setCommentEvolutionCa(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="evolution-ca"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioEvolutionCa(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioEvolutionCa(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      {" "}
+                      Pas d'évolution législative majeure sur le secteur
+                      d'activité
+                    </b>
+                  </Typography>
+                  {CommentLegislative.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier si notre client n'est pas impacté par des
+                          lois en vigueur ou des sanctions{" "}
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-legislative"
+                        value={CommentLegislative}
+                        onChange={(e) => setCommentLegislative(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="legislative"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioLegislative(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioLegislative(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      {" "}
+                      Aucun changement d'actionnariat engendrant une
+                      modification du contrôle de l'entreprise
+                    </b>
+                  </Typography>
+                  {CommentChange.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier l'entré ou la sortie d'un
+                          actionnaire(L'entrée ou la sortie d'un actionnaire
+                          peut avoir un impact sur le renouvellement){" "}
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-change"
+                        value={CommentChange}
+                        onChange={(e) => setCommentChange(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="aucun-changement"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioChange(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioChange(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      {" "}
+                      Absence d'évènement significatif défavorable depuis la
+                      dernière revue
+                    </b>
+                  </Typography>
+                  {CommentLastRevue.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier s'il y as des facteurs endogènes ou exogène
+                          pouvant impactés sur l'activité de notre client
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-last-revue"
+                        value={CommentLastRevue}
+                        onChange={(e) => setCommentLastRevue(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="last-revue"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioLastRevue(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioLastRevue(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      EF définitifs déposés à l’administration fiscale avec
+                      cachet d’un cabinet d’audit et/ou visa CAC lorsque ces
+                      éléments ont été produits lors du précédent dossier
+                    </b>
+                  </Typography>
+                  {CommentEF.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier si les chiffres sont certifiés ou pas par le
+                          rapport CAC( c'est-à-dire validé par le commissaire au
+                          compte)
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-ef"
+                        value={CommentEF}
+                        onChange={(e) => setCommentEF(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="ef"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioEF(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioEF(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      FP &gt; à 50% du capital social
+                    </b>
+                  </Typography>
+                  {CommentFP.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>Fond Propre</b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-fp"
+                        value={CommentFP}
+                        onChange={(e) => setCommentFP(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="fp"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioFP(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioFP(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>EBITDA &gt; 0</b>
+                  </Typography>
+                  {CommentEbitda.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>Si RN négatif, RN N-1 &gt; 0</b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-ebitda"
+                        value={CommentEbitda}
+                        onChange={(e) => setCommentEbitda(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="ebitda"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioEbitda(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioEbitda(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Ratio Dette Financière brute / EBITDA post transaction
+                      (définition BCE) &lt; 4
+                    </b>
+                  </Typography>
+                  {CommentRatio.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}></div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-ratio"
+                        value={CommentRatio}
+                        onChange={(e) => setCommentRatio(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="ratio"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRatio(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRatio(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      {" "}
+                      Pas de bris de covenants financiers depuis la mise en
+                      place des lignes (focus sur les covenants financiers)
+                    </b>
+                  </Typography>
+                  {CommentCovenantF.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}></div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-convenant"
+                        value={CommentCovenantF}
+                        onChange={(e) => setCommentCovenantF(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="convenant"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioCovenantF(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioCovenantF(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Prise effective de toutes les garanties sollicitées lors
+                      du dernier octroi
+                    </b>
+                  </Typography>
+                  {CommentOctroi.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}></div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-octroi"
+                        value={CommentOctroi}
+                        onChange={(e) => setCommentOctroi(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="octroi"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioOctroi(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioOctroi(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Saisie des autorisations dans le Core Banking System (ce
+                      qui suppose un respect des autres conditions d'octroi)
+                    </b>
+                  </Typography>
+                  {CommentCoreBank.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier si les précédentes lignes ont été magnétisées
+                          dans le CBS
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-core-bank"
+                        value={CommentCoreBank}
+                        onChange={(e) => setCommentCoreBank(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="core-bank"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioCoreBank(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioCoreBank(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Flux Moyens Mensuelles sur 12 mois glissants &gt; à
+                      l'autorisation de découvert (s'il y en a une)
+                    </b>
+                  </Typography>
+                  {CommentFluxMoyenMensuelle.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Vérifier la moyenne des flux confiés par le client sur
+                          les 12 derniers mois est en corrélation avec le
+                          découvert accordé (s'il y en a)
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-mensuelle"
+                        value={CommentFluxMoyenMensuelle}
+                        onChange={(e) =>
+                          setCommentFluxMoyenMensuelle(e.target.value)
+                        }
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="flux-mensuelle"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioFluxMoyenMensuelle(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioFluxMoyenMensuelle(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Absence de dépassement d'autorisation et/ou d'impayé en
+                      cours
+                    </b>
+                  </Typography>
+                  {CommentAImpaye.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Vérifier si le client n'est pas en irrégularité dans
+                          nos livres
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-ai-impayé"
+                        value={CommentAImpaye}
+                        onChange={(e) => setCommentAImpaye(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="ai-impaye"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioAImpaye(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioAImpaye(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Absence de dépassement d'autorisation et/ou d'impayé en
+                      cours
+                    </b>
+                  </Typography>
+                  {CommentAbDepass.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Vérifier si le client n'est pas en irrégularité dans
+                          nos livres
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-ab-depass"
+                        value={CommentAbDepass}
+                        onChange={(e) => setCommentAbDepass(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="ab-depasse"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioAbDepass(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioAbDepass(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Typologie de lignes inchangée sinon ajout de lignes mieux
+                      sécurisées
+                    </b>
+                  </Typography>
+                  {CommentTypologie.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Pas de modification de lignes sollicitées ou
+                          modification sollicitée en phase avec le fichier des
+                          annexes
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-typologie"
+                        value={CommentTypologie}
+                        onChange={(e) => setCommentTypologie(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="typologie"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioTypologie(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioTypologie(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Renouvellement des lignes à l'identique, voire
+                      augmentation dans la limite de l'évolution du CA
+                    </b>
+                  </Typography>
+                  {CommentRenouvel.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}></div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-renouvellement"
+                        value={CommentRenouvel}
+                        onChange={(e) => setCommentRenouvel(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="renouvellement"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRenouvel(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioRenouvel(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Absence de demande de mise en place de CMT (hors enveloppe
+                      MT/CB)
+                    </b>
+                  </Typography>
+                  {CommentMtCb.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          La présente demande de renouvellement ne doit pas
+                          contenir une demande de crédit d'investissement sauf
+                          s'il s'agit d'une enveloppe{" "}
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-mtcb"
+                        value={CommentMtCb}
+                        onChange={(e) => setCommentMtCb(e.target.value)}
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="mtcb"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioMtCb(e.target.value)}
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) => setRadioMtCb(e.target.value)}
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1c-content"
+                id="panel1c-header"
+              >
+                <div style={{ width: 500 }} className={classes.column}>
+                  <Typography className={classes.heading}>
+                    <b style={{ color: "blue" }}>
+                      Dernier MT significatif mis en place (hors enveloppe), en
+                      amortissement depuis plus de 12 mois
+                    </b>
+                  </Typography>
+                  {CommentMtSignificative.length > 0 ? (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "green" }}>
+                        <CommentIcon />
+                      </b>
+                    </Typography>
+                  ) : (
+                    <Typography className={classes.heading}>
+                      <b style={{ color: "red" }}>
+                        <SpeakerNotesOffIcon />
+                      </b>
+                    </Typography>
+                  )}
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div style={{ width: 500 }} className={classes.column}>
+                  <h3>
+                    <b>Descriptif</b>
+                  </h3>
+
+                  <ul>
+                    <li>
+                      <i>
+                        <b>
+                          Verifier le dernier CMT mis en place depuis plus de 12
+                          mois
+                        </b>{" "}
+                      </i>
+                    </li>
+                  </ul>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginRight: "20px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <Typography variant="caption">
+                    <form action="">
+                      {" "}
+                      <TextareaAutosize
+                        name="comment-mt"
+                        value={CommentMtSignificative}
+                        onChange={(e) =>
+                          setCommentMtSignificative(e.target.value)
+                        }
+                        style={{
+                          width: "97%",
+                          height: "80px",
+                          lineHeight: "1.2",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          margin: "8px",
+                        }}
+                        aria-label="empty textarea"
+                        placeholder="Commentaire"
+                      />
+                    </form>
+                  </Typography>
+                </div>
+                <Divider
+                  variant="inset"
+                  style={{ marginLeft: "22px" }}
+                  orientation="vertical"
+                  flexItem
+                />
+
+                <div
+                  style={{ width: 500 }}
+                  className={clsx(classes.column, classes.helper)}
+                >
+                  <div style={{ marginLeft: "22px" }}>
+                    {" "}
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="mt"
+                      >
+                        <FormControlLabel
+                          value={0}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioMtSignificative(e.target.value)
+                              }
+                              style={{ color: "red" }}
+                            />
+                          }
+                          label="Non Ok"
+                        />
+                        <FormControlLabel
+                          value={1}
+                          control={
+                            <Radio
+                              onChange={(e) =>
+                                setRadioMtSignificative(e.target.value)
+                              }
+                              style={{ color: "green" }}
+                            />
+                          }
+                          label="Ok"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          </div> 
+      </Widget>
+    </Grid>
+  );
+}
+{
+  "ELIGIBILITY": [
+    {
+      "key": "kyc_validity", 
+      "desc": "KYC valide et fiche de contrôle conformité dûment remplie", 
+      "title": "Validité KYC"
+    },
+    {
+      "key": "pcru", 
+      "desc": "PCRU local", 
+      "title": "PCRU local"
+    },
+    {
+      "key": "financial_compensation", 
+      "desc": "Contrepartie en S1", 
+      "title": "Contrepartie en S1"
+    },
+    {
+      "key": "local_cro", 
+      "desc": "Dans la LAD du CRO local", 
+      "title": "LAD du CRO local"
+    },
+    {
+      "key": "last_review", 
+      "desc": "La précédente revue était une revue complète", 
+      "title": "La précédente revue était une revue complète"
+    },
+    {
+      "key": "no_new_review_required", 
+      "desc": "A la précédente revue, absence de demande expresse par RISQ de faire une nouvelle revue complète", 
+      "title": "A la précédente revue, absence de demande expresse par RISQ de faire une nouvelle revue complète"
+    },
+    {
+      "key":  "financial_compensation_activity_nature", 
+      "desc":  "Nature d’activité de la contrepartie inchangée", 
+      "title":  "Nature d’activité de la contrepartie inchangée"
+    },
+    {
+      "key":  "sales_evolution", 
+      "desc":  "Evolution du CA sur 1 an comprise entre -10% et +20%", 
+      "title": "Evolution du CA sur 1 an comprise entre -10% et +20%"
+    },
+    {
+      "key":  "activity_sector",
+      "desc": "Pas d’évolution législative majeure sur le secteur d’activité",
+      "title": "Pas d’évolution législative majeure sur le secteur d’activité"
+    },
+    {
+      "key":  "shareholding_change",
+      "desc": "Aucun changement d’actionnariat engendrant une modification du contrôle de l’entreprise",
+      "title": "Aucun changement d’actionnariat engendrant une modification du contrôle de l’entreprise"
+    },
+    {
+      "key":  "no_occurred_bad_event",
+      "desc": "Absence d’événement significatif défavorable depuis la dernière revue",
+      "title": "Absence d’événement significatif défavorable depuis la dernière revue"
+    },
+    {
+      "key":  "financial_statement_availability",
+      "desc": "EF définitifs déposés à l’administration fiscale avec cachet d’un cabinet d’audit et/ou visa CAC lorsque ces éléments ont été produits lors du précédent dossier",
+      "title": "EF définitifs déposés à l’administration fiscale avec cachet d’un cabinet d’audit et/ou visa CAC lorsque ces éléments ont été produits lors du précédent dossier"
+    },
+    {
+      "key":  "funds_vs_social_capital",
+      "desc": "FP > à 50% du capital social",
+      "title": "FP > à 50% du capital social"
+    },
+    {
+      "key":  "ebitda",
+      "desc": "EBITDA > 0",
+      "title": "EBITDA > 0"
+    },
+    {
+      "key":  "net_income",
+      "desc": "Si RN négatif, RN N-1 >0",
+      "title": "Si RN négatif, RN N-1 >0"
+    },
+    {
+      "key":  "gross_financial_debt",
+      "desc": "Ratio Dette financière brute / EBITDA post transaction (définition BCE) < 4",
+      "title": "Ratio Dette financière brute / EBITDA post transaction (définition BCE) < 4"
+    },
+    {
+      "key":  "no_financial_covenants",
+      "desc": "Pas de bris de covenants financiers depuis la mise en place des lignes (focus sur les covenants financiers)",
+      "title": "Pas de bris de covenants financiers depuis la mise en place des lignes (focus sur les covenants financiers)"
+    },
+    {
+      "key":  "all_last_guarantees_taken",
+      "desc": "Prise effective de toutes les garanties sollicitées lors du dernier octroi (se référer à la fiche garanties)",
+      "title": "Prise effective de toutes les garanties sollicitées lors du dernier octroi (se référer à la fiche garanties)"
+    },
+    {
+      "key":  "authorization_in_cbs",
+      "desc": "Saisie des autorisations dans le Core Banking System (ce qui suppose un respect des autres conditions d’octroi)",
+      "title": "Saisie des autorisations dans le Core Banking System (ce qui suppose un respect des autres conditions d’octroi)"
+    },
+    {
+      "key":  "average_monthly_flow_vs_overdraft",
+      "desc": "Flux Moyens Mensuels sur 12 mois glissants > à l’autorisation de découvert (s’il y en a une) ",
+      "title": "Flux Moyens Mensuels sur 12 mois glissants > à l’autorisation de découvert (s’il y en a une) "
+    },
+    {
+      "key":  "no_overrun",
+      "desc": "Absence de dépassement d’autorisation et/ou d’impayé en cours",
+      "title": "Absence de dépassement d’autorisation et/ou d’impayé en cours"
+    },
+    {
+      "key":  "no_line_changed",
+      "desc": "Typologie de lignes inchangée sinon ajout de lignes mieux sécurisées",
+      "title": "Typologie de lignes inchangée sinon ajout de lignes mieux sécurisées"
+    },
+    {
+      "key":  "renew_line",
+      "desc": "Renouvellement des lignes à l’identique, voire augmentation dans la limite de l’évolution du CA",
+      "title": "Renouvellement des lignes à l’identique, voire augmentation dans la limite de l’évolution du CA"
+    },
+    {
+      "key":  "no_cmt_demand",
+      "desc": "Absence de demande de mise en place de CMT (hors enveloppe MT/CB)",
+      "title": "Absence de demande de mise en place de CMT (hors enveloppe MT/CB)"
+    },
+    {
+      "key":  "last_cmt_later_than_12month",
+      "desc": "Dernier MT significatif  mis en place (hors enveloppe), en amortissement depuis plus de 12 mois.",
+      "title": "Dernier MT significatif  mis en place (hors enveloppe), en amortissement depuis plus de 12 mois."
     }
-  };
+  ]
+}

@@ -1,13 +1,9 @@
-document.querySelectorAll("tbody tr").forEach((tr) => {
-  const tag = tr.cells[0]?.textContent?.replace("<=", "");
-  const value = tr.querySelector("input")?.value;
-  // Send the object using your preferred method, e.g.:
-  fetch('/api endpoint', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tag, value }),
-  });
-});
+ data = [...document.querySelectorAll("tbody tr")].map((tr) => {
+      return {
+        tag: tr.cells[0].innerText.replace("<=", ""),
+        value: tr.querySelector("input").value,
+      };
+    });
 
 import React, { useState } from "react";
 import {

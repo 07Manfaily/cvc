@@ -1,118 +1,910 @@
-import React from "react";
-import {
-  Grid,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Paper,
-  TableBody,
-  CircularProgress,
-} from "@material-ui/core";
-import useStyles from "../dashboard/styles";
-import Widget from "../../components/Widget/Widget";
-import { Alert, AlertTitle } from "@mui/lab";
-import numStr from "../../components/utils/convertFloate";
-import { format } from  "date-fns";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Grid, Box, Button, Drawer, Stack, Typography, Divider, IconButton } from "@mui/material";
+import Graph from "react-graph-vis";
+import DataTable from "react-data-table-component";
+import Modal from "@mui/material/Modal";
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import Slider from '@mui/material/Slider';
+import MenuItem from '@mui/material/MenuItem';
+import FilterComponent from "../utils/filter";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import SendIcon from '@mui/icons-material/Send';
+import { getCookie } from '../utils/getCookies'
+import { Vortex } from 'react-loader-spinner';
+import { FidgetSpinner } from 'react-loader-spinner';
+import FilterAltTwoToneIcon from '@mui/icons-material/FilterAltTwoTone';
+import FilterAltOffTwoToneIcon from '@mui/icons-material/FilterAltOffTwoTone';
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import Iconify from '../components/iconify';
+import Scrollbar from '../components/scrollbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { FixedSizeList } from 'react-window';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { fNumber } from "src/utils/formatNumber";
+export default function RiskChaine() {
+    const style = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 1170,
+
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    };
+
+    const [open, setOpen] = React.useState(false);
+    const [ope, setOpe] = React.useState(false);
+    const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+    const [filterText, setFilterText] = useState("");
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const handleClos = () => setOpe(false);
+    const [clientCode, setClientCode] = React.useState("")
+    const [weight, setWeight] = React.useState(1)
+    const [direction, setDirection] = React.useState(1);
+    const [level, setLevel] = React.useState(2);
+    const [riskCategory, setRiskCategory] = React.useState([]);
+    const [slide, setSlide] = React.useState(1);
+    const [graphe, setGraphe] = React.useState([])
+    const [node, setNode] = React.useState({})
+    const [loading, setLoading] = useState(false);
+    const [loadtable, setLoadTable] = useState(true);
+    const [alert, setAlert] = useState(false);
+    const [selectedEdge, setSelectedEdge] = useState(null);
+    const [transaction, setTransaction] = useState([]);
+    const [column, setColumn] = useState([]);
+    const [emetteur, setEmetteur] = useState();
+    const [receveur, setReceveur] = useState();
+    const [balance, setBalance] = useState();
+    const [LoadDownload, setLoadDownload] = useState(false);
+    const [LoadDownloadGraph, setLoadDownloadGraph] = useState(false);
+    const [checkedItems, setCheckedItems] = useState({});
+    const [tag, setTag] = useState("");
+    const [message, setMessage] = useState("")
+    
 
 
-const BeforeDescriptif = ({ props }) => {
-  var classes = useStyles();
-  const formDate = (MyDate) =>{
-    const date = new Date(MyDate);
-    return format(date, "dd/MM/yyyy")
-  }
-  return (
-    <Grid container item xs={12} rowSpacing={2} spacing={2}>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={12}>
-          <Widget
-            title="Autorisations avant demande"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="caption table">
-                <caption>
-                  {" "}
-                </caption>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>Nature ligne</b>
-                    </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>Numero compte</b>
-                    </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>Autorisation</b>
-                    </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>En cours</b>
-                    </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>Devise</b>
-                    </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
-                      <b>Delais de Maturité</b>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {props.load ? (
-                   <CircularProgress thickness={2} size={80} />
-                  ) : props.before !== undefined ? (
-                    props.before.map((avant) => (
-                      <TableRow key={avant.id}>
-                
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#455a64" }}> {avant.title}</b>
-                        </TableCell>
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#455a64" }}>
-                            {" "}
-                            {avant.account_number}
-                          </b>
-                        </TableCell>
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#455a64" }}>
-                            {numStr(avant.autorisation_amount) ? numStr(avant.autorisation_amount) : "0"}
-                          </b>
-                        </TableCell>
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#455a64" }}>
-                            {numStr(avant.outstanding_amount)}{" "}
-                          </b>
-                        </TableCell>
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#dd2c00" }}>{avant.devise} </b>
-                        </TableCell>
-                        <TableCell align="left" style={{ fontSize: "12px" }}>
-                          {" "}
-                          <b style={{ color: "#455a64" }}>
-                            {avant.maturity_date ? formDate(avant.maturity_date):"------"}
-                          </b>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ):     <Alert severity="error">
-                  <AlertTitle>Error</AlertTitle>
-                  <strong> Sorry!! Aucune information liée au client</strong>
-                </Alert>}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Widget>
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-};
-export default BeforeDescriptif;
+
+    // Fonction pour gérer le changement de l'état des cases à cocher
+    const handleCheckboxChange = (key) => {
+        setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
+    };
+
+    const handleChangeCodeClient = (event) => {
+        setClientCode(event.target.value);
+    };
+    const handleChangeDirection = (event) => {
+        setDirection(event.target.value);
+    };
+
+    const handleChangeLevel = (event) => {
+        setLevel(event.target.value);
+    };
+
+    const handleChangeWeight = (event) => {
+
+        setWeight(event.target.value);
+
+    };
+    const handleChangeRiskCategory = (event) => {
+        setRiskCategory([...riskCategory, event.target.value]);
+    };
+    const handleChangeSlide = (event) => {
+        setSlide(event.target.value);
+    };
+
+    const fetchGraph = async () => {
+        setLoading(true)
+        handleClose()
+        try {
+            const response = await axios.post("/api/graph",
+                {
+                    "client_code_id": clientCode,
+                    "direction": direction,
+                    "ftop_value": weight ? 0 : 1,
+                    "ftransaction_weight": weight ? 1 : 0,
+                    "fvalue": slide,
+                    "level": level,
+                    "risk_category": riskCategory
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                },
+
+            );
+
+            if (response.status === 200) {
+                setLoading(false)
+                setGraphe(response.data.data)
+                setClientCode("")
+                setWeight(1)
+                setDirection(1)
+                setLevel(2)
+                setRiskCategory([])
+                setSlide(1)
+                console.log("reponse", response)
+            }
+            if (response.status === 200 && response.data.data.length > 0 && response.data.balance != null) {
+                setBalance(response.data.balance.mean)
+            } else {
+                setBalance(0)
+            }
+
+            if (response.status === 200 && response.data.data.length === 0) {
+                setAlert(true)
+                setMessage("Aucune transaction disponible pour ce client veuillez saisir un autre code client !")
+
+            } else {
+                setAlert(false)
+                setMessage("")
+            }
+            const noeuds = new Set(response.data.data.map((rel) => {
+                return [
+                    rel.emitter_code_id,
+                    rel.receiver_code_id
+                ]
+            }).reduce((a, b) => a.concat(b), []
+
+            ))
+            const nodeInfos = {}
+            response.data.data.forEach((relation) => {
+                ["receiver", "emitter"].forEach((_type) => {
+                    let _id = _type + "_code_id";
+                    _id = relation[_id]
+                    let info = nodeInfos[_id];
+                    if (!info) {
+                        info = {};
+                        Object.keys(relation).forEach(k => {
+                            if (k.startsWith(_type)) {
+                                let field = k.split(_type + "_").slice(1).join(_type);
+                                info[field] = relation[k];
+                            }
+                        });
+                        nodeInfos[_id] = info;
+                    }
+                })
+            })
+            setNode(nodeInfos)
+            console.log("nodeInfos:", nodeInfos)
+            // setNode(noeuds);
+            console.log("les nodes du graphe", noeuds)
+        }
+        catch (error) {
+            setLoading(false)
+            setAlert(true)
+
+            setMessage(error.message)
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+    const getTransaction = async (emitter, receiver, tag) => {
+
+        try {
+            setLoadTable(true)
+            const response = await axios.post(
+                "/api/transaction",
+                {
+                    "emitter": emitter,
+                    "receiver": receiver,
+                    "cash_transaction": tag
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    }
+                }
+            );
+
+            if (response.status === 200) {
+                setLoadTable(false)
+            }
+            const column = response.data.columns;
+            const transaction = response.data.transactions;
+            setColumn(column)
+            setTransaction(transaction)
+
+            console.log("column:", column);
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+
+    const downloadGrapheFile = async () => {
+        try {
+            setLoadDownloadGraph(true)
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": direction === 1 ? null : clientCode,
+                    "receiver": direction === -1 ? null : clientCode
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    },
+                    responseType: 'blob'
+                }
+            );
+
+
+            if (response.status === 200) {
+                setLoadDownloadGraph(false)
+                var file = window.URL.createObjectURL(response.data);
+                window.location.assign(file);
+            }
+
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+    const downloadFile = async () => {
+        try {
+            setLoadDownload(true)
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": emetteur,
+                    "receiver": receveur,
+                    "cash_transaction": tag === "deposit" ? 1 : tag === "withdrawal" ? -1 : 0
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    },
+                    responseType: 'blob'
+                }
+            );
+
+            console.log("tag download", tag)
+            if (response.status === 200) {
+                setLoadDownload(false)
+                var file = window.URL.createObjectURL(response.data);
+
+                window.location.assign(file);
+            }
+
+
+
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }
+
+
+    function returnColumn() {
+
+        return (
+
+            column.map((col) => (
+                <ListItem key={col.key} component="div" disablePadding>
+                    <Checkbox
+                        checked={checkedItems[col.key] || false}
+                        onChange={() => handleCheckboxChange(col.key)}
+                    />
+                    <ListItemText primary={col.to_display} />
+                </ListItem>
+            )));
+
+
+
+    }
+
+    const nodes = Object.values(node).map((n) => {
+        return {
+            id: n.code_id,
+            label: n.client_name,
+            title: n.client_name,
+            shape: n.code_id === parseInt(clientCode, 10) ? "star" : "dot",
+            color: {
+                border: n.risk_category === 1 ? "#3D8E42" : n.risk_category === 2 ? "#A49F00" : n.risk_category === 3 ? "#FB0400" : n.risk_category === 4 ? "gray" : n.risk_category === null ? "gray" : "white",
+                background: n.risk_category === 1 ? "#3D8E42" : n.risk_category === 2 ? "#A49F00" : n.risk_category === 3 ? "#FB0400" : n.risk_category === 4 ? "gray" : n.risk_category === null ? "gray" : "white",
+                highlight: {
+                    background: '#005B89',
+
+                }
+            },
+            size: n.code_id === parseInt(clientCode, 10) ? 16 : 14,
+
+
+
+        }
+    })
+
+
+
+    console.log("nodesss", nodes, "real node", node)
+
+
+    const edges = graphe.map((i) => {
+        return {
+            from: i.emitter_code_id,
+            to: i.receiver_code_id,
+            color: {
+                inherit: 'from',
+            },
+            smooth: {
+                enabled: true,
+                type: "continuous",
+                roundness: 0.5
+            },
+            tag: "normal"
+        }
+    }).concat(Object.values(node).filter(n => n.number_deposit > 0).map((n) => {
+        return {
+            "from": n.code_id,
+            "to": n.code_id,
+            "label": n.cash_deposit,
+            tag: "deposit",
+            width: 2,
+            hoverWidth: 5,
+    
+       
+       
+            // arrows: {
+            //     to: {
+            //         enabled: true,
+            //         scaleFactor: 2,
+            //     }
+            // },
+        
+            // arrowScaleFactor: 1,
+            // lineWidth: 12,
+            color: "orange",
+        
+        }
+    })).concat(Object.values(node).filter(n => n.number_withdrawal > 0).map((n) => {
+        return {
+            "from": n.code_id,
+            "to": n.code_id,
+            "label": n.cash_withdrawal,
+            tag: "withdrawal",
+            width: 2,
+            color: "blue",
+        }
+    }))
+
+    const graph = {
+        nodes,
+        edges
+    };
+
+
+    const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const clickedEdge = edges.find((_edge) => _edge.id === edge[0]);
+            if (clickedEdge.tag === "deposit") {
+                // Arête de dépôt
+                getTransaction(clickedEdge.from, clickedEdge.to, 1);
+            } else if (clickedEdge.tag === "withdrawal") {
+                // Arête de retrait
+                getTransaction(clickedEdge.from, clickedEdge.to, -1);
+            } else {
+                // Arête normale
+                getTransaction(clickedEdge.from, clickedEdge.to, 0);
+            }
+            setEmetteur(clickedEdge.from);
+            setReceveur(clickedEdge.to);
+            setTag(clickedEdge.tag)
+            console.log("valeur from", clickedEdge.from);
+            console.log(" tag", clickedEdge.tag);
+
+        }
+    };
+
+
+
+    // const handleEdgeClick = (event) => {
+    //     const edge = event.edges;
+    //     if (edge.length > 0) {
+    //         setOpe(true)
+    //         const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+    //         const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+    //         getTransaction(emet, receiv)
+    //         setEmetteur(emet)
+    //         setReceveur(receiv)
+    //         console.log("valeur:", emet)
+
+    //     }
+    // };
+
+    const events = {
+        selectEdge: handleEdgeClick,
+    };
+
+    const options = {
+        nodes: {
+            font: {
+                size: 12,
+                face: "verdana",
+                color: "black"
+            },
+        },
+
+        physics: {
+            enabled: false,
+            forceAtlas2Based: {
+                // gravitationalConstant: -50,
+                // centralGravity: 0.005,
+                // springLength: 50,
+                springConstant: 0.15,
+            },
+            // maxVelocity: 176,
+            solver: "forceAtlas2Based",
+            // timestep: 0.35,
+            stabilization: { iterations: 900 },
+        },
+
+        interaction: { hover: true },
+        edges: {
+            color: {
+                hover: "black",
+                opacity: 1.0,
+            },
+         
+                smooth: {
+                  type: "curvedCCW",
+                  forceDirection: "none",
+                  roundness: 1
+                }
+              
+
+        },
+        height: "100%",
+        width: "100%"
+
+    };
+
+    if (alert) {
+        toast.warn(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark"
+        });
+        setAlert(false)
+    }
+
+    //     { 
+    //         if (checkedItems[col.key])
+    //         { return null } 
+    //         return row[col["key"]]
+    // }
+    // }
+
+    const columns = column.map((col) => {
+        return {
+            name: col.to_display,
+            selector: (row) => row[col.key],
+            omit: checkedItems[col.key] ? true : false
+
+
+        };
+    });
+
+    const filteredColumns = columns.filter(col => !checkedItems[col.key]);
+    const subHeaderComponentMemo = (
+        <FilterComponent
+            onFilter={(e) => setFilterText(e.target.value)}
+            onClear={() => setFilterText("")}
+            filterText={filterText}
+        />
+    );
+
+    const filteredItems = transaction ? transaction.filter((item) =>
+        Object.values(item).some(
+            (value) =>
+                typeof value === "string" &&
+                value.toLowerCase().includes(filterText.toLowerCase())
+        )
+    ) : [];
+
+    return (
+        <>
+            {/* Modal for transaction */}
+            <Modal
+                open={ope}
+                onClose={handleClos}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                    >
+                        <Accordion>
+                            <AccordionSummary
+
+                                aria-controls="panel3-content"
+                                id="panel3-header"
+                            >
+                                Filtrer par colonne <FilterListIcon />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <FixedSizeList
+                                    height={200}
+                                    width={300}
+                                    itemSize={46}
+                                    itemCount={1}
+                                    overscanCount={5}
+                                >
+                                    {returnColumn}
+                                </FixedSizeList>
+                            </AccordionDetails>
+
+                        </Accordion>
+                        <LoadingButton
+                            loading={LoadDownload}
+                            loadingPosition="start"
+                            variant="outlined"
+                            onClick={downloadFile} style={{ backgroundColor: "#274e13" }}><FileDownloadIcon style={{ color: "white" }} />
+                        </LoadingButton>
+
+
+                        <Grid
+                            sx={{ mt: 7 }}
+                            container
+                            direction="column"
+                            justifyContent="space-between"
+                            alignItems="flex-start"
+                        >
+                            <DataTable
+                                title="Détails des transactions"
+                                columns={filteredColumns}
+                                data={filteredItems}
+                                pagination
+
+                                progressPending={loadtable}
+                                progressComponent={<FidgetSpinner
+                                    backgroundColor="black"
+                                    ballColors={["#EB2400", "red", "red"]}
+                                    visible={loadtable}
+                                    height="70"
+                                    width="70"
+                                    ariaLabel="fidget-spinner-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="fidget-spinner-wrapper"
+
+                                />}
+                                paginationResetDefaultPage={resetPaginationToggle}
+                                subHeader
+                                fixedHeader
+                                fixedHeaderScrollHeight="500px"
+                                subHeaderComponent={subHeaderComponentMemo}
+
+                            />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+
+            <Drawer
+                anchor="right"
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: { width: 370, border: 'none', overflow: 'hidden' },
+                }}
+            >
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1, py: 2 }}>
+                    <Typography variant="subtitle1" sx={{ ml: 1 }}>
+                        Paramettre de recherche
+                    </Typography>
+                    <IconButton onClick={handleClose}>
+                        <Iconify icon="eva:close-fill" />
+                    </IconButton>
+                </Stack>
+
+                <Divider />
+
+                <Scrollbar>
+                    <Stack spacing={8} sx={{ p: 3 }}>
+
+
+                        <TextField sx={{ minWidth: 270 }}
+                            fullWidth label="Code client"
+                            id="fullWidth"
+                            size="small"
+                            value={clientCode}
+                            onChange={handleChangeCodeClient}
+                        />
+
+                        <Grid >
+                            <p>Type client</p>
+                            <Grid container
+                                direction="row"
+                                justifyContent="space-evenly"
+                                alignItems="flex-start">
+                                <b>S1 <Checkbox onChange={handleChangeRiskCategory} value={1} color="success" /></b>
+                                <b>S2 <Checkbox onChange={handleChangeRiskCategory} value={2} color="warning" /></b>
+                                <b>S3 <Checkbox onChange={handleChangeRiskCategory} value={3} color="error" /></b>
+                                <b>hors <Checkbox onChange={handleChangeRiskCategory} value={4} style={{ color: "gray" }} /></b>
+
+                            </Grid>
+                        </Grid>
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Type d'opération</InputLabel>
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={direction}
+                                label="Age"
+                                onChange={handleChangeDirection}
+                            >
+                                <MenuItem value={1}>Credit</MenuItem>
+                                <MenuItem value={-1}>Debit</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Profondeur</InputLabel>
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={level}
+                                label="Niveau"
+                                onChange={handleChangeLevel}
+                            >
+                                <MenuItem value={1}>Niveau1</MenuItem>
+                                <MenuItem value={2}>Niveau2</MenuItem>
+                                <MenuItem value={3}>Niveau3</MenuItem>
+                                <MenuItem value={4}>Niveau4</MenuItem>
+
+                            </Select>
+                        </FormControl>
+
+
+                        <FormControl sx={{ m: 1, minWidth: 270 }} size="small">
+                            <InputLabel id="demo-select-small-label">Poids de la transaction</InputLabel>
+
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={weight}
+                                label="Niveau"
+                                onChange={handleChangeWeight}
+                            >
+                                <MenuItem value={1}>Poids de la transaction</MenuItem>
+                                <MenuItem value={0}>Top valeur</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+
+                        <Box> <Typography id="non-linear-slider" gutterBottom>
+
+                            Valeur: <b style={{ color: "#09954A" }}><i>{slide} {weight === 1 ? "%" : ""}</i></b>
+                        </Typography><Slider sx={{ height: 40, color: "black" }}
+                            defaultValue={1}
+                            marks
+                            min={1}
+                            onChange={handleChangeSlide}
+                            value={slide}
+                            max={100} aria-label="Default" valueLabelDisplay="auto" />
+                        </Box>
+
+
+                        <Button onClick={fetchGraph} style={{ backgroundColor: '#000000', width: 300 }} variant="contained" endIcon={<SendIcon />}>
+                            <b style={{ color: "red" }}>Lancer</b>
+                        </Button>
+                    </Stack>
+                </Scrollbar>
+
+
+
+
+
+            </Drawer>
+
+
+
+            <Grid
+                container
+                direction="row"
+                justifyContent="CENTER"
+                alignItems="flex-start"
+                style={{ position: "fixed", top: 'calc(100% / 7)', right: 'calc(100% / 4.2)', zIndex: 100 }}
+
+            >
+                {balance != null ? <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+                    Solde du client : <b style={{ color: "red" }}>{fNumber(balance).replace(",", " ")} </b> <b>XOF</b>
+                </Box> : ""}
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="flex-start"
+                    style={{ position: "fixed", top: 'calc(100% / 7)', right: 'calc(100% / 20)', zIndex: 100 }}
+                >
+                    {graphe.length > 0 ? <LoadingButton
+                        loading={LoadDownloadGraph}
+                        loadingPosition="start"
+                        variant="outlined"
+                        onClick={downloadGrapheFile} style={{ backgroundColor: "#274e13" }}><FileDownloadIcon style={{ color: "white" }} />
+                    </LoadingButton> : ""}
+                    <Button sx={{ ml: 2 }} variant="contained" style={{ backgroundColor: "black" }} onClick={handleOpen}>
+                        {open ? <FilterAltOffTwoToneIcon style={{ color: "red" }} /> : <FilterAltTwoToneIcon style={{ color: "red", fontSize: 25 }} />}
+                    </Button>
+
+                </Grid>
+            </Grid>
+
+
+
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Box
+                        sx={{
+                            // bgcolor: "background.paper",
+                            bgcolor: "#ddd",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                            height: "100vh"
+                        }}
+                        id="network"
+                    >
+                        {selectedEdge ?
+
+                            <Grid
+                                container
+                                direction="column"
+                                justifyContent="flex-start"
+                                alignItems="baseline"
+                            >
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="flex-start"
+                                >
+                                    <Grid>
+                                        to :
+                                        <b sx={{ mt: 4, mb: 2 }}
+                                            style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                                            {`${selectedEdge.to} `}
+                                        </b>
+                                    </Grid>
+                                    <Grid>
+                                        from : <b sx={{ ml: 4, mb: 2 }}
+                                            style={{ fontSize: "1em", color: "orange", fontFamily: 'Montserrat' }} >
+                                            {` ${selectedEdge.from}`}
+                                        </b>
+                                    </Grid>
+
+
+                                </Grid>
+                            </Grid> : ""
+                        }
+
+
+                        <ToastContainer position="top-center"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="dark"
+                        />
+
+                        {loading ?
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Vortex
+                                    visible={loading}
+                                    height="80"
+                                    width="200"
+                                    ariaLabel="vortex-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="vortex-wrapper"
+                                    colors={['red', 'green', 'blue', 'yellow', 'orange', 'black']}
+                                />
+                            </Grid> :
+
+
+                            <Graph graph={graph} options={options} events={events} />}
+                    </Box>
+                    <Box
+                        sx={{
+                            mt: 5,
+
+                            bgcolor: "background.paper",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                        }}
+                    >
+
+                        <center>
+                            <b style={{ fontFamily: 'Montserrat' }}>
+                                Légende
+                            </b>
+                        </center>
+                        <Grid container sx={{ mt: 4, mb: 4 }}>
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="space-around"
+                                alignItems="flex-start"
+                            >
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <StarOutlineIcon />
+                                    <b>Forme du client recherché</b>
+
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "green" }} />
+                                    <b>Client S1</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "#A49F00" }} />
+                                    <b>Client S2</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "red" }} />
+                                    <b>Client S3</b>
+                                </Grid>
+
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "gray" }} />
+                                    <b>Client Hors SGCI</b>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+
+
+            </Grid >
+        </>
+    );
+}

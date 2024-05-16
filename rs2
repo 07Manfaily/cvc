@@ -1,9 +1,9 @@
- data = [...document.querySelectorAll("tbody tr")].map((tr) => {
-      return {
-        tag: tr.cells[0].innerText.replace("<=", ""),
-        value: tr.querySelector("input").value,
-      };
-    });
+const data = {};
+[...document.querySelectorAll("tbody tr")].forEach((tr, index) => {
+    const tag = tr.cells[0].innerText.replace("<=", "");
+    const value = tr.querySelector("input").value;
+    data[tag] = value;
+});
 
 import React, { useState } from "react";
 import {

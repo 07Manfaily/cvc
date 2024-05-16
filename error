@@ -1,3 +1,26 @@
+const updateRow = (row) => {
+    setEditRow(row);
+    setOpen(true);
+    setNature(row.title); // Met à jour l'état avec la nature de ligne de la ligne à éditer
+    setCompte(row.account_number); // Met à jour l'état avec le numéro de compte de la ligne à éditer
+    setAutorisation(row.autorisation_amount); // Met à jour l'état avec l'autorisation de la ligne à éditer
+    setEncour(row.outstanding_amount); // Met à jour l'état avec l'en cours de la ligne à éditer
+    setDevise(row.devise); // Met à jour l'état avec la devise de la ligne à éditer
+    setDelais(row.maturity_date); // Met à jour l'état avec le délai de maturité de la ligne à éditer
+};
+
+const handleModalOpen = () => {
+    setEditRow(null);
+    setOpen(true);
+    setNature(""); // Réinitialise l'état de la nature de ligne
+    setCompte(""); // Réinitialise l'état du numéro de compte
+    setAutorisation(""); // Réinitialise l'état de l'autorisation
+    setEncour(""); // Réinitialise l'état de l'en cours
+    setDevise(""); // Réinitialise l'état de la devise
+    setDelais(""); // Réinitialise l'état du délai de maturité
+};
+
+
 import React, { useState } from "react";
 import {
     Grid,

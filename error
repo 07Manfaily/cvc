@@ -1,87 +1,367 @@
-import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Card, Stack, Grid, Box, Button } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
-import FilterComponent from "../utils/filter";
-import { fNumber } from "../utils/formatNumber";
-import { Puff} from 'react-loader-spinner';
+import React, { useState } from "react";
+import {
+    Grid,
+    Button,
+    CircularProgress,
+    TableCell,
+    TableBody,
+    TextField,
+    TableContainer,
+    Table,
+    Paper,
+    TableHead,
+    TableRow,
+} from "@material-ui/core";
+import { Alert, AlertTitle } from "@mui/lab";
+import Widget from "../../components/Widget/Widget";
+import numStr from "../../components/utils/convertFloate";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import { Audio } from "react-loader-spinner";
+import { makeStyles } from "@material-ui/core/styles";
+import { format } from "date-fns";
 
+export default function AfterDescriptif({ props }) {
+    const useStyles = makeStyles((theme) => ({
+        modal: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        paper: {
+            backgroundColor: theme.palette.background.paper,
+            border: "1px solid #4caf50",
+            boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+        },
+        root: {
+            "& > *": {
+                margin: theme.spacing(1),
+                width: "25ch",
+            },
+        },
+    }));
 
+    const classes = useStyles();
 
-const Risque = () => {
-  const navigate = useNavigate();
-  const [client, setClient] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [editRow, setEditRow] = useState(null);
+    const [data, setData] = useState(props.before);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("/api/risk/get-clients");
-        if (response.status === 200) {
-          setLoading(false);
-          const data = response.data.data;
-          const dataset = data[Object.keys(data)[0]].value.map((_, line) => {
-            const row = {};
-            Object.keys(data).forEach((col) => {
-              row[col] = data[col].value[line];
-            });
-            return row;
-          });
-          setClient(dataset);
-        }
-      } catch (error) {
-        setLoading(false);
-        console.log("Erreur lors du traitement:", error);
-      }
+    const handleModalOpen = () => {
+        setEditRow(null);
+        setOpen(true);
     };
-    fetchData();
-  }, []);
 
-  // Définir les colonnes dynamiquement
-  const columns = client.length > 0 ? Object.keys(client[0]).map(col => ({
-    name: col,
-    selector: row => row[col],
-    // Définir maxWidth ou autres propriétés selon vos besoins
-  })) : [];
+    const updateRow = (row) => {
+        setEditRow(row);
+        setOpen(true);
+    };
 
-  const handleActionClick = (row) => {
-    navigate(`/dashboard/chaine-de-valeur/${row.FINAL_CLUSTERS}/2`, { replace: true });
-  };
+    const deleteRow = (row) => {
+        const newData = data.filter((line) => line !== row);
+        setData(newData);
+        setOpen(false);
+    };
 
-  return (
-    <>
-      <Card>
-        {loading ? (
-          <Puff visible={true} height="80" width="80" color="red" ariaLabel="puff-loading" wrapperStyle={{}} wrapperClass="" />
-        ) : (
-          <DataTable
-            title="Liste des clients en dégradation"
-            columns={columns.concat({
-              name: "Action",
-              button: true,
-              cell: (row) => (
-                <Button
-                  style={{ color: "black" }}
-                  onClick={() => handleActionClick(row)}
-                >
-                  <VisibilityIcon style={{ color: "#495F52", fontSize: 30 }} />
-                </Button>
-              ),
-            })}
-            data={client}
-            pagination
-            subHeader
-            fixedHeader
-            fixedHeaderScrollHeight="500px"
-          />
-        )}
-      </Card>
-    </>
-  );
-};
+    const handleModalClose = () => {
+        setOpen(false);
+        setEditRow(null);
+    };
 
-export default Risque;
+    const [nature, setNature] = useState("");
+    const [compte, setCompte] = useState("");
+    const [autorisation, setAutorisation] = useState("");
+    const [encour, setEncour] = useState("");
+    const [devise, setDevise] = useState("");
+    const [delais, setDelais] = useState("");
+
+    const formDate = (MyDate) => {
+        const date = new Date(MyDate);
+        return format(date, "dd/MM/yyyy");
+    };
+    const handleChangeNatureLigne = (e) => {
+        setNature(e.target.value);
+    };
+
+    const handleChangeNumberCompte = (e) => {
+        setCompte(e.target.value);
+    };
+
+    const handleChangeAutorisation = (e) => {
+        setAutorisation(e.target.value);
+    };
+
+    const handleChangeEncour = (e) => {
+        setEncour(e.target.value);
+    };
+
+    const handleChangeDevise = (e) => {
+        setDevise(e.target.value);
+    };
+
+    const handleChangeMaturityDate = (e) => {
+        setDelais(e.target.value);
+    };
+
+    const handleFormSubmit = (values) => {
+        const parsedValues = {
+            matricule: props.clientData.number_client,
+            title: values["Nature de ligne"],
+            account_number: values["Numero compte"],
+            autorisation_amount: numStr(values["Autorisation"]) || 0,
+            outstanding_amount: numStr(values["En cours"]) || 0,
+            devise: values["Devise"],
+            maturity_date: values["Délais de maturité"],
+        };
+
+        if (editRow) {
+            const newData = data.map((line) =>
+                line === editRow ? { ...line, ...parsedValues } : line,
+            );
+            setData(newData);
+        } else {
+            setData([...data, parsedValues]);
+        }
+        handleModalClose();
+    };
+
+    return (
+        <Grid container item xs={12} rowSpacing={2} spacing={2}>
+            <Grid container spacing={4}>
+                <Grid item xs={12} md={12}>
+                    <Widget
+                        title="Autorisations avant demande"
+                        upperTitle
+                        className={classes.card}
+                        bodyClass={classes.fullHeightBody}
+                    >
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="caption table">
+                                <caption>
+                                    <Button
+                                        onClick={handleModalOpen}
+                                        variant="contained"
+                                        style={{
+                                            color: "white",
+                                            backgroundColor: "#ff5722",
+                                        }}
+                                    >
+                                        <AddBoxIcon style={{ color: "white" }} /> Ajouter une
+                                        ligne
+                                    </Button>
+                                </caption>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Nature ligne</b>
+                                        </TableCell>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Numero compte</b>
+                                        </TableCell>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Autorisation</b>
+                                        </TableCell>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>En cours</b>
+                                        </TableCell>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Devise</b>
+                                        </TableCell>
+
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Delais de Maturité</b>
+                                        </TableCell>
+                                        <TableCell align="left" style={{ fontSize: "12px" }}>
+                                            <b>Action</b>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {props.load ? (
+                                        <TableRow>
+                                            <TableCell colSpan={7} align="center">
+                                                <CircularProgress thickness={2} size={80} />
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : data !== undefined ? (
+                                        data.map((avant) => (
+                                            <TableRow key={avant.id}>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#455a64" }}> {avant.title}</b>
+                                                </TableCell>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#455a64" }}>
+                                                        {" "}
+                                                        {avant.account_number}
+                                                    </b>
+                                                </TableCell>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#455a64" }}>
+                                                        {numStr(avant.autorisation_amount)
+                                                            ? numStr(avant.autorisation_amount)
+                                                            : "0"}
+                                                    </b>
+                                                </TableCell>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#455a64" }}>
+                                                        {numStr(avant.outstanding_amount)}{" "}
+                                                    </b>
+                                                </TableCell>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#dd2c00" }}>{avant.devise} </b>
+                                                </TableCell>
+
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    {" "}
+                                                    <b style={{ color: "#455a64" }}>
+                                                        {avant.maturity_date
+                                                            ? formDate(avant.maturity_date)
+                                                            : "aucune date"}
+                                                    </b>
+                                                </TableCell>
+                                                <TableCell align="left" style={{ fontSize: "12px" }}>
+                                                    <Button onClick={() => deleteRow(avant)}>
+                                                        <DeleteIcon style={{ color: "red" }} />
+                                                    </Button>
+                                                    <Button onClick={() => updateRow(avant)}>
+                                                        <EditIcon style={{ color: "green" }} />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={7} align="center">
+                                                <Alert severity="error">
+                                                    <AlertTitle>Error</AlertTitle>
+                                                    <strong>
+                                                        {" "}
+                                                        Sorry!! Aucune information liée au client
+                                                    </strong>
+                                                </Alert>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={open}
+                            onClose={handleModalClose}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                                timeout: 500,
+                            }}
+                        >
+                            <Fade in={open}>
+                                <div className={classes.paper}>
+                                    <h2>
+                                        {editRow
+                                            ? "Modification de la ligne " + "" + editRow.title
+                                            : "Ajouter une nouvelle ligne"}
+                                    </h2>
+                                    <form
+                                        className={classes.root}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.target);
+                                            const val = {};
+                                            formData.forEach((value, key) => {
+                                                val[key] = value;
+                                            });
+                                            handleFormSubmit(val);
+                                        }}
+                                    >
+                                        <TextField
+                                            name="Nature de ligne"
+                                            id="outlined-basic"
+                                            label="Nature de ligne"
+                                            defaultValue={editRow ? editRow.title : ""}
+                                            variant="outlined"
+                                            required="true"
+                                            value={nature}
+                                            onChange={handleChangeNatureLigne}
+                                        />
+                                        <TextField
+                                            id="outlined-basic"
+                                            name="Numero compte"
+                                            label="Numero compte"
+                                            defaultValue={editRow ? editRow.account_number : ""}
+                                            variant="outlined"
+                                            required="true"
+                                            value={compte}
+                                            onChange={handleChangeNumberCompte}
+                                        />
+                                        <TextField
+                                            id="outlined-basic"
+                                            name="Autorisation"
+                                            label="Autorisation"
+                                            defaultValue={
+                                                editRow ? editRow.autorisation_amount : ""
+                                            }
+                                            variant="outlined"
+                                            required="true"
+                                            value={autorisation}
+                                            onChange={handleChangeAutorisation}
+                                        />
+                                        <TextField
+                                            id="outlined-basic"
+                                            name="En cours"
+                                            label="En cours"
+                                            variant="outlined"
+                                            defaultValue={editRow ? editRow.outstanding_amount : ""}
+                                            required="true"
+                                            value={encour}
+                                            onChange={handleChangeEncour}
+                                        />
+                                        <TextField
+                                            id="outlined-basic"
+                                            name="Devise"
+                                            label="Devise"
+                                            variant="outlined"
+                                            defaultValue={editRow ? editRow.devise : ""}
+                                            required="true"
+                                            value={devise}
+                                            onChange={handleChangeDevise}
+                                        />
+                                        <TextField
+                                            id="outlined-basic"
+                                            name="Délais de maturité"
+                                            required="true"
+                                            type="date"
+                                            defaultValue={editRow ? editRow.maturity_date : ""}
+                                            variant="outlined"
+                                            value={delais}
+                                            onChange={handleChangeMaturityDate}
+                                        />
+                                        <Button
+                                            style={{ background: "#33691e", color: "white" }}
+                                            type="submit"
+                                            variant="contained"
+                                        >
+                                            {editRow ? "Modifier" : "Ajouter"}
+                                        </Button>
+                                    </form>
+                                </div>
+                            </Fade>
+                        </Modal>
+                    </Widget>
+                </Grid>
+            </Grid>
+        </Grid>
+    );
+}

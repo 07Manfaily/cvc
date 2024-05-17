@@ -1,3 +1,20 @@
+×
+Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+▶ 4 stack frames were collapsed.
+CardID.render
+D:/dossier_dgc/moana/src/components/CardID.js:960
+  957 |                </Alert>
+  958 |              </Snackbar>
+  959 |              {this.state.alertRevue ?
+> 960 | ( toast.success("Felicitation la revue a été validée avec succès", {
+      | ^  961 |      position: "top-center",
+  962 |      autoClose: 5000,
+  963 |      hideProgressBar: false,
+
+
+
+
+
 // Étape 1: Identifier les nœuds avec des dépôts, des retraits, ou les deux
 const nodeWithBoth = {};
 Object.values(node).forEach((n) => {

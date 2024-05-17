@@ -11,7 +11,31 @@ D:/dossier_dgc/moana/src/components/CardID.js:960
   962 |      autoClose: 5000,
   963 |      hideProgressBar: false,
 
-
+      {this.state.alertRevue ?
+   ( toast.success("Felicitation la revue a été validée avec succès", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+    })):
+    this.setState({alertRevue:false})
+}
+                {this.state.alertRevue ? (
+        <ToastContainer position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />) : ""}
 
 
 

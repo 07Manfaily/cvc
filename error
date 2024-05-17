@@ -1,3 +1,62 @@
+import React from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+
+class CardID extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      alertRevue: false,
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.alertRevue && !prevState.alertRevue) {
+      toast.success("Felicitation la revue a été validée avec succès", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      this.setState({ alertRevue: false });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Snackbar open={this.state.alertRevue} autoHideDuration={6000}>
+          <Alert severity="success">
+            Felicitation la revue a été validée avec succès
+          </Alert>
+        </Snackbar>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </div>
+    );
+  }
+}
+
+export default CardID;
+
+
+
 ×
 Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
 ▶ 4 stack frames were collapsed.

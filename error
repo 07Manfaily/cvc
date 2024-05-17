@@ -1,3 +1,74 @@
+// Étape 1: Identifier les nœuds avec des dépôts, des retraits, ou les deux
+const nodeWithBoth = {};
+Object.values(node).forEach((n) => {
+    if (n.number_deposit > 0 && n.number_withdrawal > 0) {
+        nodeWithBoth[n.code_id] = 'both';
+    } else if (n.number_deposit > 0) {
+        nodeWithBoth[n.code_id] = 'deposit';
+    } else if (n.number_withdrawal > 0) {
+        nodeWithBoth[n.code_id] = 'withdrawal';
+    }
+});
+
+// Étape 2: Construire les arêtes
+const edges = graphe.map((i) => {
+    const isDouble = nodeWithBoth[i.emitter_code_id] === 'both';
+    return {
+        from: i.emitter_code_id,
+        to: i.receiver_code_id,
+        color: isDouble ? 'pink' : {
+            inherit: 'from',
+        },
+        smooth: {
+            enabled: true,
+            type: "continuous",
+            roundness: 0.5
+        },
+        arrows: isDouble ? "to, from" : "to",
+        tag: isDouble ? "double" : "normal"
+    };
+}).concat(Object.values(node).map((n) => {
+    if (nodeWithBoth[n.code_id] === 'deposit') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            label: n.cash_deposit,
+            tag: "deposit",
+            width: 2,
+            hoverWidth: 5,
+            color: "orange",
+        };
+    } else if (nodeWithBoth[n.code_id] === 'withdrawal') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            label: n.cash_withdrawal,
+            tag: "withdrawal",
+            width: 2,
+            color: "blue",
+        };
+    } else if (nodeWithBoth[n.code_id] === 'both') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            label: `${n.cash_deposit} / ${n.cash_withdrawal}`,
+            tag: "double",
+            width: 2,
+            color: "pink",
+            arrows: "to, from"
+        };
+    } else {
+        return null;
+    }
+}).filter(edge => edge !== null));
+
+console.log(edges);
+
+
+
+
+
+
 // Étape 1: Identifier les nœuds avec des dépôts et des retraits
 const nodeWithBoth = {};
 Object.values(node).forEach((n) => {

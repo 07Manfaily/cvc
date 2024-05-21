@@ -1,394 +1,111 @@
-const data = {};
-[...document.querySelectorAll("tbody tr")].forEach((tr, index) => {
-    const tag = tr.cells[0].innerText.replace("<=", "");
-    const value = tr.querySelector("input").value;
-    data[tag] = value;
-});
+ const downloadFile = async () => {
+        try {
+            setLoadDownload(true)
+            const response = await axios.post(
+                "/api/graph/download",
+                {
+                    "emitter": emetteur,
+                    "receiver": receveur,
+                    "cash_transaction": tag === "deposit" ? 1 : tag === "withdrawal" ? -1 : 0
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+                    },
+                    responseType: 'blob'
+                }
+            );
 
-import React, { useState } from "react";
-import {
-  Grid,
-  Typography,
-  AccordionDetails,
-  Accordion,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  FormControl,
-  AccordionSummary,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import SpeakerNotesOffIcon from "@material-ui/icons/SpeakerNotesOff";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import { Divider } from "@material-ui/core";
-import useStyles from "../dashboard/styles";
-import Widget from "../../components/Widget/Widget";
-import clsx from "clsx";
-import CommentIcon from "@material-ui/icons/Comment";
-import { elegibilityData } from "./elegibilityKey.js";
+            console.log("tag download", tag)
+            if (response.status === 200) {
+                setLoadDownload(false)
+                var file = window.URL.createObjectURL(response.data);
 
-export default function ControlEligibilite({ props }) {
-  const [comments, setComments] = useState({}); // State pour stocker les commentaires
-  const [radios, setRadios] = useState({}); // State pour stocker les états des radios
-  const classes = useStyles();
-
-  // Fonction pour mettre à jour les commentaires
-  const handleCommentChange = (key, comment) => {
-    setComments((prevComments) => ({
-      ...prevComments,
-      [key]: comment,
-    }));
-  };
-
-  // Fonction pour mettre à jour les radios
-  const handleRadioChange = (key, value) => {
-    setRadios((prevRadios) => ({
-      ...prevRadios,
-      [key]: value,
-    }));
-  };
-
-  return (
-    <Grid item xs={12} md={12}>
-      <Widget
-        title="CONTROLES D’ELIGIBILITE A LA REVUE SIMPLIFIEE"
-        upperTitle
-        className={classes.card}
-        bodyClass={classes.fullHeightBody}
-      >
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1c-content"
-            id="panel1c-header"
-          >
-            <Typography>
-              <b>Critères d'éligibilité</b>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div id="eligibility-criteria-container">
-              {elegibilityData.map((criteria) => (
-                <Accordion key={criteria.key} defaultExpanded>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1c-content"
-                    id="panel1c-header"
-                  >
-                    <div style={{ width: 500 }} className={classes.column}>
-                      <Typography className={classes.heading}>
-                        <b style={{ color: "blue" }}>{criteria.title}</b>
-                      </Typography>
-                      {comments[criteria.key] ? (
-                        <Typography className={classes.heading}>
-                          <b style={{ color: "green" }}>
-                            <CommentIcon />
-                          </b>
-                        </Typography>
-                      ) : (
-                        <Typography className={classes.heading}>
-                          <b style={{ color: "red" }}>
-                            <SpeakerNotesOffIcon />
-                          </b>
-                        </Typography>
-                      )}
-                    </div>
-                  </AccordionSummary>
-                  <AccordionDetails className={classes.details}>
-                    <div style={{ width: 500 }} className={classes.column}>
-                      <h3>
-                        <b>Descriptif</b>
-                      </h3>
-
-                      <ul>
-                        <li>
-                          <i>
-                            <b>{criteria.desc}</b>{" "}
-                          </i>
-                        </li>
-                      </ul>
-                    </div>
-                    <Divider
-                      variant="inset"
-                      style={{ marginRight: "20px" }}
-                      orientation="vertical"
-                      flexItem
-                    />
-                    <div
-                      style={{ width: 500 }}
-                      className={clsx(classes.column, classes.helper)}
-                    >
-                      <Typography variant="caption">
-                        <form action="">
-                          {" "}
-                          <TextareaAutosize
-                            name={`${criteria.key}-comment`}
-                            value={comments[criteria.key] || ""}
-                            onChange={(e) =>
-                              handleCommentChange(criteria.key, e.target.value)
-                            }
-                            style={{
-                              width: "97%",
-                              height: "80px",
-                              lineHeight: "1.2",
-                              padding: "8px 12px",
-                              borderRadius: "8px",
-                              margin: "8px",
-                            }}
-                            aria-label="empty textarea"
-                            placeholder="Commentaire"
-                          />
-                        </form>
-                      </Typography>
-                    </div>
-                    <Divider
-                      variant="inset"
-                      style={{ marginLeft: "22px" }}
-                      orientation="vertical"
-                      flexItem
-                    />
-
-                    <div
-                      style={{ width: 500 }}
-                      className={clsx(classes.column, classes.helper)}
-                    >
-                      <div style={{ marginLeft: "22px" }}>
-                        {" "}
-                        <FormControl>
-                          <RadioGroup
-                            row
-                            aria-labelledby="demo-row-radio-buttons-group-label"
-                            name={criteria.key}
-                            value={radios[criteria.key] || ""}
-                            onChange={(e) =>
-                              handleRadioChange(criteria.key, e.target.value)
-                            }
-                          >
-                            <FormControlLabel
-                              value="0"
-                              control={
-                                <Radio
-                                  style={{ color: "red" }}
-                                  checked={
-                                    props.controlEligibilte &&
-                                    props.controlEligibilte[criteria.key] &&
-                                    props.controlEligibilte[criteria.key]
-                                      .condition !== null &&
-                                    !props.controlEligibilte[criteria.key]
-                                      .condition
-                                  }
-                                />
-                              }
-                              label="Non Ok"
-                            />
-                            <FormControlLabel
-                              value="1"
-                              control={
-                                <Radio
-                                  style={{ color: "green" }}
-                                  checked={
-                                    props.controlEligibilte &&
-                                    props.controlEligibilte[criteria.key] &&
-                                    props.controlEligibilte[criteria.key]
-                                      .condition
-                                  }
-                                />
-                              }
-                              label="Ok"
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      </Widget>
-    </Grid>
-  );
-}
+                window.location.assign(file);
+            }
 
 
 
+        } catch (error) {
+            console.log("Erreur lors du traitement:", error);
+        }
+    }  const edges = graphe.map((i) => {
+ 
+    return {
+        from: i.emitter_code_id,
+        to: i.receiver_code_id,
+        width:2,
+        color: {
+            inherit: 'from',
+        },
+        smooth: {
+            enabled: true,
+            type: "continuous",
+            roundness: 0.5
+        },
+      
+        tag:  "normal"
+    };
+}).concat(Object.values(node).map((n) => {
+    if (nodeWithBoth[n.code_id] === 'deposit') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            label: n.cash_deposit,
+            tag: "deposit",
+            width: 2,
+            hoverWidth: 4,
+            color: "orange",
+        };
+    } else if (nodeWithBoth[n.code_id] === 'withdrawal') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            label: n.cash_withdrawal,
+            tag: "withdrawal",
+            width: 2,
+            hoverWidth: 4,
+            color: "blue",
+        };
+    } else if (nodeWithBoth[n.code_id] === 'both') {
+        return {
+            from: n.code_id,
+            to: n.code_id,
+            title: `Crédit ${n.cash_deposit} / Débit ${n.cash_withdrawal}`,
+            tag: "double",
+            width: 2,
+            hoverWidth: 4,
+            color: "black",
+            arrows: "to, from"
+        };
+    } else {
+        return null;
+    }
+}).filter(edge => edge !== null));
+   const handleEdgeClick = (event) => {
+        const edge = event.edges;
+        if (edge.length > 0) {
+            setOpe(true)
+            const clickedEdge = edges.find((_edge) => _edge.id === edge[0]);
+            if (clickedEdge.tag === "deposit") {
+                // Arête de dépôt
+                getTransaction(clickedEdge.from, clickedEdge.to, 1);
+            } else if (clickedEdge.tag === "withdrawal") {
+                // Arête de retrait
+                getTransaction(clickedEdge.from, clickedEdge.to, -1);
+            } else {
+                // Arête normale
+                getTransaction(clickedEdge.from, clickedEdge.to, 0);
+            }
+            setEmetteur(clickedEdge.from);
+            setReceveur(clickedEdge.to);
+            setTag(clickedEdge.tag)
+            console.log("valeur from", clickedEdge.from);
+            console.log(" tag", clickedEdge.tag);
 
-
- <Grid item xs={12} md={12}>
-      <Widget
-        title="	CONTROLES D’ELIGIBILITE A LA REVUE SIMPLIFIEE"
-        upperTitle
-        className={classes.card}
-        bodyClass={classes.fullHeightBody}
-      >
-     
-
-         <div id="eligibility-criteria-container">
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1c-content"
-                id="panel1c-header"
-              >
-                <div style={{ width: 500 }} className={classes.column}>
-                  <Typography className={classes.heading}>
-                    <b style={{ color: "blue" }}>
-                      KYC valide et fiche de contrôle conformité dûment remplie
-                    </b>
-                  </Typography>
-                  {CommentKyc.length > 0 ? (
-                    <Typography className={classes.heading}>
-                      <b style={{ color: "green" }}>
-                        <CommentIcon />
-                      </b>
-                    </Typography>
-                  ) : (
-                    <Typography className={classes.heading}>
-                      <b style={{ color: "red" }}>
-                        <SpeakerNotesOffIcon />
-                      </b>
-                    </Typography>
-                  )}
-                </div>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <div style={{ width: 500 }} className={classes.column}>
-                  <h3>
-                    <b>Descriptif</b>
-                  </h3>
-
-                  <ul>
-                    <li>
-                      <i>
-                        <b>Vérifier la date de validité du KYC du client</b>{" "}
-                      </i>
-                    </li>
-
-                    <li>
-                      <i>
-                        <b>
-                          Identifier le niveau de risque à partir de la
-                          classification FCCR
-                        </b>{" "}
-                      </i>
-                    </li>
-                  </ul>
-                </div>
-                <Divider
-                  variant="inset"
-                  style={{ marginRight: "20px" }}
-                  orientation="vertical"
-                  flexItem
-                />
-                <div
-                  style={{ width: 500 }}
-                  className={clsx(classes.column, classes.helper)}
-                >
-                  <Typography variant="caption">
-                    <form action="">
-                      {" "}
-                      <TextareaAutosize
-                        name="kyc-valide-comment"
-                        value={CommentKyc}
-                        onChange={(e) => setCommentKyc(e.target.value)}
-                        style={{
-                          width: "97%",
-                          height: "80px",
-                          lineHeight: "1.2",
-                          padding: "8px 12px",
-                          borderRadius: "8px",
-                          margin: "8px",
-                        }}
-                        aria-label="empty textarea"
-                        placeholder="Commentaire"
-                      />
-                    </form>
-                  </Typography>
-                </div>
-                <Divider
-                  variant="inset"
-                  style={{ marginLeft: "22px" }}
-                  orientation="vertical"
-                  flexItem
-                />
-
-                <div
-                  style={{ width: 500 }}
-                  className={clsx(classes.column, classes.helper)}
-                >
-                  <div style={{ marginLeft: "22px" }}>
-                    {" "}
-                    <FormControl>
-                      {props.controlEligibilte !==
-                      null ? (
-                        <RadioGroup
-                          row
-                          aria-labelledby="demo-row-radio-buttons-group-label"
-                          name="kyc-valide"
-                        >
-                          <FormControlLabel
-                            value={0}
-                            control={
-                              <Radio
-                                onChange={(e) => setRadioKyc(e.target.value)}
-                                checked={
-                                  props.controlEligibilte.kyc_validity
-                                    .condition !== null &&
-                                  !props.controlEligibilte.kyc_validity
-                                    .condition
-                                }
-                                style={{ color: "red" }}
-                              />
-                            }
-                            label="Non Ok"
-                          />
-                          <FormControlLabel
-                            value={1}
-                            control={
-                              <Radio
-                                onChange={(e) => setRadioKyc(e.target.value)}
-                                checked={
-                                  props.controlEligibilte.kyc_validity.condition
-                                }
-                                style={{ color: "green" }}
-                              />
-                            }
-                            label="Ok"
-                          />
-                        </RadioGroup>
-                      ) : (
-                        <>
-                          <RadioGroup
-                            row
-                            aria-labelledby="demo-row-radio-buttons-group-label"
-                            name="kyc-valide"
-                          >
-                            <FormControlLabel
-                              value={0}
-                              control={
-                                <Radio
-                                  onChange={(e) => setRadioKyc(e.target.value)}
-                                  style={{ color: "red" }}
-                                />
-                              }
-                              label="Non Ok"
-                            />
-                            <FormControlLabel
-                              value={1}
-                              control={
-                                <Radio
-                                  onChange={(e) => setRadioKyc(e.target.value)}
-                                  style={{ color: "green" }}
-                                />
-                              }
-                              label="Ok"
-                            />
-                          </RadioGroup>
-                        </>
-                      )}
-                    </FormControl>
-                  </div>
-                </div>
-              </AccordionDetails>
-            </Accordion>
+        }
+    };
+    const events = {
+        selectEdge: handleEdgeClick,
+    };

@@ -1,111 +1,90 @@
- const downloadFile = async () => {
-        try {
-            setLoadDownload(true)
-            const response = await axios.post(
-                "/api/graph/download",
-                {
-                    "emitter": emetteur,
-                    "receiver": receveur,
-                    "cash_transaction": tag === "deposit" ? 1 : tag === "withdrawal" ? -1 : 0
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-                    },
-                    responseType: 'blob'
-                }
-            );
+import { Navigate, useRoutes } from 'react-router-dom';
+// layouts
+import DashboardLayout from './layouts/dashboard';
+import SimpleLayout from './layouts/simple';
+//
+import LoginPage from './pages/LoginPage';
+import Page404 from './pages/Page404';
+import ProductsPage from './pages/ProductsPage';
+import DashboardAppPage from './pages/DashboardAppPage';
 
-            console.log("tag download", tag)
-            if (response.status === 200) {
-                setLoadDownload(false)
-                var file = window.URL.createObjectURL(response.data);
+import RiskChaine from './pages/chaine-de-valeur-for-risk';
+import Chaine from './pages/ChaineDeValeur';
 
-                window.location.assign(file);
-            }
+import Risque from './pages/Risque';
+import Affacturage from './pages/affacturage';
+import AffacturageCvc from './pages/affacturageView';
 
 
 
-        } catch (error) {
-            console.log("Erreur lors du traitement:", error);
-        }
-    }  const edges = graphe.map((i) => {
- 
-    return {
-        from: i.emitter_code_id,
-        to: i.receiver_code_id,
-        width:2,
-        color: {
-            inherit: 'from',
-        },
-        smooth: {
-            enabled: true,
-            type: "continuous",
-            roundness: 0.5
-        },
+// ----------------------------------------------------------------------
+
+export default function Router() {
+  const user_route = [
+    { element: <Navigate to="/dashboard/app" />, index: true },
+    { path: 'app', element: <DashboardAppPage /> },
+    { path: 'chaine-de-valeur', element: <Chaine /> },
+  ]
+
+  const user_role =  localStorage.getItem("role")!==null ? localStorage.getItem("role").split(","):""
+  if (user_role.includes("nfact")) {
+    user_route.push(
+      { path: 'affacturage', element: <Affacturage /> }
+    )
+    user_route.push(
+      { path: 'affacturage-chaine/:Code', element: <AffacturageCvc /> }
+      )
+  }
+
+  if (user_role.includes("risk")) {
+    user_route.push(
+      { path: 'risk', element: <Risque /> },
+    )
+    user_route.push(
+      { path: 'chaine-de-valeur/:clusterId/:level', element: <RiskChaine /> },
+    )
+  }
+
+  const routes = useRoutes([
+    {
+      path: '/dashboard',
+      element: <DashboardLayout />,
+      children: 
+
+        user_route,
+        // { path: 'products', element: <ProductsPage /> },
       
-        tag:  "normal"
-    };
-}).concat(Object.values(node).map((n) => {
-    if (nodeWithBoth[n.code_id] === 'deposit') {
-        return {
-            from: n.code_id,
-            to: n.code_id,
-            label: n.cash_deposit,
-            tag: "deposit",
-            width: 2,
-            hoverWidth: 4,
-            color: "orange",
-        };
-    } else if (nodeWithBoth[n.code_id] === 'withdrawal') {
-        return {
-            from: n.code_id,
-            to: n.code_id,
-            label: n.cash_withdrawal,
-            tag: "withdrawal",
-            width: 2,
-            hoverWidth: 4,
-            color: "blue",
-        };
-    } else if (nodeWithBoth[n.code_id] === 'both') {
-        return {
-            from: n.code_id,
-            to: n.code_id,
-            title: `Crédit ${n.cash_deposit} / Débit ${n.cash_withdrawal}`,
-            tag: "double",
-            width: 2,
-            hoverWidth: 4,
-            color: "black",
-            arrows: "to, from"
-        };
-    } else {
-        return null;
-    }
-}).filter(edge => edge !== null));
-   const handleEdgeClick = (event) => {
-        const edge = event.edges;
-        if (edge.length > 0) {
-            setOpe(true)
-            const clickedEdge = edges.find((_edge) => _edge.id === edge[0]);
-            if (clickedEdge.tag === "deposit") {
-                // Arête de dépôt
-                getTransaction(clickedEdge.from, clickedEdge.to, 1);
-            } else if (clickedEdge.tag === "withdrawal") {
-                // Arête de retrait
-                getTransaction(clickedEdge.from, clickedEdge.to, -1);
-            } else {
-                // Arête normale
-                getTransaction(clickedEdge.from, clickedEdge.to, 0);
-            }
-            setEmetteur(clickedEdge.from);
-            setReceveur(clickedEdge.to);
-            setTag(clickedEdge.tag)
-            console.log("valeur from", clickedEdge.from);
-            console.log(" tag", clickedEdge.tag);
+    },
+    {
+      path: '/',
+      element: <LoginPage />,
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+    },
 
-        }
-    };
-    const events = {
-        selectEdge: handleEdgeClick,
-    };
+    {
+      element: <SimpleLayout />,
+      children: [
+        { element: <Navigate to="/login" />, index: true },
+        { path: '404', element: <Page404 /> },
+
+        { path: '*', element: <Navigate to="/404" /> },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/404" replace />,
+    },
+  ]);
+
+  return routes;
+}
+
+
+
+
+
+
+

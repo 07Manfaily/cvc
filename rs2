@@ -1,3 +1,97 @@
+import { Navigate, useParams, useRoutes } from 'react-router-dom';
+// layouts
+import DashboardLayout from './layouts/dashboard';
+import SimpleLayout from './layouts/simple';
+//
+import LoginPage from './pages/LoginPage';
+import Page404 from './pages/Page404';
+import ProductsPage from './pages/ProductsPage';
+import DashboardAppPage from './pages/DashboardAppPage';
+
+import RiskChaine from './pages/chaine-de-valeur-for-risk';
+import Chaine from './pages/ChaineDeValeur';
+
+import Risque from './pages/Risque';
+import Affacturage from './pages/affacturage';
+import AffacturageCvc from './pages/affacturageView';
+
+
+
+// ----------------------------------------------------------------------
+
+export default function Router() {
+
+  const conditional_component = () =>{
+    const {code} = useParams();
+    if(code){
+      return <AffacturageCvc code={code}/>
+    }else{
+      return <Chaine />
+    }
+  }
+  const user_route = [
+    { element: <Navigate to="/dashboard/app" />, index: true },
+    { path: 'app', element: <DashboardAppPage /> },
+    { path: 'chaine-de-valeur', element: <Chaine /> },
+  ]
+
+  const user_role =  localStorage.getItem("role")!==null ? localStorage.getItem("role").split(","):""
+  if (user_role.includes("nfact")) {
+    user_route.push(
+      { path: 'affacturage', element: <Affacturage /> }
+    )
+    user_route.push(
+      { path: 'affacturage-chaine/:Code', element: <AffacturageCvc /> }
+      )
+  }
+
+  if (user_role.includes("risk")) {
+    user_route.push(
+      { path: 'risk', element: <Risque /> },
+    )
+    user_route.push(
+      { path: 'chaine-de-valeur/:clusterId/:level', element: <RiskChaine /> },
+    )
+  }
+
+  const routes = useRoutes([
+    {
+      path: '/dashboard',
+      element: <DashboardLayout />,
+      children: 
+
+        user_route,
+        // { path: 'products', element: <ProductsPage /> },
+      
+    },
+    {
+      path: '/',
+      element: <LoginPage />,
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+    },
+
+    {
+      element: <SimpleLayout />,
+      children: [
+        { element: <Navigate to="/login" />, index: true },
+        { path: '404', element: <Page404 /> },
+
+        { path: '*', element: <Navigate to="/404" /> },
+      ],
+    },
+    {
+      path: '*',
+      element: <Navigate to="/404" replace />,
+    },
+  ]);
+
+  return routes;
+}
+
+
 import { Helmet } from 'react-helmet-async';
 // @mui
 import Card from '@mui/material/Card';

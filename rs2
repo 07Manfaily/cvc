@@ -632,8 +632,11 @@ export default function ValueChain() {
                                         variant="outlined"
                                         onClick={() =>{setTag("deposit");
                                          getTransaction(bothFrom, bothTo, 1);}}
-                                        style={{ backgroundColor: "red", color: "white" }}
-                                    >
+                                         style={{
+                                            backgroundColor: tag === "deposit" ? "red" : "grey",
+                                            color: "white",
+                                            opacity: tag === "deposit" ? 1 : 0.5
+                                        }}                                    >
                                         filtrer par Crédit
                                     </Button>
                                     <Button
@@ -641,8 +644,12 @@ export default function ValueChain() {
                                         variant="outlined"
                                         onClick={() =>{setTag("withdrawal");
                                          getTransaction(bothFrom, bothTo, -1);}}
-                                        style={{ backgroundColor: "#FFC300", color: "white" }}
-                                    >
+                                         
+                                         style={{
+                                            backgroundColor: tag === "withdrawal" ? "#FFC300" : "grey",
+                                            color: "white",
+                                            opacity: tag === "withdrawal" ? 1 : 0.5
+                                        }}                                    >
                                         filtrer par Débit
                                     </Button>
                                 </>

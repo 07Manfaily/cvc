@@ -58,7 +58,6 @@ export default function ValueChain() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleClos = () => setOpe(false);
-    const [clientCode, setClientCode] = React.useState("")
     const [weight, setWeight] = React.useState(1)
     const [direction, setDirection] = React.useState(1);
     const [level, setLevel] = React.useState(2);
@@ -82,9 +81,9 @@ export default function ValueChain() {
     const [message, setMessage] = useState("")
     const [bothFrom, setBothFrom] = useState()
     const [bothTo, setBothTo] = useState()
-
-
     const { Code } = useParams();
+    const [clientCode, setClientCode] = React.useState(Code || "")
+
     // Fonction pour gérer le changement de l'état des cases à cocher
     const handleCheckboxChange = (key) => {
         setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
@@ -94,9 +93,7 @@ export default function ValueChain() {
         setClientCode(event.target.value);
     };
 
-    const handleChangeCode = (event) => {
-        Code(event.target.value);
-    };
+    
     const handleChangeDirection = (event) => {
         setDirection(event.target.value);
     };
@@ -123,7 +120,7 @@ export default function ValueChain() {
         try {
             const response = await axios.post("/api/graph",
                 {
-                    "client_code_id": Code ? Code : clientCode,
+                    "client_code_id": Code || clientCode,
                     "direction": direction,
                     "ftop_value": weight ? 0 : 1,
                     "ftransaction_weight": weight ? 1 : 0,
@@ -312,7 +309,11 @@ export default function ValueChain() {
                 </ListItem>
             )));
     }
-
+    useEffect(() => {
+        if(Code){
+            setClientCode(Code)
+        }
+    }, [Code])
     useEffect(() => {
         fetchGraph()
     }, [Code])
@@ -335,6 +336,42 @@ export default function ValueChain() {
     })
     console.log("nodesss", nodes, "real node", node, "code", Code)
 
+    // const edges = graphe.map((i) => {
+    //     return {
+    //         from: i.emitter_code_id,
+    //         to: i.receiver_code_id,
+    //         color: {
+    //             inherit: 'from',
+    //         },
+    //         smooth: {
+    //             enabled: true,
+    //             type: "continuous",
+    //             roundness: 0.5
+    //         },
+    //         tag: "normal"
+    //     }
+    // }).concat(Object.values(node).filter(n => n.number_deposit > 0).map((n) => {
+    //     return {
+    //         "from": n.code_id,
+    //         "to": n.code_id,
+    //         "label": n.cash_deposit,
+    //         tag: "deposit",
+    //         width: 2,
+    //         hoverWidth: 5,
+    //         color: "orange",
+
+    //     }
+    // })).concat(Object.values(node).filter(n => n.number_withdrawal > 0).map((n) => {
+    //     return {
+    //         "from": n.code_id,
+    //         "to": n.code_id,
+    //         "label": n.cash_withdrawal,
+    //         tag: "withdrawal",
+    //         width: 2,
+    //         color: "blue",
+    //     }
+    // }))
+    // Étape 1: Identifier les nœuds avec des dépôts, des retraits, ou les deux
     const nodeWithBoth = {};
     Object.values(node).forEach((n) => {
         if (n.number_deposit > 0 && n.number_withdrawal > 0) {
@@ -433,6 +470,20 @@ export default function ValueChain() {
             console.log(" tag", clickedEdge.tag);
         }
     };
+    // const handleEdgeClick = (event) => {
+    //     const edge = event.edges;
+    //     if (edge.length > 0) {
+    //         setOpe(true)
+    //         const emet = edges.filter((_edge) => _edge.id === edge[0])[0].from
+    //         const receiv = edges.filter((_edge) => _edge.id === edge[0])[0].to
+    //         getTransaction(emet, receiv)
+    //         setEmetteur(emet)
+    //         setReceveur(receiv)
+    //         console.log("valeur:", emet)
+
+    //     }
+    // };
+
     const events = {
         selectEdge: handleEdgeClick,
     };
@@ -498,6 +549,13 @@ export default function ValueChain() {
         });
         setAlert(false)
     }
+
+    //     { 
+    //         if (checkedItems[col.key])
+    //         { return null } 
+    //         return row[col["key"]]
+    // }
+    // }
 
     const columns = column.map((col) => {
         return {
@@ -659,9 +717,9 @@ export default function ValueChain() {
                             fullWidth label="Code client"
                             id="fullWidth"
                             size="small"
-                            value={Code ? Code : clientCode}
+                            value={clientCode}
                             // disabled={Code != "" ? true : false}
-                            onChange={Code != "" ? handleChangeCode : handleChangeCodeClient}
+                            onChange={handleChangeCodeClient}
                         />
 
                       <Grid >
@@ -844,7 +902,58 @@ export default function ValueChain() {
                                     colors={['red', 'green', 'blue', 'yellow', 'orange', 'black']}
                                 />
                             </Grid> :
+
+
                             <Graph graph={graph} options={options} events={events} />}
+                    </Box>
+                    <Box
+                        sx={{
+                            mt: 5,
+
+                            bgcolor: "background.paper",
+                            boxShadow: 7,
+                            borderRadius: 1,
+                            border: 1,
+                            borderColor: "#e7e0e0",
+                        }}
+                    >
+
+                        <center>
+                            <b style={{ fontFamily: 'Montserrat' }}>
+                                Légende
+                            </b>
+                        </center>
+                        <Grid container sx={{ mt: 4, mb: 4 }}>
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="space-around"
+                                alignItems="flex-start"
+                            >
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <StarOutlineIcon />
+                                    <b>Forme du client recherché</b>
+
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "green" }} />
+                                    <b>Client S1</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "#A49F00" }} />
+                                    <b>Client S2</b>
+                                </Grid>
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "red" }} />
+                                    <b>Client S3</b>
+                                </Grid>
+
+                                <Grid justifyContent="flex-start" alignItems="flex-start">
+                                    <CircleRoundedIcon style={{ color: "gray" }} />
+                                    <b>Client Hors SGCI</b>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Grid>
             </Grid >

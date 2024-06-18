@@ -1,86 +1,61 @@
 import React, { useState } from "react";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Grid, IconButton, InputAdornment, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
+import EastIcon from '@mui/icons-material/East';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import IconClient from '../assets/client.png'
+import { Grid, IconButton, Button, InputAdornment, TextField, Card, Typography, useMediaQuery, useTheme } from '@mui/material';
 
-export default function Login2() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function SearchId() {
 
-  const theme = useTheme();
-  const isMediumOrBelow = useMediaQuery(theme.breakpoints.down('md'));
+    const [identifiant, setIdentifiant] = useState('');
 
-  return (
-    <Grid container spacing={2} style={{ height: '100vh' }}>
-      <Grid
-        item
-        xs={12}
-        md={7}
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        style={{ 
-          backgroundColor: "#0D503C", 
-          height: "100%", 
-          display: isMediumOrBelow ? 'none' : 'flex' 
-        }}
-      >
-        <img
-          style={{ width: 165, marginBottom: 5 }}
-          src="https://e-decideurs.fr/wp-content/uploads/2019/11/Soci%C3%A9t%C3%A9-G%C3%A9n%C3%A9rale.png"
-          alt="logo"
-        />
-        <Typography>
-          <b style={{ fontFamily: "Montserrat", fontWeight: 500, fontSize: isMediumOrBelow ? 48 : 94, color: "white" }}>Credapp Simplifiée</b>
-        </Typography>
-      </Grid>
+    const handleChangeId = (e) => {
+        setIdentifiant(e.target.value);
+    };
+    return (
 
-      <Grid
-        item
-        xs={12}
-        md={5}
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        style={{ padding: isMediumOrBelow ? '0 20px' : '0' }}
-      >
-        <h1>Connexion</h1>
-        <TextField
-          id="username"
-          variant="outlined"
-          size="small"
-          name="username"
-          label="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          style={{ width: isMediumOrBelow ? '100%' : '70%', marginBottom: 20 }}
-        />
-        <TextField
-          id="password"
-          variant="outlined"
-          size="small"
-          name="password"
-          label="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  {showPassword ? <RemoveRedEyeIcon /> : <VisibilityOffIcon />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          fullWidth
-          style={{ width: isMediumOrBelow ? '100%' : '70%' }}
-        />
-      </Grid>
-    </Grid>
-  );
+
+        <Grid xs={12} lg={12}
+            md={12} style={{backgroundColor:"black",  filter: "brightness(30%)"  height: '100vh', width: '100%' }}
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center">
+            <Card sx={{ maxWidth: 480, padding: '24px', borderRadius:4 }}>
+                <center>
+                    <img
+                        style={{ width: 100, marginBottom: 5 }}
+                        src={IconClient}
+                    />
+                </center>
+                <h2 style={{
+                    fontFamily: 'system-ui'
+                }}>Veuillez saisir l'identifiant du client </h2>
+                <Grid container sx={{ marginTop: 6 }}
+                    direction="column"
+                    justifyContent="space-between"
+                    alignItems="center">
+                    <TextField
+                        value={identifiant}
+                        onChange={handleChangeId}
+                        placeholder="Identifiant du client"
+
+                        id="fullWidth" />
+                    <Grid sx={{ marginTop: 5 }}>
+                        <Button style={{
+                            fontFamily: 'system-ui',
+                            fontSize: 16,
+                            color: "white",
+                            backgroundColor: '#346C39',
+                            marginBottom: 20,
+                            width: 300
+
+                        }} size="medium">
+                            Rechercher
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Card>
+        </Grid>
+
+    )
 }

@@ -1,20 +1,21 @@
 import React, { useState } from "react";
-import { Grid, Button, Box, Tab, Typography, Input } from '@mui/material';
+import { Grid, Button, Box, Tab, Typography } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import CardHistoric from '../components/cardHistoric'
+import CardHistoric from '../components/cardHistoric';
 import Badge from '@mui/material/Badge';
 
 export default function Historic() {
-    const [value, setValue] = useState('1');
-    const [valu, setValu] = useState('1');
+    const [tabValue, setTabValue] = useState('1');
+    const [secondaryTabValue, setSecondaryTabValue] = useState('1');
 
-    const handleChang = (event, newValu) => {
-        setValu(newValu);
+    const handlePrimaryTabChange = (event, newValue) => {
+        setTabValue(newValue);
     };
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+
+    const handleSecondaryTabChange = (event, newValue) => {
+        setSecondaryTabValue(newValue);
     };
 
     return (
@@ -35,13 +36,13 @@ export default function Historic() {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid item  sx={{ margin: 4 }}>
-                <TabContext value={value}>
-                    <Box >
-                        <TabList onChange={handleChange} aria-label="lab API tabs example">
-                            <Tab sx={{textTransform:" capitalize"}} label="Todays" value="1" />
-                            <Tab sx={{textTransform:" capitalize"}} label="Week" value="2" />
-                            <Tab sx={{textTransform:" capitalize"}} label="Month " value="3" />
+            <Grid item sx={{ margin: 4 }}>
+                <TabContext value={tabValue}>
+                    <Box>
+                        <TabList onChange={handlePrimaryTabChange} aria-label="primary tabs">
+                            <Tab sx={{ textTransform: "capitalize" }} label="Todays" value="1" />
+                            <Tab sx={{ textTransform: "capitalize" }} label="Week" value="2" />
+                            <Tab sx={{ textTransform: "capitalize" }} label="Month" value="3" />
                         </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -58,28 +59,28 @@ export default function Historic() {
             </Grid>
             <Grid item sx={{ margin: 4 }}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
-                    <TabContext value={valu}>
-                        {/* sx={{ borderBottom: 1, borderColor: 'divider' }} */}
-                        <Box >
-                            <TabList  onChange={handleChang} >
-                                <Tab sx={{textTransform:" capitalize"}} label="Tout" value="1" />
-                                <Tab sx={{textTransform:" capitalize"}} label={<Badge badgeContent={4} color="success">
-                                    pending
-                                </Badge>} value="2" />
+                    <TabContext value={secondaryTabValue}>
+                        <Box>
+                            <TabList onChange={handleSecondaryTabChange}>
+                                <Tab sx={{ textTransform: "capitalize" }} label="Tout" value="1" />
+                                <Tab sx={{ textTransform: "capitalize" }} label={
+                                    <Badge badgeContent={4} color="success">
+                                        Pending
+                                    </Badge>
+                                } value="2" />
                             </TabList>
                         </Box>
                         <TabPanel value="1">Todays</TabPanel>
-                        <TabPanel value="2"> 
-                        <Grid container direction="row" justifyContent="space-around" alignItems="center">
-                            <CardHistoric />
-                        </Grid>
+                        <TabPanel value="2">
+                            <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                                <CardHistoric />
+                            </Grid>
                         </TabPanel>
-                        <TabPanel valu="3">Month</TabPanel>
+                        <TabPanel value="3">Month</TabPanel>
                     </TabContext>
-                    <h4>filtre</h4>
+                    <Typography variant="h6">Filtre</Typography>
                 </Grid>
             </Grid>
-
         </Grid>
     );
 }

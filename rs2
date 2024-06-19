@@ -1,28 +1,22 @@
 import React, { useState } from "react";
-import { Grid, Button, TextField, Card } from '@mui/material';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
+import { Grid, Button, Box, Tab, Tabs, Typography } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 
 export default function Historic() {
-    const [value, setValue] = React.useState('1');
+    const [value, setValue] = useState('1');
 
     const handleChange = (event, newValue) => {
-      setValue(newValue);
+        setValue(newValue);
     };
+
     return (
-        <Grid container xs={12} md={12} lg={12}>
-            <Grid direction="column"
-                justifyContent="start"
-                alignItems="start"
-            >
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-                    <h3>Historiques </h3>
-                    <Grid><Button
+        <Grid container spacing={2} direction="column">
+            <Grid item>
+                <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h3">Historiques</Typography>
+                    <Button
                         style={{
                             fontFamily: 'system-ui',
                             fontSize: 16,
@@ -34,46 +28,23 @@ export default function Historic() {
                         size="medium"
                     >
                         Creer une nouvelle credapp
-                    </Button></Grid>
-                </Grid>
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-                    <TabContext value={value}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                <Tab label="Item One" value="1" />
-                                <Tab label="Item Two" value="2" />
-                                <Tab label="Item Three" value="3" />
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">Todays</TabPanel>
-                        <TabPanel value="2">The week</TabPanel>
-                        <TabPanel value="3">The mouth</TabPanel>
-                    </TabContext>
-                </Grid>
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-
-                </Grid>
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-
-                </Grid>
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-
-                </Grid>
-                <Grid direction="row"
-                    justifyContent="start"
-                    alignItems="space-between">
-
+                    </Button>
                 </Grid>
             </Grid>
-
+            <Grid item>
+                <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={handleChange} aria-label="lab API tabs example">
+                            <Tab label="Item One" value="1" />
+                            <Tab label="Item Two" value="2" />
+                            <Tab label="Item Three" value="3" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1">Todays</TabPanel>
+                    <TabPanel value="2">The week</TabPanel>
+                    <TabPanel value="3">The month</TabPanel>
+                </TabContext>
+            </Grid>
         </Grid>
-    )
+    );
 }

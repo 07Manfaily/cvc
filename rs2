@@ -1,50 +1,85 @@
 import React, { useState } from "react";
-import { Grid, Button, Box, Tab, Tabs, Typography } from '@mui/material';
+import { Grid, Button, Box, Tab, Typography, Input } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import CardHistoric from '../components/cardHistoric'
+import Badge from '@mui/material/Badge';
 
 export default function Historic() {
     const [value, setValue] = useState('1');
+    const [valu, setValu] = useState('1');
 
+    const handleChang = (event, newValu) => {
+        setValu(newValu);
+    };
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <Grid container spacing={2} direction="column">
-            <Grid item>
+        <Grid container spacing={2} direction="column" sx={{ backgroundColor: "#F1FDFF" }}>
+            <Grid item sx={{ margin: 4 }}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h3">Historiques</Typography>
+                    <Typography variant="h5">Historiques</Typography>
                     <Button
                         style={{
                             fontFamily: 'system-ui',
                             fontSize: 16,
                             color: "white",
-                            backgroundColor: '#346C39',
-                            marginBottom: 20,
-                            width: 300
+                            backgroundColor: '#D87B01',
                         }}
                         size="medium"
                     >
-                        Creer une nouvelle credapp
+                        Creer une creddap
                     </Button>
                 </Grid>
             </Grid>
-            <Grid item>
+            <Grid item  sx={{ margin: 4 }}>
                 <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Box >
                         <TabList onChange={handleChange} aria-label="lab API tabs example">
-                            <Tab label="Item One" value="1" />
-                            <Tab label="Item Two" value="2" />
-                            <Tab label="Item Three" value="3" />
+                            <Tab sx={{textTransform:" capitalize"}} label="Todays" value="1" />
+                            <Tab sx={{textTransform:" capitalize"}} label="Week" value="2" />
+                            <Tab sx={{textTransform:" capitalize"}} label="Month " value="3" />
                         </TabList>
                     </Box>
-                    <TabPanel value="1">Todays</TabPanel>
-                    <TabPanel value="2">The week</TabPanel>
-                    <TabPanel value="3">The month</TabPanel>
+                    <TabPanel value="1">
+                        <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                            <CardHistoric />
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value="2">Pending</TabPanel>
+                    <TabPanel value="3">Month</TabPanel>
                 </TabContext>
             </Grid>
+            <Grid item sx={{ margin: 4 }}>
+                <Typography variant="h5">All Historiques</Typography>
+            </Grid>
+            <Grid item sx={{ margin: 4 }}>
+                <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
+                    <TabContext value={valu}>
+                        {/* sx={{ borderBottom: 1, borderColor: 'divider' }} */}
+                        <Box >
+                            <TabList  onChange={handleChang} >
+                                <Tab sx={{textTransform:" capitalize"}} label="Tout" value="1" />
+                                <Tab sx={{textTransform:" capitalize"}} label={<Badge badgeContent={4} color="success">
+                                    pending
+                                </Badge>} value="2" />
+                            </TabList>
+                        </Box>
+                        <TabPanel value="1">Todays</TabPanel>
+                        <TabPanel value="2"> 
+                        <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                            <CardHistoric />
+                        </Grid>
+                        </TabPanel>
+                        <TabPanel valu="3">Month</TabPanel>
+                    </TabContext>
+                    <h4>filtre</h4>
+                </Grid>
+            </Grid>
+
         </Grid>
     );
 }

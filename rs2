@@ -7,11 +7,11 @@ import CardHistoric from '../components/cardHistoric';
 import Badge from '@mui/material/Badge';
 
 export default function Historic() {
-    const [tabValue, setTabValue] = useState('1');
+    const [primaryTabValue, setPrimaryTabValue] = useState('1');
     const [secondaryTabValue, setSecondaryTabValue] = useState('1');
 
     const handlePrimaryTabChange = (event, newValue) => {
-        setTabValue(newValue);
+        setPrimaryTabValue(newValue);
     };
 
     const handleSecondaryTabChange = (event, newValue) => {
@@ -36,8 +36,9 @@ export default function Historic() {
                     </Button>
                 </Grid>
             </Grid>
+
             <Grid item sx={{ margin: 4 }}>
-                <TabContext value={tabValue}>
+                <TabContext value={primaryTabValue}>
                     <Box>
                         <TabList onChange={handlePrimaryTabChange} aria-label="primary tabs">
                             <Tab sx={{ textTransform: "capitalize" }} label="Todays" value="1" />
@@ -54,31 +55,37 @@ export default function Historic() {
                     <TabPanel value="3">Month</TabPanel>
                 </TabContext>
             </Grid>
+
             <Grid item sx={{ margin: 4 }}>
                 <Typography variant="h5">All Historiques</Typography>
             </Grid>
+
             <Grid item sx={{ margin: 4 }}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
-                    <TabContext value={secondaryTabValue}>
-                        <Box>
-                            <TabList onChange={handleSecondaryTabChange}>
-                                <Tab sx={{ textTransform: "capitalize" }} label="Tout" value="1" />
-                                <Tab sx={{ textTransform: "capitalize" }} label={
-                                    <Badge badgeContent={4} color="success">
-                                        Pending
-                                    </Badge>
-                                } value="2" />
-                            </TabList>
-                        </Box>
-                        <TabPanel value="1">Todays</TabPanel>
-                        <TabPanel value="2">
-                            <Grid container direction="row" justifyContent="space-around" alignItems="center">
-                                <CardHistoric />
-                            </Grid>
-                        </TabPanel>
-                        <TabPanel value="3">Month</TabPanel>
-                    </TabContext>
-                    <Typography variant="h6">Filtre</Typography>
+                    <Grid item xs={8}>
+                        <TabContext value={secondaryTabValue}>
+                            <Box>
+                                <TabList onChange={handleSecondaryTabChange}>
+                                    <Tab sx={{ textTransform: "capitalize" }} label="Tout" value="1" />
+                                    <Tab sx={{ textTransform: "capitalize" }} label={
+                                        <Badge badgeContent={4} color="success">
+                                            Pending
+                                        </Badge>
+                                    } value="2" />
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1">Todays</TabPanel>
+                            <TabPanel value="2">
+                                <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                                    <CardHistoric />
+                                </Grid>
+                            </TabPanel>
+                            <TabPanel value="3">Month</TabPanel>
+                        </TabContext>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography variant="h6">Filtre</Typography>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

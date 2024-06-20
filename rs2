@@ -1,53 +1,79 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-}
-
-#container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-
-#form-container {
-    text-align: center;
-    border: 1px solid #ccc;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="fr">
+  <head>
     <meta charset="UTF-8">
-    <title>Habilitation</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<div id="container">
-    <div id="form-container">
-        <h1>Habilitation 
-            {% if app.title and app.title.strip() %}
-                {{ app.title }}
-            {% else %}
+    <style>
+      td{
+          padding: 7px 7px 7px 7px
+      }
+  </style>
+  </head>
+  <body>
+    <table width="100%" style="border: none" cellspacing="0" cellpadding="0"
+      bgcolor="white">
+      <thead></thead>
+      <tbody>
+        <tr>
+
+          <td><img
+              width="400"
+              src="D:\ROLAND_YAO\Templates\sg_logo.jpg"
+              alt="logo"></td>
+        </tr>
+        <td width="100" height="30">
+          <div>
+          </div>
+        </td>
+        <tr style="background: gray; font-size: 14px; ">
+          <td colspan="2"><b>C<span style="color: red">{{ mail.confidence
+                }}</span>&nbsp;</b>{{mail.confidence_text}}</td>
+          <td style="text-align: right">{{ today.date }}</td>
+        </tr>
+        <td width="100" height="30">
+          <div>
+          </div>
+        </td>
+        <tr>
+          <td><b><h2 style="color: rgb(0, 117, 49); ">INFORMATIONS
+                D'HABILITATION A {% if apps.name %}
+                <span style="text-transform: uppercase;">{{ apps.name }}</span>
+                {% else %}
                 ""
-            {% endif %}
-        </h1>
-        <div>
-            <p>Username: {{ username }}</p>
-            <p>Mot de passe: {{ password }}</p>
-            <p>Lien: {{ links }}</p>
-        </div>
-    </div>
-</div>
-</body>
+                {% endif %}</h2></b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+
+            <p>Bonjour {{ user }},<br />
+
+              Nous vous communiquons vos informations d'authentification <span
+                style="color: crimson;">à {{ apps.name }} :</span><br />
+              <div>
+                <ul>
+                  <li><b>Identifiant : {{ username }}</b></li>
+                  <li><b>Mot de passe : {{ password }}</b></li>
+                  <li><b>lien: {{ link }}</b></li>
+                </ul>
+              </div>
+              L'equipe DDT est à votre écoute pour toutes préoccupations <br />
+              A très bientôt !
+            </p>
+
+          </td>
+        </tr>
+        <td width="100" height="30">
+          <div>
+          </div>
+      </td>
+        <tr>
+          <td colspan="3" style=" background: rgb(255, 0, 0); text-align: center">
+            <h4 style="color: white; font-family: Math;">DATA &
+              TRANSFORMATION</h4>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </body>
 </html>

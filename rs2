@@ -38,8 +38,8 @@ export default function Header() {
 
   return (
     <Box container style={{ backgroundColor: "#FEFEFE", padding: '0 20px' }} sx={{ mb: 5, height: 70 }}>
-      <Grid container direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="h6">Credapp Simplifié</Typography>
+      <Grid container alignItems="center">
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>Credapp Simplifié</Typography>
 
         <Grid item container alignItems="center" spacing={1}>
           <Grid item>

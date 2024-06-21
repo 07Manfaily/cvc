@@ -1,16 +1,10 @@
-import React, { useState } from "react";
-import { Typography, Box, Grid } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
-import IconButton from '@mui/material/IconButton';
-import CardHeader from '@mui/material/CardHeader';
-import Popper from '@mui/material/Popper';
-import ModeIcon from '@mui/icons-material/Mode';
+import React from "react";
+import { Typography, Box, Grid, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import { deepOrange, deepPurple } from '@mui/material/colors';
-
-
+import { deepOrange } from '@mui/material/colors';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Header() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -43,27 +37,29 @@ export default function Header() {
   }));
 
   return (
-    <Box container style={{ backgroundColor: "#FEFEFE", }} sx={{ mb: 5, height: 70 }}>
-      <Grid item container direction="row" justifyContent="flex-start" alignItems="center">
+    <Box container style={{ backgroundColor: "#FEFEFE", padding: '0 20px' }} sx={{ mb: 5, height: 70 }}>
+      <Grid container direction="row" alignItems="center" justifyContent="space-between">
         <Typography variant="h6">Credapp Simplifié</Typography>
 
-        <Grid item container
- 
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center"
-        >
-
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="dot"
-          >
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>YM</Avatar>
-          </StyledBadge>    <Typography variant="h6">Yao Manfaily</Typography>
+        <Grid item container alignItems="center" spacing={1}>
+          <Grid item>
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar sx={{ bgcolor: deepOrange[500] }}>YM</Avatar>
+            </StyledBadge>
+          </Grid>
+          <Grid item>
+            <Typography variant="h6">Yao Manfaily</Typography>
+          </Grid>
+          <Grid item>
+            <IconButton>
+              <LogoutIcon />
+            </IconButton>
+          </Grid>
         </Grid>
-
-        logout
       </Grid>
     </Box>
   )

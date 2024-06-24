@@ -1,115 +1,89 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Félicitations - Changement de mot de passe</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-      td {
-        padding: 7px;
-      }
-      table {
-        border: none;
-        max-width: 817px;
-        width: 100%;
-      }
-      h1 {
-        color: rgb(26, 115, 232);
-        font-size: 17px;
-        text-align: center;
-      }
-      .content {
-        padding: 20px 50px;
-      }
-      .footer {
-        background: black;
-        color: white;
-        text-align: center;
-        font-size: 12px;
-      }
-      .footer-title {
-        background: #d53229;
-        text-align: center;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .footer-title h4 {
-        color: white;
-        font-family: Math;
-        margin: 0;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            padding: 50px 0;
+        }
+        .email-content {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            background-image: url('congrate.jpg'); /* Remplacez par l'URL de votre image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .header {
+       
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content img {
+            max-width: 100px;
+            margin: 20px 0;
+        }
+        .content h1 {
+            color: #333333;
+        }
+        .content p {
+            color: #3d3d3d;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .footer {
+            background-color: rgba(0, 145, 24, 0.8); 
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
     </style>
-  </head>
-  <body>
-    <div>
-      <table cellspacing="0" cellpadding="0" bgcolor="white">
-        <thead></thead>
-        <tbody>
-          <tr>
-            <td style="text-align: center;">
-              {% if apps.ico %}
-              <img width="50" src="{{ apps.ico }}" alt="{{ apps.name }} logo"/>
-              {% else %}
-              <img width="50" src="images/sg_logo.jpg" alt="SG logo"/>
-              {% endif %}
+</head>
+<body>
+    <table class="container" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
+                <table class="email-content" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="header" align="center">
+                            <img src="https://th.bing.com/th/id/OIP.clWwuOOAyYSJh8FXBDAhpQAAAA?rs=1&pid=ImgDetMain" alt="Success Icon" style="max-width: 150px;">
+                            <h1 style="margin: 0; color: #0da308;">Félicitations !</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="content" align="center">
+                            <!-- <img src="https://via.placeholder.com/100" alt="Password Changed" style="max-width: 100px;"> -->
+                            <h1 style="color: #333333;">Votre mot de passe a été changé</h1>
+                            <p>Bonjour,</p>
+                            <p>Nous vous confirmons que votre mot de passe a été modifié avec succès. Si vous n'êtes pas à l'origine de cette action, veuillez nous contacter immédiatement.</p>
+                            <p>Merci d'avoir utilisé nos services.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="footer" align="center">
+                            <p style="margin: 0; color: #ffffff;">DDT</p>
+                        </td>
+                    </tr>
+                </table>
             </td>
-          </tr>
-          <tr><td colspan="2" height="10"></td></tr>
-          <tr style="background: rgb(230, 230, 230); font-size: 12px;">
-            <td colspan="2" style="text-align: center;">
-              <b>C<span style="color: red">{{ mail.confidence }}</span>&nbsp;-&nbsp;</b>{{mail.confidence_text}}
-            </td>
-            <td style="text-align: right">{{ today.date }}</td>
-          </tr>
-          <tr><td colspan="2" height="10"></td></tr>
-          <!-- start content -->
-          <tr>
-            <td style="text-align: center;">
-              <h1>INFORMATIONS D'HABILITATION
-                {% if apps.name %} A
-                <span style="text-transform: uppercase;">{{ apps.name }}</span>
-                {% endif %}
-              </h1>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2" class="content" style="text-align: center;">
-              <div>Bonjour {{ full_name }},<br/>
-                Nous vous communiquons vos informations d'authentification {% if apps.name %} à
-                <span style="color: crimson;">{{ apps.name }}</span> {% endif %}: <br/>
-                <div>
-                  <ul style="list-style: none; padding: 0; text-align: left; display: inline-block;">
-                    <li><b>Identifiant : {{ username }}</b></li>
-                    <li><b>Mot de passe : {{ password }}</b></li>
-                    <li><b>lien: {{ link }}</b></li>
-                  </ul>
-                </div>
-                <br/>
-                Cordialement.
-              </div>
-            </td>
-          </tr>
-          <!-- end content -->
-          <tr><td colspan="3" height="10"></td></tr>
-          <tr>
-            <td colspan="3" class="footer">
-              L'equipe DDT est à votre écoute pour toutes préoccupations.
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" class="footer-title">
-              <h4>DDT</h4>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </body>
+        </tr>
+    </table>
+</body>
 </html>

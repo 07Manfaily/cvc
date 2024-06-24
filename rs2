@@ -3,47 +3,84 @@
   <head>
     <meta charset="UTF-8">
     <style>
-    td{
-        padding: 7px 7px 7px 7px
-    }
-</style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      td {
+        padding: 7px;
+      }
+      table {
+        border: none;
+        max-width: 817px;
+        width: 100%;
+      }
+      h1 {
+        color: rgb(26, 115, 232);
+        font-size: 17px;
+        text-align: center;
+      }
+      .content {
+        padding: 20px 50px;
+      }
+      .footer {
+        background: black;
+        color: white;
+        text-align: center;
+        font-size: 12px;
+      }
+      .footer-title {
+        background: #d53229;
+        text-align: center;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .footer-title h4 {
+        color: white;
+        font-family: Math;
+        margin: 0;
+      }
+    </style>
   </head>
   <body>
-  <div align="center">
-    <table style="border: none; max-width: 817px" cellspacing="0" cellpadding="0"
-      bgcolor="white">
-      <thead></thead>
-      <tbody>
-        <tr>
-         
-          <td>
-            {% if apps.ico %}
-            <img width="50" src="{{ apps.ico }}" alt="{{ apps.name }} logo"/>
-            {% else %}
-            <img width="50" src="images/sg_logo.jpg" alt="SG logo"/>
-            {% endif %}
-          </td>
-        </tr>
-        <tr><td colspan="2" height="10"></td></tr>
-        <tr style="background: rgb(230, 230, 230); font-size: 12px; " >
-          <td colspan="2"><b>C<span style="color: red">{{ mail.confidence }}</span>&nbsp;-&nbsp;</b>{{mail.confidence_text}}</td>
-          <td style="text-align: right">{{ today.date }}</td>
-        </tr>
-        <tr><td colspan="2" height="10"></td></tr>
-        <!-- start content -->
-
-        <tr>
-          <td>
-            <h1 style="color: rgb(26, 115, 232); font: 17px; text-align: center;">INFORMATIONS D'HABILITATION
-              {% if apps.name %} A
-                <span style="text-transform: uppercase;">{{ apps.name }}</span>
+    <div>
+      <table cellspacing="0" cellpadding="0" bgcolor="white">
+        <thead></thead>
+        <tbody>
+          <tr>
+            <td>
+              {% if apps.ico %}
+              <img width="50" src="{{ apps.ico }}" alt="{{ apps.name }} logo"/>
+              {% else %}
+              <img width="50" src="images/sg_logo.jpg" alt="SG logo"/>
               {% endif %}
-            </h1>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2" style="padding: 20px 50px 20px 50px">
-       
+            </td>
+          </tr>
+          <tr><td colspan="2" height="10"></td></tr>
+          <tr style="background: rgb(230, 230, 230); font-size: 12px;">
+            <td colspan="2">
+              <b>C<span style="color: red">{{ mail.confidence }}</span>&nbsp;-&nbsp;</b>{{mail.confidence_text}}
+            </td>
+            <td style="text-align: right">{{ today.date }}</td>
+          </tr>
+          <tr><td colspan="2" height="10"></td></tr>
+          <!-- start content -->
+          <tr>
+            <td>
+              <h1>INFORMATIONS D'HABILITATION
+                {% if apps.name %} A
+                <span style="text-transform: uppercase;">{{ apps.name }}</span>
+                {% endif %}
+              </h1>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="content">
               <div>Bonjour {{ full_name }},<br/>
                 Nous vous communiquons vos informations d'authentification {% if apps.name %} à
                 <span style="color: crimson;">{{ apps.name }}</span> {% endif %}: <br/>
@@ -55,27 +92,24 @@
                   </ul>
                 </div>
                 <br/>
-               Cordialement.
+                Cordialement.
               </div>
-      
-     
-          </td>
-        </tr>
-
-        <!-- end content -->
-        <tr><td colspan="3" height="10"></td></tr>
-        <tr>
-  <td colspan="3"  style=" background: black; color: white; text-align: center; font-size: 12px">
-      L'equipe DDT est à votre écoute pour toutes préoccupations.
-  </td>
-</tr>
-<tr>
-  <td colspan="3"  style=" background: #d53229; text-align: center" valign="center" height="50">
-      <h4 style="color: white; font-family: Math;">DDT</h4>
-  </td>
-</tr>
-      </tbody>
-    </table>
-  </div>
+            </td>
+          </tr>
+          <!-- end content -->
+          <tr><td colspan="3" height="10"></td></tr>
+          <tr>
+            <td colspan="3" class="footer">
+              L'equipe DDT est à votre écoute pour toutes préoccupations.
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" class="footer-title">
+              <h4>DDT</h4>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

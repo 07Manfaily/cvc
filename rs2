@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { Grid, Button, Box, Tab, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import Header from '../components/header';
 import userImage from '../assets/user.png'
 
@@ -11,24 +11,17 @@ export default function Credapp() {
          <Header />
          <Grid container spacing={2} direction="column" sx={{ backgroundColor: "#CFCFCF" }}>
             <Grid item sx={{ mb: 2, ml: 2, mr: 2 }}>
-               <Grid container sx={{ backgroundColor: "#2D3A23 ", color: "white", borderRadius: 7 }} direction="row" justifyContent="space-between" alignItems="center">
-                  <Grid container justifyContent="space-between" alignItems="flex-start">
+               <Grid container sx={{ backgroundColor: "#2D3A23", color: "white", borderRadius: 7 }} direction="row" justifyContent="space-between" alignItems="center">
+                  <Grid item>
                      <img src={userImage} width={150} alt="user" />
-                     <Grid item direction="column" justifyContent="space-between" alignItems="flex-start">
-
-                        <Typography variant="h6" >Identifiant : {id}</Typography>
-                        <Typography variant="h6">Yao Manfaily</Typography>
-                     </Grid>
-                     <Grid item direction="column" justifyContent="space-between" alignItems="flex-start">
-
-                        <Typography variant="h6" >Identifiant : {id}</Typography>
-                        <Typography variant="h6">Yao Manfaily</Typography>
-                     </Grid>
                   </Grid>
-
+                  <Grid item>
+                     <Typography variant="h6">Identifiant : {id}</Typography>
+                     <Typography variant="h6">Yao Manfaily</Typography>
+                  </Grid>
                </Grid>
             </Grid>
          </Grid>
       </>
-   )
+   );
 }

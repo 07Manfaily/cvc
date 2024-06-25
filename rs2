@@ -4,6 +4,7 @@ import { Grid, Typography } from '@mui/material';
 import Header from '../components/header';
 import userImage from '../assets/user.png'
 
+
 export default function Credapp() {
    const { id } = useParams();
    return (
@@ -13,15 +14,125 @@ export default function Credapp() {
             <Grid item sx={{ mb: 2, ml: 2, mr: 2 }}>
                <Grid container sx={{ backgroundColor: "#2D3A23", color: "white", borderRadius: 7 }} direction="row" justifyContent="space-between" alignItems="center">
                   <Grid item>
-                     <img src={userImage} width={150} alt="user" />
+                     <Grid container spacing={2}>
+                        <Grid item>
+                           <img src={userImage} width={150} alt="user" />
+                        </Grid>
+                        <Grid item>
+                           <Typography variant="h6">Identifiant : {id}</Typography>
+                           <Typography variant="h6">Yao Manfaily</Typography>
+                        </Grid>
+                     </Grid>
                   </Grid>
                   <Grid item>
-                     <Typography variant="h6">Identifiant : {id}</Typography>
-                     <Typography variant="h6">Yao Manfaily</Typography>
+                     <Grid container spacing={4}>
+                        <Grid item>
+                        <Typography variant="h6"> Note Or:6</Typography>
+                        </Grid>
+                        <Grid item>
+                        <Typography variant="h6">Note Sg Fc : 34</Typography>
+                        </Grid>
+                      
+                      
+                     </Grid>
                   </Grid>
+
                </Grid>
             </Grid>
          </Grid>
       </>
    );
+}
+
+
+
+
+
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import { Typography, Box, Grid, IconButton } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Popper from '@mui/material/Popper';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Avatar from '@mui/material/Avatar';
+import { styled } from '@mui/material/styles';
+import Badge from '@mui/material/Badge';
+import { deepOrange } from '@mui/material/colors';
+
+export default function Header() {
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popper' : undefined;
+
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      backgroundColor: '#44b700',
+      color: '#44b700',
+      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+      '&::after': {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        animation: 'ripple 1.2s infinite ease-in-out',
+        border: '1px solid currentColor',
+        content: '""',
+      },
+    },
+    '@keyframes ripple': {
+      '0%': {
+        transform: 'scale(.8)',
+        opacity: 1,
+      },
+      '100%': {
+        transform: 'scale(2.4)',
+        opacity: 0,
+      },
+    },
+  }));
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" style={{height:"80px",backgroundColor:"#004C64"}}>
+        <Toolbar>
+          {/* <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton> */}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Credapp Simplifié
+          </Typography>
+          <IconButton  onClick={handleClick}><StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar sx={{ bgcolor: deepOrange[500] }}>YM</Avatar>
+            </StyledBadge></IconButton>
+          
+     <Popper id={id} open={open} anchorEl={anchorEl}>
+     <IconButton>
+           <LogoutIcon style={{color:"red"}}/>
+            </IconButton>
+            </Popper>
+            <Grid>
+              <b>Yao Manfaily</b>
+            </Grid>
+         
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
 }

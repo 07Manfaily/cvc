@@ -1,64 +1,91 @@
-{
-  "name": "credapp",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@fontsource/roboto": "^5.0.13",
-    "@mui/icons-material": "^5.15.20",
-    "@mui/lab": "^5.0.0-alpha.170",
-    "@mui/material": "^5.15.20",
-    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
-    "@mui/styles": "^5.15.21",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^12.1.2",
-    "animate.css": "^4.1.1",
-    "axios": "^1.7.2",
-    "date-fns": "^3.6.0",
-    "http-proxy-middleware": "^3.0.0",
-    "numeral": "^2.0.6",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-loader-spinner": "^6.1.6",
-    "react-router": "^6.23.1",
-    "react-router-dom": "^6.23.1",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^8.1.0",
-    "styled-components": "^5.3.3",
-    "typescript": "^4.5.2",
-    "web-vitals": "^2.1.4"
-  },
-  "cache": false,
-  "proxy": "http://localhost:7777",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
+ npm install
+npm notice
+npm notice New minor version of npm available! 10.7.0 -> 10.8.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v10.8.1
+npm notice To update run: npm install -g npm@10.8.1
+npm notice
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: credapp@0.1.0
+npm error Found: styled-components@5.3.11
+npm error node_modules/styled-components
+npm error   styled-components@"^5.3.3" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer styled-components@"^6.0.0" from @mui/styled-engine-sc@6.0.0-alpha.18
+npm error node_modules/@mui/styled-engine-sc
+npm error   @mui/styled-engine-sc@"^6.0.0-alpha.18" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T11_59_47_649Z-eresolve-report.txt
 
+npm error A complete log of this run can be found in: C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T11_59_47_649Z-debug-0.log
+PS D:\ROLAND_YAO\credapp> pm install -g npm@10.8.1
+pm : The term 'pm' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the 
+path is correct and try again.
+At line:1 char:1
++ pm install -g npm@10.8.1
++ ~~
+    + CategoryInfo          : ObjectNotFound: (pm:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+PS D:\ROLAND_YAO\credapp> npm install -g npm@10.8.1
 
+added 1 package in 12s
+
+24 packages are looking for funding
+  run `npm fund` for details
+PS D:\ROLAND_YAO\credapp> npm install
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: credapp@0.1.0
+npm error Found: styled-components@5.3.11
+npm error node_modules/styled-components
+npm error   styled-components@"^5.3.3" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer styled-components@"^6.0.0" from @mui/styled-engine-sc@6.0.0-alpha.18
+npm error node_modules/@mui/styled-engine-sc
+npm error   @mui/styled-engine-sc@"^6.0.0-alpha.18" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T12_01_35_556Z-eresolve-report.txt
+npm error A complete log of this run can be found in: C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T12_01_35_556Z-debug-0.log
+PS D:\ROLAND_YAO\credapp> npm install
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: credapp@0.1.0
+npm error Found: styled-components@5.3.11
+npm error node_modules/styled-components
+npm error   styled-components@"^5.3.3" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer styled-components@"^6.0.0" from @mui/styled-engine-sc@6.0.0-alpha.18
+npm error node_modules/@mui/styled-engine-sc
+npm error   @mui/styled-engine-sc@"^6.0.0-alpha.18" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T12_01_49_503Z-eresolve-report.txt
+npm error A complete log of this run can be found in: C:\Users\Roland.YAO-H\AppData\Local\npm-cache\_logs\2024-07-01T12_01_49_503Z-debug-0.log
+PS D:\ROLAND_YAO\credapp>
 
 
 import React, { useState, useEffect } from 'react';

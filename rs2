@@ -1,60 +1,19 @@
-{
-  "name": "credapp",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@fontsource/roboto": "^5.0.13",
-    "@mui/icons-material": "^5.15.20",
-    "@mui/material": "^5.15.20",
-    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
-    "@mui/styles": "^5.15.20",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "animate.css": "^4.1.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router": "^6.23.1",
-    "react-router-dom": "^6.23.1",
-    "react-scripts": "5.0.1",
-    "styled-components": "^6.1.11",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'animate.css';
 
 const Questionnaire = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState(Array(10).fill({ radio: '', comment: '' }));
+  const [animationClass, setAnimationClass] = useState('');
+
+  useEffect(() => {
+    setAnimationClass('animate__animated animate__backInUp');
+    const timer = setTimeout(() => {
+      setAnimationClass('');
+    }, 1000); // La durée de l'animation doit correspondre à celle définie dans animate.css (par défaut 1s)
+
+    return () => clearTimeout(timer);
+  }, [currentQuestion]);
 
   const handleNext = () => {
     setCurrentQuestion((prev) => Math.min(prev + 1, 9));
@@ -85,7 +44,7 @@ const Questionnaire = () => {
       {answers.map((answer, index) => (
         <div
           key={index}
-          className={`question animate__animated ${index === currentQuestion ? 'animate__backInUp' : ''}`}
+          className={`question ${index === currentQuestion ? animationClass : ''}`}
           style={{ display: index === currentQuestion ? 'block' : 'none' }}
         >
           <h2>Question {index + 1}</h2>

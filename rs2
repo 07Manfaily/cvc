@@ -1,357 +1,49 @@
-
-ERROR in ./node_modules/react-router/dist/index.js 689:12-28
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 694:14-30
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 699:14-30
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 735:9-22
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 750:9-22
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 790:14-30
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 808:14-30
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 816:14-30
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 833:36-50
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 834:24-41
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 863:2-17
-export 'useEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 873:2-17
-export 'useEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 893:18-30
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 897:17-34
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 957:30-44
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 961:17-34
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 971:2-23
-export 'useLayoutEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 972:2-17
-export 'useEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 977:18-31
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 994:26-39
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1007:22-41
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1007:42-56
-export 'Fragment' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1007:77-96
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1009:18-37
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1011:18-37
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1019:75-94
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1046:19-31
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1055:30-44
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1062:17-34
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1065:2-23
-export 'useLayoutEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1066:22-41
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1098:6-22
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1102:6-22
-export 'useContext' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1112:2-17
-export 'useEffect' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1159:26-39
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1177:24-37
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1197:22-41
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1199:18-37
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1227:22-41
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1230:18-37
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1239:33-48
-export 'Component' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1309:26-45
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1316:26-45
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1337:22-41
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1337:42-56
-export 'Fragment' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1356:2-24
-export 'Children' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1357:23-43
-export 'isValidElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1363:25-39
-export 'Fragment' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1413:28-47
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1424:43-62
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-router/dist/index.js 1435:33-52
-export 'createElement' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 11:20-34
-export 'isValidElement' (imported as 'isValidElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 14:16-28
-export 'Children' (imported as 'Children') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 82:11-23
-export 'cloneElement' (imported as 'cloneElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 96:9-23
-export 'isValidElement' (imported as 'isValidElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 100:20-34
-export 'isValidElement' (imported as 'isValidElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 104:22-34
-export 'cloneElement' (imported as 'cloneElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 113:22-34
-export 'cloneElement' (imported as 'cloneElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 116:37-51
-export 'isValidElement' (imported as 'isValidElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/react-transition-group/esm/utils/ChildMapping.js 120:22-34
-export 'cloneElement' (imported as 'cloneElement') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 6:46-61
-export 'useLayoutEffect' (imported as 'useLayoutEffect') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 6:64-73
-export 'useEffect' (imported as 'useEffect') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 69:14-26
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 97:26-40
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 105:50-64
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 109:38-52
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 110:36-50
-export 'useState' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 111:23-40
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 117:22-39
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 125:23-35
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 126:22-34
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 127:18-30
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 131:17-34
-export 'useCallback' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 150:8-26
-export 'flushSync' (imported as 'ReactDOM') was not found in 'react-dom' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 165:23-35
-export 'useRef' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 182:15-28
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 188:19-32
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 192:25-38
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs 218:9-22
-export 'useMemo' (imported as 'React') was not found in 'react' (module has no exports)
-
-ERROR in ./node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js 3:0-28
-Module not found: Error: Can't resolve 'stream' in 'D:\ROLAND_YAO\credapp\node_modules\axios\lib\helpers'
-
-BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
-This is no longer the case. Verify if you need this module and configure a polyfill for it.
-
-If you want to include a polyfill, you need to:
-        - add a fallback 'resolve.fallback: { "stream": require.resolve("stream-browserify") }'
-        - install 'stream-browserify'
-If you don't want to include a polyfill, you can use an empty module like this:
-        resolve.fallback: { "stream": false }
-
-webpack compiled with 1864 errors and 3 warnings
-
-
-
-import React, { useState, useEffect } from 'react';
-import 'animate.css';
-
-const Questionnaire = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState(Array(10).fill({ radio: '', comment: '' }));
-  const [animationClass, setAnimationClass] = useState('');
-
-  useEffect(() => {
-    setAnimationClass('animate__animated animate__backInUp');
-    const timer = setTimeout(() => {
-      setAnimationClass('');
-    }, 1000); // La durée de l'animation doit correspondre à celle définie dans animate.css (par défaut 1s)
-
-    return () => clearTimeout(timer);
-  }, [currentQuestion]);
-
-  const handleNext = () => {
-    setCurrentQuestion((prev) => Math.min(prev + 1, 9));
-  };
-
-  const handleBack = () => {
-    setCurrentQuestion((prev) => Math.max(prev - 1, 0));
-  };
-
-  const handleAnswerChange = (index, field, value) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = { ...newAnswers[index], [field]: value };
-    setAnswers(newAnswers);
-  };
-
-  const handleQuestionClick = (index) => {
-    if (answers[index].radio && answers[index].comment) {
-      setCurrentQuestion(index);
-    }
-  };
-
-  const isQuestionValid = (index) => {
-    return answers[index].radio && answers[index].comment;
-  };
-
-  return (
-    <div>
-      {answers.map((answer, index) => (
-        <div
-          key={index}
-          className={`question ${index === currentQuestion ? animationClass : ''}`}
-          style={{ display: index === currentQuestion ? 'block' : 'none' }}
-        >
-          <h2>Question {index + 1}</h2>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name={`question-${index}`}
-                value="yes"
-                checked={answer.radio === 'yes'}
-                onChange={() => handleAnswerChange(index, 'radio', 'yes')}
-              />
-              Yes
-            </label>
-            <label>
-              <input
-                type="radio"
-                name={`question-${index}`}
-                value="no"
-                checked={answer.radio === 'no'}
-                onChange={() => handleAnswerChange(index, 'radio', 'no')}
-              />
-              No
-            </label>
-          </div>
-          <textarea
-            value={answer.comment}
-            onChange={(e) => handleAnswerChange(index, 'comment', e.target.value)}
-            placeholder="Add a comment"
-          />
-          <div>
-            <button onClick={handleBack} disabled={index === 0}>
-              Back
-            </button>
-            <button onClick={handleNext} disabled={index === 9}>
-              Next
-            </button>
-          </div>
-        </div>
-      ))}
-      <div className="question-navigation">
-        {answers.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleQuestionClick(index)}
-            disabled={!isQuestionValid(index)}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default Questionnaire;
+{
+  "name": "credapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource/roboto": "^5.0.13",
+    "@mui/icons-material": "^5.15.20",
+    "@mui/material": "^5.15.20",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/styles": "^5.15.20",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "animate.css": "^4.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router": "^6.23.1",
+    "react-router-dom": "^6.23.1",
+    "react-scripts": "5.0.1",
+    "styled-components": "^6.1.11",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

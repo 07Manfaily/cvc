@@ -19,6 +19,16 @@ const Questionnaire = () => {
     setAnswers(newAnswers);
   };
 
+  const handleQuestionClick = (index) => {
+    if (answers[index].radio && answers[index].comment) {
+      setCurrentQuestion(index);
+    }
+  };
+
+  const isQuestionValid = (index) => {
+    return answers[index].radio && answers[index].comment;
+  };
+
   return (
     <div>
       {answers.map((answer, index) => (
@@ -65,11 +75,19 @@ const Questionnaire = () => {
           </div>
         </div>
       ))}
+      <div className="question-navigation">
+        {answers.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleQuestionClick(index)}
+            disabled={!isQuestionValid(index)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default Questionnaire;
-
-
-

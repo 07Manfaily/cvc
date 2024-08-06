@@ -13,31 +13,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 const dataElegibility = Object.entries(elegibilityData).map(([key, value]) => {
   return { key: value.key, title: value.title, desc: value.desc };
 });
-export const i =EligibilityCheck.Id;
-export const handleSendControl = async (data,id) => {
-  try {
- 
-    const valuesOnly = val.data.map(item => item.value);
-    const allValuesAreOne = valuesOnly.every(value => value == 1);
-    setAllRadio(allValuesAreOne)
 
-    const response = await axios
-      .post("/api/panel/eligibility/set",
-        {
-          "data": data,
-          "number_client": id
-        }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
-        }
-      })
-  } catch (error) {
-    console.log("Erreur lors du traitement:", error);
-  }
-
-};
-export const val = EligibilityCheck.dataToSend;
 export default function EligibilityCheck({ radio, send }) {
 
   const [radioResult, setRadioResult] = useState()
@@ -46,14 +22,37 @@ export default function EligibilityCheck({ radio, send }) {
   const [answers, setAnswers] = useState(Array(dataElegibility.length).fill({ radio: '', comment: '' }));
   const { Id } = useParams();
 
-  const dataToSend = () => {
-    return dataElegibility.map((item, index) => ({
-      label: item.key,
-      value: answers[index].radio,
-      comment: answers[index].comment
-    }));
+  const handleSendControl = async () => {
+    try {
+      const dataToSend = {
+        data: dataElegibility.map((item, index) => ({
+          label: item.key,
+          value: answers[index].radio,
+          comment: answers[index].comment
+        })),
+        Id
+      };
+      const valuesOnly = dataToSend.data.map(item => item.value);
+      const allValuesAreOne = valuesOnly.every(value => value == 1);
+      setAllRadio(allValuesAreOne)
+
+      const response = await axios
+        .post("/api/panel/eligibility/set",
+          {
+            "data": dataToSend,
+            "number_client": Id
+          }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie("csrf_refresh_token")
+          }
+        })
+    } catch (error) {
+      console.log("Erreur lors du traitement:", error);
+    }
+
   };
-  
+
   const handleGetControlEligibite = async () => {
     try {
       const response = await axios

@@ -17,9 +17,9 @@ export const i =EligibilityCheck.Id;
 export const handleSendControl = async (data,id) => {
   try {
  
-    // const valuesOnly = val.data.map(item => item.value);
-    // const allValuesAreOne = valuesOnly.every(value => value == 1);
-    // setAllRadio(allValuesAreOne)
+    const valuesOnly = val.data.map(item => item.value);
+    const allValuesAreOne = valuesOnly.every(value => value == 1);
+    setAllRadio(allValuesAreOne)
 
     const response = await axios
       .post("/api/panel/eligibility/set",

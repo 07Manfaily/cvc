@@ -11,7 +11,6 @@ import { Box, Grid } from "@mui/material";
 import Button from "@mui/material/Button";
 import { ColorRing } from "react-loader-spinner";
 
-
 const steps = [
   "Contrôle d'Eligibilité",
   "Descriptifs avant la demande",
@@ -20,27 +19,27 @@ const steps = [
 ];
 
 export default function Credapp() {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const [sendControl, setSendControl] = useState(null);
   const [loading, setLoading] = useState(false);
-
 
   const getFunctionSendControl = (func) => {
     setSendControl(() => func);
   };
 
-  const sendFunctionSendControl =()=>{
-    if(sendControl){
-      setLoading(true)
-      sendControl()
-      setLoading(false)
+  const sendFunctionSendControl = async () => {
+    if (sendControl) {
+      setLoading(true);
+      await sendControl();
+      setLoading(false);
     }
-  }
-    const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleNext = async () => {
     if (activeStep === 0) {
-      sendFunctionSendControl();
+      await sendFunctionSendControl();
     }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
@@ -54,7 +53,7 @@ export default function Credapp() {
   const getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
-        return <EligibilityCheck send={getFunctionSendControl}/>;
+        return <EligibilityCheck send={getFunctionSendControl} />;
       case 1:
         return <BeforeRequest />;
       case 2:
@@ -68,72 +67,63 @@ export default function Credapp() {
 
   return (
     <>
-  {loading ?   <ColorRing
-  visible={loading}
-  height="80"
-  width="80"
-  ariaLabel="color-ring-loading"
-  wrapperStyle={{}}
-  wrapperClass="color-ring-wrapper"
-  colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-  /> 
-      <Stepper activeStep={activeStep} sx={{ mt: 2, mb: 8 }}>
-        {steps.map((label, index) => {
-          const stepProps = {};
-          const labelProps = {};
-
-          return (
-           
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            Toutes les étapes ont été complétées - vous avez terminé
-          </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset}>Réinitialiser</Button>
-          </Box>
-        </React.Fragment>
+      {loading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <ColorRing
+            visible={loading}
+            height="80"
+            width="80"
+            ariaLabel="color-ring-loading"
+            wrapperStyle={{}}
+            wrapperClass="color-ring-wrapper"
+            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+          />
+        </Box>
       ) : (
-        <React.Fragment>
-          <Grid sx={{ width: "97%", ml: 2 }}>{getStepContent(activeStep)}</Grid>
-
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2, ml: 2, mr: 3 }}>
-            <Button
-              variant="contained"
-              style={{ color: "white", backgroundColor: activeStep === 0 ? "" : "red" }}
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Retour
-            </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
-
-            <Button
-              onClick={handleNext}
-              variant="contained"
-              style={{ color: "white", backgroundColor: "#38699f" }}
-            >
-              {activeStep === steps.length - 1 ? "Terminer" : "Suivant"}
-            </Button>
-
-            {/* <Button
-              onClick={sendFunctionSendControl}
-              variant="contained"
-              style={{ color: "white", backgroundColor: "#38699f" }}
-            >
-            send
-            </Button> */}
-          </Box>
-        </React.Fragment>
-      )}: }
+        <>
+          <Stepper activeStep={activeStep} sx={{ mt: 2, mb: 8 }}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          {activeStep === steps.length ? (
+            <>
+              <Typography sx={{ mt: 2, mb: 1 }}>
+                Toutes les étapes ont été complétées - vous avez terminé
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button onClick={handleReset}>Réinitialiser</Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Grid sx={{ width: "97%", ml: 2 }}>{getStepContent(activeStep)}</Grid>
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2, ml: 2, mr: 3 }}>
+                <Button
+                  variant="contained"
+                  style={{ color: "white", backgroundColor: activeStep === 0 ? "" : "red" }}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Retour
+                </Button>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button
+                  onClick={handleNext}
+                  variant="contained"
+                  style={{ color: "white", backgroundColor: "#38699f" }}
+                >
+                  {activeStep === steps.length - 1 ? "Terminer" : "Suivant"}
+                </Button>
+              </Box>
+            </>
+          )}
+        </>
+      )}
     </>
   );
 }

@@ -4,9 +4,6 @@ import EligibilityCheck from "./eligibilityCheck";
 import Engagement from "./engagementTable";
 import BeforeRequest from "./descriptifBeforeRequest";
 import AfterRequest from "./descriptifAfterRequest";
-import { handleSendEngagement } from "./engagementTable";
-import { ok } from "./engagementTable";
-import { handleSendInsight,getData} from "./descriptifAfterRequest";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -23,19 +20,22 @@ const steps = [
 
 export default function Credapp() {
   const [activeStep, setActiveStep] = React.useState(0);
-  let EligibilityCheckRef = useRef(null);
-  const { Id } = useParams();
-   useEffect(() => {
-     if (activeStep === 3) {
-       handleSendInsight(getData,Id);
-       console.log("ddd",getData)
-     }else if(activeStep === 1){
-      EligibilityCheckRef.current.a();
-     }
-   }, [activeStep]);
-  const handleNext = () => {
+  const [sendControl, setSendControl] = useState(null);
+
+  const getFunctionSendControl = (func) => {
+    setSendControl(() => func);
+  };
+
+  const sendFunctionSendControl =()=>{
+    if(sendControl){
+      getFunctionSendControl()
+    }
+  }
+    const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-   
+    if (activeStep === 1) {
+      sendFunctionSendControl();
+    }
   };
 
   const handleBack = () => {
@@ -49,7 +49,7 @@ export default function Credapp() {
   const getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
-        return <EligibilityCheck />;
+        return <EligibilityCheck send={getFunctionSendControl}/>;
       case 1:
         return <BeforeRequest />;
       case 2:
@@ -117,7 +117,11 @@ export default function Credapp() {
 
 
 
-import React, { useState, useEffect } from 'react';
+
+
+
+
+import React, { useState, useEffect} from 'react';
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import getCookie from 'app/utils/getCookies';
@@ -132,7 +136,7 @@ const dataElegibility = Object.entries(elegibilityData).map(([key, value]) => {
   return { key: value.key, title: value.title, desc: value.desc };
 });
 
-export default function EligibilityCheck({ radio, send }) {
+export default function EligibilityCheck({send})  {
 
   const [radioResult, setRadioResult] = useState()
   const [allRadio, setAllRadio] = useState()
@@ -140,6 +144,11 @@ export default function EligibilityCheck({ radio, send }) {
   const [answers, setAnswers] = useState(Array(dataElegibility.length).fill({ radio: '', comment: '' }));
   const { Id } = useParams();
 
+
+  const test = ()=>{
+    console.log("blabla")
+  }
+ 
   const handleSendControl = async () => {
     try {
       const dataToSend = {
@@ -155,7 +164,7 @@ export default function EligibilityCheck({ radio, send }) {
       setAllRadio(allValuesAreOne)
 
       const response = await axios
-        .post("/api/pt",
+        .post("/api/panel/eligibility/set",
           {
             "data": dataToSend,
             "number_client": Id
@@ -167,15 +176,18 @@ export default function EligibilityCheck({ radio, send }) {
         })
     } catch (error) {
       console.log("Erreur lors du traitement:", error);
-    }
+    }}
 
-  };
+ if(send){
+   send(handleSendControl)
+ }
+
 
   const handleGetControlEligibite = async () => {
     try {
       const response = await axios
         .post(
-          "/api/pa",
+          "/api/panel/eligibility",
           { number_client: Id },
           {
             headers: {
@@ -291,4 +303,4 @@ export default function EligibilityCheck({ radio, send }) {
       </Grid>
     </Grid>
   );
-}
+ }

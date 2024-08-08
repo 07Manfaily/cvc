@@ -21,9 +21,14 @@ const steps = [
 export default function Credapp() {
   const [activeStep, setActiveStep] = useState(0);
   const [sendControl, setSendControl] = useState(null);
+  const [sendDescriptif, setSendDescriptif] = useState(null);
+  const [sendEngagement, setSendEngagement] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
-  const getFunctionSendControl = (func) => {
+    //recuperation de la methode d'envoie des données(Controle d'eligibilité) depuis son fichier de creation 
+
+  const getFunctionSendControlRef = (func) => {
     setSendControl(() => func);
   };
 
@@ -34,10 +39,40 @@ export default function Credapp() {
       setLoading(false);
     }
   };
+  //recuperation de la methode d'envoie des données(Descriptif après demande) depuis son fichier de creation 
+
+  const getFunctionSendDescriptifRef = (func) => {
+    setSendDescriptif(() => func);
+  };
+ const sendFunctionSendDescriptif = async () => {
+    if (sendDescriptif) {
+      setLoading(true);
+      await sendDescriptif();
+      setLoading(false);
+    }
+  };
+
+  //recuperation de la methode d'envoie des données(engagement) depuis son fichier de creation 
+  const getFunctionSendEngagementRef= (func) => {
+    setSendEngagement(() => func);
+  };
+ const sendFunctionSendEngagement = async () => {
+    if (sendDescriptif) {
+      setLoading(true);
+      await sendEngagement();
+      setLoading(false);
+    }
+  };
 
   const handleNext = async () => {
     if (activeStep === 0) {
       await sendFunctionSendControl();
+    }
+     if(activeStep === 2){
+      await  sendFunctionSendDescriptif();
+    }
+     if(activeStep === 3){
+      await sendFunctionSendEngagement();
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -53,13 +88,13 @@ export default function Credapp() {
   const getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
-        return <EligibilityCheck send={getFunctionSendControl} />;
+        return <EligibilityCheck send={getFunctionSendControlRef} />;
       case 1:
         return <BeforeRequest />;
       case 2:
-        return <AfterRequest />;
+        return <AfterRequest sendValue={getFunctionSendDescriptifRef} />;
       case 3:
-        return <Engagement />;
+        return <Engagement sendEngagement={getFunctionSendEngagementRef}/>;
       default:
         return "Unknown stepIndex";
     }

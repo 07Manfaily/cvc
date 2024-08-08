@@ -14,7 +14,7 @@ const dataElegibility = Object.entries(elegibilityData).map(([key, value]) => {
   return { key: value.key, title: value.title, desc: value.desc };
 });
 
-export default function EligibilityCheck({send})  {
+export default function EligibilityCheck({send,resultat})  {
 
   const [radioResult, setRadioResult] = useState()
   const [allRadio, setAllRadio] = useState()
@@ -22,8 +22,16 @@ export default function EligibilityCheck({send})  {
   const [answers, setAnswers] = useState(Array(dataElegibility.length).fill({ radio: '', comment: '' }));
   const { Id } = useParams();
 
+  const result = 
+    dataElegibility.map((item, index) => ({
+      label: item.key,
+      value: answers[index].radio,
+      comment: answers[index].comment
+    })).map(item => item.value).every(value => value == 1)
+  
+  // const valuesOnly = result.map(item => item.value);
+  // const allValuesAreOne = valuesOnly.every(value => value == 1);
 
- 
   const handleSendControl = async () => {
     try {
       const dataToSend = {
@@ -34,10 +42,6 @@ export default function EligibilityCheck({send})  {
         })),
         Id
       };
-      const valuesOnly = dataToSend.data.map(item => item.value);
-      const allValuesAreOne = valuesOnly.every(value => value == 1);
-      setAllRadio(allValuesAreOne)
-
       const response = await axios
         .post("/api/panel/eligibility/set",
           {
@@ -55,8 +59,10 @@ export default function EligibilityCheck({send})  {
     useEffect(() => {
       if(send){
         send(handleSendControl)
+      }else if(resultat){
+        resultat(result)
       }
-    }, [send]);
+    }, [send,resultat]);
 
 
 
@@ -176,6 +182,10 @@ export default function EligibilityCheck({send})  {
         </Button>
         <Button variant="contained" onClick={handleNext} disabled={!answers[currentQuestion].radio} sx={{ ml: 2 }}>
           <NavigateNextIcon />
+        </Button>
+
+        <Button variant="contained" onClick={()=>{console.log("all", handleSendControl(), "r", allRadio)}}  sx={{ ml: 2 }}>
+      testx
         </Button>
       </Grid>
     </Grid>

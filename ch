@@ -12,7 +12,6 @@ import Button from "@mui/material/Button";
 import { ColorRing } from "react-loader-spinner";
 import { ToastContainer, toast } from 'react-toastify';
 
-
 const steps = [
   "Contrôle d'Eligibilité",
   "Descriptifs avant la demande",
@@ -29,13 +28,11 @@ export default function Credapp() {
   const [sendEngagement, setSendEngagement] = useState(null);
 
   const [loading, setLoading] = useState(false);
-
-  //recuperation de la methode d'envoie des données(Controle d'eligibilité) depuis son fichier de creation
+  const [disabledNext, setDisabledNext] = useState(false);
 
   const getFunctionSendControlRef = (func) => {
     setSendControl(() => func);
   };
-
 
   const sendFunctionSendControl = async () => {
     if (sendControl) {
@@ -44,48 +41,38 @@ export default function Credapp() {
       setLoading(false);
     }
   };
-  //recuperation de la methode d'envoie des données(Descriptif après demande) depuis son fichier de creation
-
-  const getFunctionSendDescriptifRef = (func) => {
-    setSendDescriptif(() => func);
-  };
-  const sendFunctionSendDescriptif = async () => {
-    if (sendDescriptif) {
-      setLoading(true);
-      await sendDescriptif();
-      setLoading(false);
-    }
-  };
-
-  //recuperation de la methode d'envoie des données(engagement) depuis son fichier de creation
-  const getFunctionSendEngagementRef = (func) => {
-    setSendEngagement(() => func);
-  };
-  const sendFunctionSendEngagement = async () => {
-    if (sendEngagement) {
-      setLoading(true);
-      await sendEngagement();
-      setLoading(false);
-    }
-  };
-
-
 
   const getResultRef = (func) => {
     setCheckResult(() => func);
   };
 
-  const show =  () => {
+  const show = () => {
     if (checkResult) {
       return checkResult();
     }
- 
+    return false;
   };
 
   const handleNext = async () => {
     if (activeStep === 0) {
       await sendFunctionSendControl();
-      show();
+      const result = show();
+      if (!result) {
+        setDisabledNext(true);
+        toast.error('🦄 Désolé, vous ne pouvez pas continuer car les critères d\'éligibilité ne sont pas vérifiés!', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        return; // Arrêter la fonction si les critères ne sont pas vérifiés
+      } else {
+        setDisabledNext(false);
+      }
     } else if (activeStep === 2) {
       await sendFunctionSendDescriptif();
     } else if (activeStep === 3) {
@@ -117,17 +104,6 @@ export default function Credapp() {
     }
   };
 
-  toast.error('🦄 Désolé vous ne pouvez pas continuer la Credapp car les critères d\'éligibilité ne sont pas vérifier!', {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    });
-
   return (
     <>
       {loading ? (
@@ -144,19 +120,7 @@ export default function Credapp() {
         </Box>
       ) : (
         <>
-        {!show ?
-         <ToastContainer
-position="top-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="dark"
-/> : ""}
+          <ToastContainer />
           <Stepper activeStep={activeStep} sx={{ mt: 2, mb: 8 }}>
             {steps.map((label) => (
               <Step key={label}>
@@ -189,15 +153,13 @@ theme="dark"
                 </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
                 <Button
-                 disabled={!show()}
+                  disabled={disabledNext}
                   onClick={handleNext}
                   variant="contained"
                   style={{ color: "white", backgroundColor: "#38699f" }}
                 >
                   {activeStep === steps.length - 1 ? "Terminer" : "Suivant"}
                 </Button>
-
-               
               </Box>
             </>
           )}

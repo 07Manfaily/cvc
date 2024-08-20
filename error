@@ -1,5 +1,3 @@
-voici mon code sur la vue les donnée doivent etre formater par fnumber mais a l'envoie sur l'api sa ne doit pas etre formater et aussi dans les clés d'envoie "autorisation_amount" doit etre "authorization" et "title" devient "line" que faire repond en francais 
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -19,7 +17,7 @@ import {
   Modal,
   Backdrop,
   Fade,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { Alert } from "@mui/lab";
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -29,10 +27,19 @@ import { fNumber } from "app/utils/formatNumber";
 import getCookie from "app/utils/getCookies";
 import { formatKeyResponseBeforeRequest } from "app/utils/constomizeResponse";
 
-
-export default function BeforeRequest({sendValue}) {
+export default function BeforeRequest({ sendValue }) {
   const { Id } = useParams();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [editRow, setEditRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [nature, setNature] = useState("");
+  const [compte, setCompte] = useState("");
+  const [autorisation, setAutorisation] = useState("");
+  const [encour, setEncour] = useState("");
+  const [devise, setDevise] = useState("");
+  const [delais, setDelais] = useState("");
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -42,21 +49,10 @@ export default function BeforeRequest({sendValue}) {
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
-    p: 4
+    p: 4,
   };
 
   const format = formatKeyResponseBeforeRequest;
-
-  const [open, setOpen] = useState(false);
-  const [editRow, setEditRow] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-  const [nature, setNature] = useState("");
-  const [compte, setCompte] = useState("");
-  const [autorisation, setAutorisation] = useState("");
-  const [encour, setEncour] = useState("");
-  const [devise, setDevise] = useState("");
-  const [delais, setDelais] = useState("");
 
   const handleModalOpen = () => {
     setEditRow(null);
@@ -97,8 +93,9 @@ export default function BeforeRequest({sendValue}) {
     "devise",
     "autorisation_amount",
     "outstanding_amount",
-    "maturity_date"
+    "maturity_date",
   ];
+
   const handleValue = async () => {
     try {
       const response = await axios.post(
@@ -107,33 +104,14 @@ export default function BeforeRequest({sendValue}) {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_refresh_token")
-          }
+            "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+          },
         }
       );
 
       if (response.status === 200) {
         setLoading(false);
-
         setData(response.data.data);
-        const val = response.data.data
-          .map((item) =>
-            Object.entries(item)
-              .filter(([key]) =>
-                [
-                  "title",
-                  "account_number",
-                  "devise",
-                  "autorisation_amount",
-                  "outstanding_amount",
-                  "maturity_date"
-                ].includes(key)
-              )
-              .map(([key, value]) => `${key}:${value}`)
-          )
-          .flat();
-
-        console.log("ee", val);
       }
     } catch (error) {
       setLoading(false);
@@ -147,29 +125,68 @@ export default function BeforeRequest({sendValue}) {
     }
   }, [Id]);
 
-
   const handleSendInsight = async () => {
     try {
+      // Transformation des données avant l'envoi à l'API
+      const dataToSend = data.map((item) => ({
+        line: item.title, // Remplace "title" par "line"
+        account_number: item.account_number,
+        authorization: item.autorisation_amount, // Remplace "autorisation_amount" par "authorization"
+        outstanding_amount: item.outstanding_amount,
+        devise: item.devise,
+        maturity_date: item.maturity_date,
+      }));
+
       const response = await axios.post(
         "/api/commitment/after_insight",
-        { data: data, number_client: Id },
+        { data: dataToSend, number_client: Id },
         {
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_refresh_token")
-          }
+            "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+          },
         }
       );
     } catch (error) {
       console.log("Error lors du traitement de before inside:", error);
     }
   };
+
   useEffect(() => {
-    if(sendValue){
-      sendValue(handleSendInsight)
+    if (sendValue) {
+      sendValue(handleSendInsight);
     }
   }, [sendValue]);
 
+  const handleFormSubmit = (values) => {
+    const parsedValues = {
+      matricule: Id,
+      line: values["Nature de ligne"], // Remplace "title" par "line"
+      account_number: values["Numero compte"],
+      authorization: values["Autorisation"], // Remplace "autorisation_amount" par "authorization"
+      outstanding_amount: values["En cours"],
+      devise: values["Devise"],
+      maturity_date: values["Délais de maturité"],
+    };
+
+    // Formatage pour l'affichage
+    const formattedValues = {
+      ...parsedValues,
+      authorization: fNumber(values["Autorisation"]) || 0,
+      outstanding_amount: fNumber(values["En cours"]) || 0,
+    };
+
+    if (editRow) {
+      const newData = data.map((line) =>
+        line === editRow ? { ...line, ...formattedValues } : line
+      );
+      setData(newData);
+    } else {
+      setData([...data, formattedValues]);
+    }
+
+    handleModalClose();
+  };
 
   const handleChangeNatureLigne = (e) => {
     setNature(e.target.value);
@@ -195,28 +212,6 @@ export default function BeforeRequest({sendValue}) {
     setDelais(e.target.value);
   };
 
-  const handleFormSubmit = (values) => {
-    const parsedValues = {
-      matricule: Id,
-      title: values["Nature de ligne"],
-      account_number: values["Numero compte"],
-      authorization: fNumber(values["Autorisation"]) || 0,
-      outstanding_amount: fNumber(values["En cours"]) || 0,
-      devise: values["Devise"],
-      maturity_date: values["Délais de maturité"]
-    };
-
-    if (editRow) {
-      const newData = data.map((line) => (line === editRow ? { ...line, ...parsedValues } : line));
-      setData(newData);
-
-    } else {
-      setData([...data, parsedValues]);
-   
-    }
-    handleModalClose();
-  };
-
   return (
     <Grid container item xs={12} rowSpacing={2} spacing={2}>
       <Grid item xs={12} md={12}>
@@ -226,7 +221,10 @@ export default function BeforeRequest({sendValue}) {
             aria-label="caption table"
           >
             <caption>
-              <Button onClick={handleModalOpen} style={{ background: "#33691e", color: "white" }}>
+              <Button
+                onClick={handleModalOpen}
+                style={{ background: "#33691e", color: "white" }}
+              >
                 <AddBoxIcon style={{ color: "white" }} />
               </Button>
             </caption>
@@ -287,7 +285,7 @@ export default function BeforeRequest({sendValue}) {
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -296,112 +294,85 @@ export default function BeforeRequest({sendValue}) {
           closeAfterTransition
           BackdropComponent={Backdrop}
           BackdropProps={{
-            timeout: 500
+            timeout: 500,
           }}
         >
-          <Grid sx={style} container direction="column" spacing={4}>
-            <Grid item>
-              <h2>
-                {editRow
-                  ? `Modification de la ligne ${editRow.title}`
-                  : "Ajouter une nouvelle ligne"}
-              </h2>
+          <Fade in={open}>
+            <Grid container item xs={12} style={style}>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Nature de ligne"
+                  fullWidth
+                  value={nature}
+                  onChange={handleChangeNatureLigne}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Numero compte"
+                  fullWidth
+                  value={compte}
+                  onChange={handleChangeNumberCompte}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Autorisation"
+                  fullWidth
+                  value={autorisation}
+                  onChange={handleChangeAutorisation}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="En cours"
+                  fullWidth
+                  value={encour}
+                  onChange={handleChangeEncour}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Devise"
+                  fullWidth
+                  value={devise}
+                  onChange={handleChangeDevise}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Délais de maturité"
+                  fullWidth
+                  value={delais}
+                  onChange={handleChangeMaturityDate}
+                  variant="standard"
+                />
+              </Grid>
+              <Grid item xs={12} md={12} style={{ marginTop: "10px" }}>
+                <Button
+                  onClick={() =>
+                    handleFormSubmit({
+                      "Nature de ligne": nature,
+                      "Numero compte": compte,
+                      Autorisation: autorisation,
+                      "En cours": encour,
+                      Devise: devise,
+                      "Délais de maturité": delais,
+                    })
+                  }
+                  fullWidth
+                  style={{ background: "#33691e", color: "white" }}
+                >
+                  Enregistrer
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.target);
-                  const val = {};
-                  formData.forEach((value, key) => {
-                    val[key] = value;
-                  });
-                  handleFormSubmit(val);
-                }}
-              >
-                <Grid container direction="row" spacing={3} wrap="wrap">
-                  <Grid item xs={4}>
-                    <TextField
-                      name="Nature de ligne"
-                      id="outlined-basic"
-                      label="Nature de ligne"
-                      variant="outlined"
-                      required
-                      value={nature}
-                      onChange={handleChangeNatureLigne}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="Numero compte"
-                      id="outlined-basic"
-                      label="Numero compte"
-                      variant="outlined"
-                      required
-                      value={compte}
-                      onChange={handleChangeNumberCompte}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="Autorisation"
-                      id="outlined-basic"
-                      label="Autorisation"
-                      variant="outlined"
-                      required
-                      value={autorisation}
-                      onChange={handleChangeAutorisation}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="En cours"
-                      id="outlined-basic"
-                      label="En cours"
-                      variant="outlined"
-                      required
-                      value={encour}
-                      onChange={handleChangeEncour}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="Devise"
-                      id="outlined-basic"
-                      label="Devise"
-                      variant="outlined"
-                      required
-                      value={devise}
-                      onChange={handleChangeDevise}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="Délais de maturité"
-                      id="outlined-basic"
-                      type="date"
-                      variant="outlined"
-                      required
-                      value={delais}
-                      onChange={handleChangeMaturityDate}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid sx={{ mt: 3 }}>
-                  {" "}
-                  <center>
-                    <Button
-                      style={{ background: "#33691e", color: "white" }}
-                      type="submit"
-                      variant="contained"
-                    >
-                      {editRow ? "Modifier" : "Ajouter"}
-                    </Button>
-                  </center>
-                </Grid>
-              </form>
-            </Grid>
-          </Grid>
+          </Fade>
         </Modal>
       </Grid>
     </Grid>

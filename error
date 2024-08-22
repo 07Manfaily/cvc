@@ -105,13 +105,13 @@ export default function MoanaStat() {
     const year = event.target.value;
     setSelectedYear(year);
     setSeries(data[year].series);
-    setOptions({
-      ...options,
+    setOptions((prevOptions) => ({
+      ...prevOptions,
       xaxis: {
-        ...options.xaxis,
+        ...prevOptions.xaxis,
         categories: data[year].categories,
       },
-    });
+    }));
   };
 
   return (
@@ -122,7 +122,13 @@ export default function MoanaStat() {
         <option value="2024">2024</option>
       </select>
       <div id="chart">
-        <ReactApexChart options={options} series={series} type="line" height={350} />
+        <ReactApexChart
+          key={selectedYear}  // Forcer le re-render lorsque l'année change
+          options={options}
+          series={series}
+          type="line"
+          height={350}
+        />
       </div>
       <div id="html-dist" />
     </div>

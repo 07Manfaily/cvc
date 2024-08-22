@@ -2,17 +2,41 @@ import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
 export default function MoanaStat() {
-  const [series, setSeries] = useState([
-    {
-        name: 'Moana IA',
-        data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
-      },
-      {
-        name: 'Moana Classic',
-        data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35],
-      },
-  ]);
+  const data = {
+    '2022': {
+      categories: [
+        '01 Jan 22', '02 Jan 22', '03 Jan 22', '04 Jan 22', '05 Jan 22', '06 Jan 22',
+        '07 Jan 22', '08 Jan 22', '09 Jan 22', '10 Jan 22', '11 Jan 22', '12 Jan 22'
+      ],
+      series: [
+        { name: 'Moana IA', data: [30, 40, 45, 50, 49, 60, 70, 91, 125, 140, 150, 160] },
+        { name: 'Moana Classic', data: [23, 12, 54, 61, 32, 56, 79, 82, 98, 104, 110, 120] }
+      ]
+    },
+    '2023': {
+      categories: [
+        '01 Jan 23', '02 Jan 23', '03 Jan 23', '04 Jan 23', '05 Jan 23', '06 Jan 23',
+        '07 Jan 23', '08 Jan 23', '09 Jan 23', '10 Jan 23', '11 Jan 23', '12 Jan 23'
+      ],
+      series: [
+        { name: 'Moana IA', data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10] },
+        { name: 'Moana Classic', data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35] }
+      ]
+    },
+    '2024': {
+      categories: [
+        '01 Jan 24', '02 Jan 24', '03 Jan 24', '04 Jan 24', '05 Jan 24', '06 Jan 24',
+        '07 Jan 24', '08 Jan 24', '09 Jan 24', '10 Jan 24', '11 Jan 24', '12 Jan 24'
+      ],
+      series: [
+        { name: 'Moana IA', data: [55, 65, 40, 35, 45, 55, 70, 85, 90, 100, 110, 120] },
+        { name: 'Moana Classic', data: [20, 30, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140] }
+      ]
+    }
+  };
 
+  const [selectedYear, setSelectedYear] = useState('2023');
+  const [series, setSeries] = useState(data[selectedYear].series);
   const [options, setOptions] = useState({
     chart: {
       height: 350,
@@ -30,7 +54,7 @@ export default function MoanaStat() {
       dashArray: [0, 8, 5],
     },
     title: {
-      text: 'Statistique moana',
+      text: 'Statistique Moana',
       align: 'left',
     },
     legend: {
@@ -45,26 +69,7 @@ export default function MoanaStat() {
       },
     },
     xaxis: {
-      categories: [
-        '01 Jan 23',
-        '02 Jan 23',
-        '03 Jan 23',
-        '04 Jan 23',
-        '05 Jan 23',
-        '06 Jan 23',
-        '07 Jan 23',
-        '08 Jan 23',
-        '09 Jan 23',
-        '10 Jan 23',
-        '11 Jan 23',
-        '12 Jan 23',
-      ],
-      filter: {
-        filter: (value) => {
-          const year = parseInt(value.split(' ')[1]);
-          return year === 2023;
-        },
-      },
+      categories: data[selectedYear].categories,
     },
     tooltip: {
       y: [
@@ -96,27 +101,22 @@ export default function MoanaStat() {
     },
   });
 
-  const [year, setYear] = useState(2023);
-
   const handleYearChange = (event) => {
-    setYear(event.target.value);
+    const year = event.target.value;
+    setSelectedYear(year);
+    setSeries(data[year].series);
     setOptions({
       ...options,
       xaxis: {
         ...options.xaxis,
-        filter: {
-          filter: (value) => {
-            const year = parseInt(value.split(' ')[1]);
-            return year === event.target.value;
-          },
-        },
+        categories: data[year].categories,
       },
     });
   };
 
   return (
     <div>
-      <select value={year} onChange={handleYearChange}>
+      <select value={selectedYear} onChange={handleYearChange}>
         <option value="2022">2022</option>
         <option value="2023">2023</option>
         <option value="2024">2024</option>

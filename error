@@ -1,42 +1,41 @@
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
-export default function MoanaStat() {
+export default function Retention() {
+  const date = ['2023', '2024'];
+  const [value, setValue] = React.useState(date[0]);
+  const [inputValue, setInputValue] = React.useState('');
   const data = {
-    '2022': {
+
+    [date[0]]: {
       categories: [
-        '01 Jan 22', '02 Jan 22', '03 Jan 22', '04 Jan 22', '05 Jan 22', '06 Jan 22',
-        '07 Jan 22', '08 Jan 22', '09 Jan 22', '10 Jan 22', '11 Jan 22', '12 Jan 22'
+        '01 Jan 23', '22 Fev 23', '13 Mars 23', '14 Avril 23', '05 Mai 23', '07 Juin 23',
+        '17 Juillet 23', '08 Aout 10', '09 Septembre 02', '10 Octobre 03', '11 Novembre 23', '12 Decembre 23',
+
       ],
       series: [
-        { name: 'Moana IA', data: [30, 40, 45, 50, 49, 60, 70, 91, 125, 140, 150, 160] },
-        { name: 'Moana Classic', data: [23, 12, 54, 61, 32, 56, 79, 82, 98, 104, 110, 120] }
+        { name: 'Connecté', data: [30, 40, 45, 50, 49, 60, 70, 191, 42, 54, 77, 36] },
+        { name: 'Habilité', data: [163, 12, 54, 61, 32, 156, 79, 82, 198, 10, 121, 12] },
+        { name: 'Taux', data: [43, 172, 44, 105, 32, 66, 59, 82, 98, 34, 20, 12] }
       ]
     },
-    '2023': {
-      categories: [
-        '01 Jan 23', '02 Jan 23', '03 Jan 23', '04 Jan 23', '05 Jan 23', '06 Jan 23',
-        '07 Jan 23', '08 Jan 23', '09 Jan 23', '10 Jan 23', '11 Jan 23', '12 Jan 23'
-      ],
-      series: [
-        { name: 'Moana IA', data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10] },
-        { name: 'Moana Classic', data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35] }
-      ]
-    },
-    '2024': {
+    [date[1]]: {
       categories: [
         '01 Jan 24', '02 Jan 24', '03 Jan 24', '04 Jan 24', '05 Jan 24', '06 Jan 24',
-        '07 Jan 24', '08 Jan 24', '09 Jan 24', '10 Jan 24', '11 Jan 24', '12 Jan 24'
+        '07 Jan 24', '08 Jan 24', '09 Jan 24', '10 Jan 24', '11 Jan 24', '12 Jan 24',
+
       ],
       series: [
-        { name: 'Moana IA', data: [55, 65, 40, 35, 45, 55, 70, 85, 90, 100, 110, 120] },
-        { name: 'Moana Classic', data: [20, 30, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140] }
+        { name: 'Connecté', data: [30, 40, 45, 50, 349, 60, 70, 91, 125, 140, 150, 60] },
+        { name: 'Habilité', data: [55, 65, 40, 135, 45, 55, 270, 85, 90, 100, 10, 120] },
+        { name: 'Taux', data: [20, 30, 50, 560, 70, 80, 190, 10, 110, 120, 90, 140] }
       ]
     }
   };
-
   const [selectedYear, setSelectedYear] = useState('2023');
-  const [series, setSeries] = useState(data[selectedYear].series);
+  const [series, setSeries] = useState(data[date[0]].series);
   const [options, setOptions] = useState({
     chart: {
       height: 350,
@@ -49,12 +48,12 @@ export default function MoanaStat() {
       enabled: false,
     },
     stroke: {
-      width: [5, 7, 5],
+      width: [2, 3, 4],
       curve: 'straight',
-      dashArray: [0, 8, 5],
+      dashArray: [0, 4, 0],
     },
     title: {
-      text: 'Statistique Moana',
+      text: 'Taux de rétention',
       align: 'left',
     },
     legend: {
@@ -68,8 +67,15 @@ export default function MoanaStat() {
         sizeOffset: 6,
       },
     },
+    colors:['#037836', '#15006B', '#D80A45'],
+
     xaxis: {
       categories: data[selectedYear].categories,
+      labels:{
+        rotate:-45,
+        rotateAlways:true,
+      
+      },
     },
     tooltip: {
       y: [
@@ -101,36 +107,44 @@ export default function MoanaStat() {
     },
   });
 
+
   const handleYearChange = (event) => {
     const year = event.target.value;
     setSelectedYear(year);
     setSeries(data[year].series);
-    setOptions((prevOptions) => ({
-      ...prevOptions,
+    setOptions({
+      ...options,
       xaxis: {
-        ...prevOptions.xaxis,
+        ...options.xaxis,
         categories: data[year].categories,
       },
-    }));
+    });
   };
+
 
   return (
     <div>
+      <Autocomplete
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => {
+          setInputValue(newInputValue);
+        }}
+        id="controllable-states-demo"
+        options={date}
+        sx={{ width: 120 }}
+        renderInput={(params) => <TextField {...params} label="filtre par année" />}
+      />
       <select value={selectedYear} onChange={handleYearChange}>
-        <option value="2022">2022</option>
         <option value="2023">2023</option>
         <option value="2024">2024</option>
       </select>
       <div id="chart">
-        <ReactApexChart
-          key={selectedYear}  // Forcer le re-render lorsque l'année change
-          options={options}
-          series={series}
-          type="line"
-          height={350}
-        />
+        <ReactApexChart options={options} series={series} type="line" height={350} />
       </div>
-      <div id="html-dist" />
     </div>
   );
 }

@@ -124,10 +124,11 @@ export default function Retention() {
 
   return (
     <div>
-      <Autocomplete
+      {/* <Autocomplete
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
+          handleYearChange(newValue) 
         }}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
@@ -137,8 +138,8 @@ export default function Retention() {
         options={date}
         sx={{ width: 120 }}
         renderInput={(params) => <TextField {...params} label="filtre par année" />}
-      />
-      <select value={selectedYear} onChange={handleYearChange}>
+      /> */}
+      <select style={{borderColor:"#037836"}} value={selectedYear} onChange={handleYearChange}>
         <option value="2023">2023</option>
         <option value="2024">2024</option>
       </select>

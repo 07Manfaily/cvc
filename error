@@ -1,5 +1,11 @@
-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
-
+git push -u origin main
+To https://sgithub.fr.world.socgen/SERVICE-DATA/cvc_frontend.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://sgithub.fr.world.socgen/SERVICE-DATA/cvc_frontend.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';

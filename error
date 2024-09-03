@@ -6,78 +6,67 @@ import CardContent from '@material-ui/core/CardContent';
 import Header from './partials/Header';
 import Sidebar from './partials/NewSidebar';
 
-
-
 export default function CheckPointConfiguration() {
     return (
         <>
-            <Grid container xs={12} md={12} ls={12}>
-                <Grid item container direction="column">
-                    <Grid item>
-                        <Grid container direction="row">
-                            <Grid item xs={2} md={2} ls={2}>
-                                <Header />
-                            </Grid>
-                            <Grid item  xs={10} md={10} ls={10}>
-                                <nav  className="navbar navbar-expand-lg navbar-absolute fixed-top ">
-                                    <div className="container-fluid">
-                                        <div className="navbar-wrapper">
-                                            {/* <i className="material-icons">home</i> */}
-                                            <a className="navbar-brand" href="#">Echantillonnage</a>
-                                        </div>
-                                        <button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                                            <span className="sr-only">Toggle navigation</span>
-                                            <span className="navbar-toggler-icon icon-bar"></span>
-                                            <span className="navbar-toggler-icon icon-bar"></span>
-                                            <span className="navbar-toggler-icon icon-bar"></span>
-                                        </button>
-                                        <div className="collapse navbar-collapse justify-content-end">
-                                            <ul className="navbar-nav">
-                                                <li className="nav-item"></li>
-                                                <li className="nav-item">
-                                                    <button className="btn btn-primary">
-                                                        <i className="material-icons">settings_power</i>
-                                                        <p className="d-lg-none d-md-block"> Deconnexion </p>
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </nav>
-                            </Grid>
-                        </Grid>
-                    </Grid> 
-                    <Grid item>
-                    <Grid container direction="row">
-                    <Sidebar/>
+            <Grid container direction="column">
+                {/* Header */}
+                <Grid item xs={12}>
+                    <Header />
+                </Grid>
+
+                {/* Sidebar and Main Content */}
+                <Grid container direction="row" style={{ marginTop: '10px' }}>
+                    <Grid item xs={2}>
+                        <Sidebar />
                     </Grid>
-                    
-                    {/* contenue corp de l'pplication */}
-                        <Grid item>
-                        <Grid>
-                            <Button variant="contained">
+
+                    <Grid item xs={10}>
+                        <nav className="navbar navbar-expand-lg navbar-absolute fixed-top">
+                            <div className="container-fluid">
+                                <div className="navbar-wrapper">
+                                    <a className="navbar-brand" href="#">Echantillonnage</a>
+                                </div>
+                                <button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span className="sr-only">Toggle navigation</span>
+                                    <span className="navbar-toggler-icon icon-bar"></span>
+                                    <span className="navbar-toggler-icon icon-bar"></span>
+                                    <span className="navbar-toggler-icon icon-bar"></span>
+                                </button>
+                                <div className="collapse navbar-collapse justify-content-end">
+                                    <ul className="navbar-nav">
+                                        <li className="nav-item"></li>
+                                        <li className="nav-item">
+                                            <button className="btn btn-primary">
+                                                <i className="material-icons">settings_power</i>
+                                                <p className="d-lg-none d-md-block"> Deconnexion </p>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+
+                        {/* Main Content */}
+                        <Grid container direction="column" style={{ padding: '20px' }}>
+                            <Grid item>
                                 <Card>
                                     <CardContent>
                                         <h1>blabla</h1>
                                     </CardContent>
                                 </Card>
-
-                            </Button>
-                        </Grid>
-                        <Grid>
-                            <Button variant="contained">Default</Button>
-                        </Grid>
-                        <Grid>
-                            <Button variant="contained">Default</Button>
-                        </Grid>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="contained">Default</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="contained">Default</Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-
-            
             </Grid>
         </>
-
-    )
-
+    );
 }
+

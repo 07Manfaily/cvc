@@ -1,5 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,16 +18,17 @@ export default function CheckPointConfiguration() {
                 </Grid>
 
                 {/* Sidebar and Main Content */}
-                <Grid container direction="row" style={{ marginTop: '10px' }}>
+                <Grid container direction="row" >
                     <Grid item xs={2}>
                         <Sidebar />
                     </Grid>
 
                     <Grid item xs={10}>
-                        <nav className="navbar navbar-expand-lg navbar-absolute fixed-top">
+
+                        <nav style={{ width: "84%", marginLeft: "16.5%" }} className="navbar navbar-expand-lg navbar-absolute fixed-top">
                             <div className="container-fluid">
                                 <div className="navbar-wrapper">
-                                    <a className="navbar-brand" href="#">Echantillonnage</a>
+                                    <a className="navbar-brand" href="#">Configuration de controle</a>
                                 </div>
                                 <button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                                     <span className="sr-only">Toggle navigation</span>
@@ -47,21 +50,50 @@ export default function CheckPointConfiguration() {
                             </div>
                         </nav>
 
+
+
                         {/* Main Content */}
-                        <Grid container direction="column" style={{ padding: '20px' }}>
-                            <Grid item>
-                                <Card>
-                                    <CardContent>
-                                        <h1>blabla</h1>
-                                    </CardContent>
-                                </Card>
+                        <Grid container direction="column" style={{ padding: '4.5% 4px 0px 4px' }}>
+                            <Grid item >
+                                <Grid container
+                                    direction="row"
+                                    sx={{
+                                        justifyContent: "space-between",
+                                        alignItems: "flex-start",
+                                    }}>
+                                    <Grid item>
+                                        <Button variant="contained">
+                                            <Card>
+                                                <CardContent>
+                                                    <h1>blabla</h1>
+                                                </CardContent>
+                                            </Card>
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained">
+                                            <Card>
+                                                <CardContent>
+                                                    <h1>blabla</h1>
+                                                </CardContent>
+                                            </Card>
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained">
+                                            <Card>
+                                                <CardContent>
+                                                    <h1>blabla</h1>
+                                                </CardContent>
+                                            </Card>
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+
                             </Grid>
-                            <Grid item>
-                                <Button variant="contained">Default</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained">Default</Button>
-                            </Grid>
+
+
                         </Grid>
                     </Grid>
                 </Grid>
@@ -69,4 +101,3 @@ export default function CheckPointConfiguration() {
         </>
     );
 }
-

@@ -1,160 +1,83 @@
-git push -u origin main
-To https://sgithub.fr.world.socgen/SERVICE-DATA/cvc_frontend.git
- ! [rejected]        main -> main (non-fast-forward)
-error: failed to push some refs to 'https://sgithub.fr.world.socgen/SERVICE-DATA/cvc_frontend.git'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Integrate the remote changes (e.g.
-hint: 'git pull ...') before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-
-import React, { useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-
-export default function Retention() {
-  const date = ['2023', '2024'];
-  const [value, setValue] = React.useState(date[0]);
-  const [inputValue, setInputValue] = React.useState('');
-  const data = {
-
-    [date[0]]: {
-      categories: [
-        '01 Jan 23', '22 Fev 23', '13 Mars 23', '14 Avril 23', '05 Mai 23', '07 Juin 23',
-        '17 Juillet 23', '08 Aout 10', '09 Septembre 02', '10 Octobre 03', '11 Novembre 23', '12 Decembre 23',
-
-      ],
-      series: [
-        { name: 'Connecté', data: [30, 40, 45, 50, 49, 60, 70, 191, 42, 54, 77, 36] },
-        { name: 'Habilité', data: [163, 12, 54, 61, 32, 156, 79, 82, 198, 10, 121, 12] },
-        { name: 'Taux', data: [43, 172, 44, 105, 32, 66, 59, 82, 98, 34, 20, 12] }
-      ]
-    },
-    [date[1]]: {
-      categories: [
-        '01 Jan 24', '02 Jan 24', '03 Jan 24', '04 Jan 24', '05 Jan 24', '06 Jan 24',
-        '07 Jan 24', '08 Jan 24', '09 Jan 24', '10 Jan 24', '11 Jan 24', '12 Jan 24',
-
-      ],
-      series: [
-        { name: 'Connecté', data: [30, 40, 45, 50, 349, 60, 70, 91, 125, 140, 150, 60] },
-        { name: 'Habilité', data: [55, 65, 40, 135, 45, 55, 270, 85, 90, 100, 10, 120] },
-        { name: 'Taux', data: [20, 30, 50, 560, 70, 80, 190, 10, 110, 120, 90, 140] }
-      ]
-    }
-  };
-  const [selectedYear, setSelectedYear] = useState('2023');
-  const [series, setSeries] = useState(data[date[0]].series);
-  const [options, setOptions] = useState({
-    chart: {
-      height: 350,
-      type: 'line',
-      zoom: {
-        enabled: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: [2, 3, 4],
-      curve: 'straight',
-      dashArray: [0, 4, 0],
-    },
-    title: {
-      text: 'Taux de rétention',
-      align: 'left',
-    },
-    legend: {
-      tooltipHoverFormatter: (val, opts) => {
-        return `${val} - <strong>${opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex]}</strong>`;
-      },
-    },
-    markers: {
-      size: 0,
-      hover: {
-        sizeOffset: 6,
-      },
-    },
-    colors:['#037836', '#15006B', '#D80A45'],
-
-    xaxis: {
-      categories: data[selectedYear].categories,
-      labels:{
-        rotate:-45,
-        rotateAlways:true,
-      
-      },
-    },
-    tooltip: {
-      y: [
-        {
-          title: {
-            formatter: (val) => {
-              return `${val}`;
-            },
-          },
-        },
-        {
-          title: {
-            formatter: (val) => {
-              return `${val} `;
-            },
-          },
-        },
-        {
-          title: {
-            formatter: (val) => {
-              return val;
-            },
-          },
-        },
-      ],
-    },
-    grid: {
-      borderColor: '#f1f1f1',
-    },
-  });
+import React from 'react';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Header from './partials/Header';
+import Sidebar from './partials/NewSidebar';
 
 
-  const handleYearChange = (event) => {
-    const year = event.target.value;
-    setSelectedYear(year);
-    setSeries(data[year].series);
-    setOptions({
-      ...options,
-      xaxis: {
-        ...options.xaxis,
-        categories: data[year].categories,
-      },
-    });
-  };
 
+export default function CheckPointConfiguration() {
+    return (
+        <>
+            <Grid container xs={12} md={12} ls={12}>
+                <Grid item container direction="column">
+                    <Grid item>
+                        <Grid container direction="row">
+                            <Grid item xs={2} md={2} ls={2}>
+                                <Header />
+                            </Grid>
+                            <Grid item  xs={10} md={10} ls={10}>
+                                <nav  className="navbar navbar-expand-lg navbar-absolute fixed-top ">
+                                    <div className="container-fluid">
+                                        <div className="navbar-wrapper">
+                                            {/* <i className="material-icons">home</i> */}
+                                            <a className="navbar-brand" href="#">Echantillonnage</a>
+                                        </div>
+                                        <button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                                            <span className="sr-only">Toggle navigation</span>
+                                            <span className="navbar-toggler-icon icon-bar"></span>
+                                            <span className="navbar-toggler-icon icon-bar"></span>
+                                            <span className="navbar-toggler-icon icon-bar"></span>
+                                        </button>
+                                        <div className="collapse navbar-collapse justify-content-end">
+                                            <ul className="navbar-nav">
+                                                <li className="nav-item"></li>
+                                                <li className="nav-item">
+                                                    <button className="btn btn-primary">
+                                                        <i className="material-icons">settings_power</i>
+                                                        <p className="d-lg-none d-md-block"> Deconnexion </p>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </Grid>
+                        </Grid>
+                    </Grid> 
+                    <Grid item>
+                    <Grid container direction="row">
+                    <Sidebar/>
+                    </Grid>
+                    
+                    {/* contenue corp de l'pplication */}
+                        <Grid item>
+                        <Grid>
+                            <Button variant="contained">
+                                <Card>
+                                    <CardContent>
+                                        <h1>blabla</h1>
+                                    </CardContent>
+                                </Card>
 
-  return (
-    <div>
-      {/* <Autocomplete
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-          handleYearChange(newValue) 
-        }}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-        }}
-        id="controllable-states-demo"
-        options={date}
-        sx={{ width: 120 }}
-        renderInput={(params) => <TextField {...params} label="filtre par année" />}
-      /> */}
-      <select style={{borderColor:"#037836"}} value={selectedYear} onChange={handleYearChange}>
-        <option value="2023">2023</option>
-        <option value="2024">2024</option>
-      </select>
-      <div id="chart">
-        <ReactApexChart options={options} series={series} type="line" height={350} />
-      </div>
-    </div>
-  );
+                            </Button>
+                        </Grid>
+                        <Grid>
+                            <Button variant="contained">Default</Button>
+                        </Grid>
+                        <Grid>
+                            <Button variant="contained">Default</Button>
+                        </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+            
+            </Grid>
+        </>
+
+    )
+
 }

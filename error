@@ -1,287 +1,284 @@
-import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
+import React, { Component } from 'react';
+import ReactLoading from "react-loading";
 
-function not(a, b) {
-    return a.filter((value) => b.indexOf(value) === -1);
+import 'react-table/react-table.css';
+import '../css/svg.css';
+
+import Header from './partials/Header';
+// import Sidebar from './partials/Sidebar';
+import Footer from './partials/Footer';
+
+import logo from '../imgs/logosg.png';
+import withAuth from "./withAuth";
+import { getCookie } from "./utils";
+
+import month from "../imgs/month.svg"
+import trim from "../imgs/trim.svg"
+import hebdo from "../imgs/hebdo.svg"
+import NewSidebar from './partials/NewSidebar';
+import "../css/newsidebar.css"
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
+// class NewExec extends Component {
+
+//     state = { type: '', show_load: 'none' }
+
+//     execute_echt = (type) => {
+//         var url = "";
+//         // loading
+//         this.setState({ show_load: 'flex' });
+//         //
+//         if (type == "m") { url = '/api/run_mois' }
+//         else if (type == "t") { url = '/api/run_trimestre' }
+//         else { url = 'api/run_semestre' }
+//         fetch(url,
+//             {
+//                 method: 'GET',
+//                 mode: 'cors',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                     'X-CSRF-TOKEN': getCookie('csrf_refresh_token')
+//                 }
+//             }).then(response => {
+//                 if (response.status !== 200) {
+//                     if (response.status === 401) { window.location.replace('/login') }
+//                     throw new Error('Access denied');
+//                 }
+//                 return response.json();
+//             }).then(json => {
+//                 console.log('detail run api', json.code)
+//                 if (json.code === 'OK') this.setState({ show_load: 'none' });
+//             }).catch((error) => console.log(error));
+//     }
+
+
+//     render() {
+        
+//     }
+// }
+
+// export default withAuth()(NewExec);
+
+
+const NewExec = () => {
+	const [dataMensuel, setDataMensuel] = useState({informations:""})
+	const [dataTrimestriel, setDataTrimestriel] = useState({informations:""})
+	const [dataSemestriel, setDataSemestriel] = useState({informations:""})
+	useEffect(()=>{
+		fetch('/api/get_contrd',{
+			method:"POST",
+			mode:"cors",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+			  },
+			  body: JSON.stringify({periode:"M"}), //"2", "3", "4"
+		}).then((respone)=>{
+			if (respone.status !== 200) {
+				if(respone.status===401){window.location.replace('/login')}
+				// throw new Error('Access denied');
+			}
+			return respone.json()
+		}).then((data)=>{
+			console.log("DATA_MENSUEL: ", data);
+			setDataMensuel({informations:data.informations})
+		})
+
+		fetch('/api/get/geole',{
+			method:"POST",
+			mode:"cors",
+			headers: {
+				"Content-Type": "application/json",
+				// "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+			  },
+			  body: JSON.stringify({periode:"T"}), //"M", "T", "SMTR"
+		}).then((respone)=>{
+			if (respone.status !== 200) {
+				if(respone.status===401){window.location.replace('/login')}
+				// throw new Error('Access denied');
+			}
+			return respone.json()
+		}).then((data)=>{
+			console.log("DATA_TRIMESTRIEL: ", data);
+			setDataTrimestriel({informations:data.informations})
+		})
+
+		fetch('/api/get/e',{
+			method:"POST",
+			mode:"cors",
+			headers: {
+				"Content-Type": "application/json",
+				// "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+			  },
+			  body: JSON.stringify({periode:"SMTR"}), //"M", "T", "SMTR"
+		}).then((respone)=>{
+			if (respone.status !== 200) {
+				if(respone.status===401){window.location.replace('/login')}
+				// throw new Error('Access denied');
+			}
+			return respone.json()
+		}).then((data)=>{
+			console.log("DATA_SEMESTRIEL: ", data);
+			setDataSemestriel({informations:data.informations})
+		})
+	}, [])
+
+
+
+
+	}
+	return (
+		<div>
+			<Header />
+			<div className="wrapper">
+				{/* <Sidebar /> */}
+				<NewSidebar />
+				<div className="main-panel">
+					<nav className="navbar navbar-expand-lg navbar-absolute fixed-top" style={{borderRadius: "2px", backgroundColor:"#18283b"}}>
+						<div className="container-fluid">
+							<div className="navbar-wrapper">
+								{/* <i className="material-icons">home</i> */}
+								<a className="navbar-brand" href="#">Echantillonnage</a>
+							</div>
+							<button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+								<span className="sr-only">Toggle navigation</span>
+								<span className="navbar-toggler-icon icon-bar"></span>
+								<span className="navbar-toggler-icon icon-bar"></span>
+								<span className="navbar-toggler-icon icon-bar"></span>
+							</button>
+							<div className="collapse navbar-collapse justify-content-end">
+								<ul className="navbar-nav">
+									<li className="nav-item"></li>
+									<li className="nav-item">
+										<button className="btn btn-primary" onClick={()=>{}/*this.props.logout*/}>
+											<i className="material-icons">settings_power</i>
+											<p className="d-lg-none d-md-block"> Deconnexion </p>
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</nav>
+					<div className="content">
+						<div className="container-fluid">
+							<div className='container' style={{
+								width: "100%",
+								display: "flex",
+								justifyContent: "center",
+								// alignItems: "center",
+								flexDirection: "column",
+								height: "70vh"
+							}}>
+								<div className="row">
+									<div className="col-xl-4 col-lg-4">
+									<a href='#' title='Cliquez ICI'>
+										<div className="card l-bg-cherry hover" style={{ background: "linear-gradient(to right, #493240, #f09)", color: "#fff"}}>
+											<div className="card-statistic-3 p-4">
+												<a href='/control-details/M'>
+												<div className="card-icon card-icon-large">
+													{/* <i className="fas fa-shopping-cart"></i> */}
+													<img src={hebdo} width={50} height={50} alt='hedbo'/>
+													</div>
+												<div className="mb-4">
+													<h5 className="card-title mb-0" style={{":hover":{color:"red"}}}>Mensuel</h5>
+												</div>
+												</a>
+												<div className="row align-items-center mb-2 d-flex">
+													<div className="col-8">
+													{/* Total controle : {dataMensuel.informations.Total_controle} */}
+													<h4 className="d-flex align-items-center mb-0">
+													Total controle : {dataMensuel.informations.Total_controle}
+													</h4>
+													</div>
+													{/* <div className="col-4 text-right">
+														<span>Obsolète : {dataMensuel.informations.Nombre_Obsolete} </span>
+													</div> */}
+												</div>
+												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
+													<div className="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
+												</div>
+											</div>
+										</div>
+										</a>
+									</div>
+									<div className="col-xl-4 col-lg-4">
+									<a href='#' title='Cliquez ICI'>
+										<div className="card l-bg-blue-dark" style={{ background: "linear-gradient(to right, #373b44, #4286f4)", color: "#fff" }}>
+											<div className="card-statistic-3 p-4">
+											   <a href='/control-details/T'>
+											   <div className="card-icon card-icon-large">
+													{/* <i className="fas fa-users"></i> */}
+													<img src={month} width={50} height={50} alt='month'/>
+													</div>
+												<div className="mb-4">
+													<h5 className="card-title mb-0">Trismetriel</h5>
+												</div>
+											   </a>
+												<div className="row align-items-center mb-2 d-flex">
+													<div className="col-8">
+														<h4 className="d-flex align-items-center mb-0">
+														Total controle : {dataTrimestriel.informations.Total_controle}
+														</h4>
+													</div>
+													{/* <div className="col-4 text-right">
+														<span>Obsolète : {dataTrimestriel.informations.Nombre_Obsolete}</span>
+													</div> */}
+												</div>
+												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
+													<div className="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
+												</div>
+											</div>
+										</div>
+										</a>
+									</div>
+									<div className="col-xl-4 col-lg-4">
+										<a href='/control-details/SMTR' title='Cliquez ICI'>
+										<div className="card l-bg-green-dark" style={{ background: "linear-gradient(to right, #0a504a, #38ef7d)", color: "#fff" }}>
+											<div className="card-statistic-3 p-4">
+												
+												<div className="card-icon card-icon-large">
+													{/* <i className="fas fa-ticket-alt"></i> */}
+													<img src={trim} width={50} height={50} alt='trimestre'/>
+													</div>
+												<div className="mb-4">
+													<h5 className="card-title mb-0">Semestriel</h5>
+												</div>
+												<div className="row align-items-center mb-2 d-flex">
+													<div className="col-8">
+														<h4 className="d-flex align-items-center mb-0">
+														Total controle : {dataSemestriel.informations.Total_controle}
+														</h4>
+													</div>
+													{/* <div className="col-4 text-right">
+														<span>Obsolète : {dataSemestriel.informations.Nombre_Obsolete}</span>
+													</div> */}
+												</div>
+												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
+													<div className="progress-bar l-bg-orange" role="progressbar" data-width="75%" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
+												</div>
+											</div>
+										</div>
+										</a>
+									</div>
+								</div>
+							</div>
+						
+
+
+						</div>
+					</div>
+					<footer className="page-footer text-center">
+						<div className="mx-auto">
+							<img src={logo} className="logo_dash_size" alt="SocGen" />
+							<a href="https://societegenerale.ci" target="_blank" style={{ 'color': 'rgb(224, 7, 7)' }}>Societe Generale</a>
+						</div>
+					</footer>
+				</div>
+			</div>
+			<Footer />
+		</div>
+	)
 }
 
-function intersection(a, b) {
-    return a.filter((value) => b.indexOf(value) !== -1);
-}
-
-function TransferList({ leftItems, rightItems, onAdd }) {
-    const [checked, setChecked] = useState([]);
-    const [left, setLeft] = useState(leftItems);
-    const [right, setRight] = useState(rightItems);
-
-    const leftChecked = intersection(checked, left);
-    const rightChecked = intersection(checked, right);
-
-    const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
-    };
-
-    const handleAllRight = () => {
-        setRight(right.concat(left));
-        setLeft([]);
-    };
-
-    const handleCheckedRight = () => {
-        setRight(right.concat(leftChecked));
-        setLeft(not(left, leftChecked));
-        setChecked(not(checked, leftChecked));
-    };
-
-    const handleCheckedLeft = () => {
-        setLeft(left.concat(rightChecked));
-        setRight(not(right, rightChecked));
-        setChecked(not(checked, rightChecked));
-    };
-
-    const handleAllLeft = () => {
-        setLeft(left.concat(right));
-        setRight([]);
-    };
-
-    const customList = (items) => (
-        <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
-            <List dense component="div" role="list">
-                {items.map((value) => {
-                    const labelId = `transfer-list-item-${value}-label`;
-
-                    return (
-                        <ListItemButton
-                            key={value}
-                            role="listitem"
-                            onClick={handleToggle(value)}
-                        >
-                            <ListItemIcon>
-                                <Checkbox
-                                    checked={checked.indexOf(value) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{
-                                        'aria-labelledby': labelId,
-                                    }}
-                                />
-                            </ListItemIcon>
-                            <ListItemText id={labelId} primary={value} />
-                        </ListItemButton>
-                    );
-                })}
-            </List>
-        </Paper>
-    );
-
-    return (
-        <Grid
-            container
-            spacing={2}
-            sx={{ justifyContent: 'center', alignItems: 'center' }}
-        >
-            <Grid item>{customList(left)}</Grid>
-            <Grid item>
-                <Grid container direction="column" sx={{ alignItems: 'center' }}>
-                    <Button
-                        sx={{ my: 0.5 }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleAllRight}
-                        disabled={left.length === 0}
-                        aria-label="move all right"
-                    >
-                        ≫
-                    </Button>
-                    <Button
-                        sx={{ my: 0.5 }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleCheckedRight}
-                        disabled={leftChecked.length === 0}
-                        aria-label="move selected right"
-                    >
-                        &gt;
-                    </Button>
-                    <Button
-                        sx={{ my: 0.5 }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleCheckedLeft}
-                        disabled={rightChecked.length === 0}
-                        aria-label="move selected left"
-                    >
-                        &lt;
-                    </Button>
-                    <Button
-                        sx={{ my: 0.5 }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleAllLeft}
-                        disabled={right.length === 0}
-                        aria-label="move all left"
-                    >
-                        ≪
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid item>{customList(right)}</Grid>
-            <Button onClick={() => onAdd(right)}>Valider</Button>
-        </Grid>
-    );
-}
-
-export default function CheckPointConfiguration() {
-    const [selectedCard, setSelectedCard] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [cardData, setCardData] = useState({
-        Trimestriel: ['Element 1', 'Element 2', 'Element 3', 'Element 4', 'Element 5'],
-        Semestriel: ['certificat de nationnalité', 'Element 7', 'Element 8', 'Element 9', 'Element 10'],
-        Mensuelle: ['Element 11', 'casier judiciaire', 'Element 13', 'Element 14', 'Element 15'],
-    });
-    const [modalData, setModalData] = useState([]);
-
-    const handleCardClick = (title) => {
-        setSelectedCard(title);
-        setModalData(['Element 16', 'Element 17', 'Element 18', 'Element 19', 'Element 20']); // Example data for modal
-        setOpen(true);
-    };
-
-    const handleDelete = (cardTitle, item) => {
-        setCardData((prevData) => ({
-            ...prevData,
-            [cardTitle]: prevData[cardTitle].filter((element) => element !== item),
-        }));
-    };
-
-    const handleModalClose = () => {
-        setOpen(false);
-    };
-
-    const handleModalAdd = (selectedItems) => {
-        setCardData((prevData) => ({
-            ...prevData,
-            [selectedCard]: [...prevData[selectedCard], ...selectedItems],
-        }));
-        handleModalClose();
-    };
-
-    const getCardStyle = (title) => {
-        let baseStyle = {
-            margin: '16px',
-            padding: '16px',
-            borderRadius: '15px',
-            boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
-            transition: 'transform 0.3s',
-            cursor: 'pointer',
-            border: selectedCard === title ? '5px solid #FFD700' : 'none',
-        };
-
-        switch (title) {
-            case 'Trimestriel':
-                return { ...baseStyle, background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)', color: 'white' };
-            case 'Semestriel':
-                return { ...baseStyle, background: 'linear-gradient(45deg, #66BB6A 30%, #43A047 90%)', color: 'white' };
-            case 'Mensuelle':
-                return { ...baseStyle, background: 'linear-gradient(45deg, #FF8E53 30%, #FF6B6B 90%)', color: 'white' };
-            default:
-                return baseStyle;
-        }
-    };
-
-    const getChipStyle = (item) => {
-        // Random color generation for the chips
-        const colors = ['#FFC107', '#8E44AD', '#E67E22', '#3498DB', '#2ECC71'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        return { backgroundColor: color, color: 'white', margin: '4px' };
-    };
-
-    return (
-        <>
-            <Grid container direction="column">
-                {/* Header */}
-                <Grid container direction="row">
-                    <Grid item xs={12}>
-                        <nav style={{ width: "100%", padding: '16px', backgroundColor: '#333', color: '#fff' }}>
-                            <Typography variant="h6">Configuration de contrôle</Typography>
-                        </nav>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        {/* Main Content */}
-                        <Grid container spacing={3} style={{ padding: '36px' }}>
-                            {['Trimestriel', 'Semestriel', 'Mensuelle'].map((title) => (
-                                <Grid item xs={12} sm={6} md={4} key={title}>
-                                    <Card
-                                        style={getCardStyle(title)}
-                                        onClick={() => handleCardClick(title)}
-                                    >
-                                        <CardContent>
-                                            <Typography variant="h5">{title}</Typography>
-                                        </CardContent>
-                                    </Card>
-
-                                    {/* Sub Card with List of Chips */}
-                                    <Card style={{ marginTop: '16px', padding: '16px', borderRadius: '10px', boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .2)' }}>
-                                        <CardContent>
-                                            <Typography variant="h6">{`Éléments de ${title}`}</Typography>
-                                            {cardData[title].map((item) => (
-                                                <Chip
-                                                    key={item}
-                                                    label={item}
-                                                    onDelete={() => handleDelete(title, item)}
-                                                    deleteIcon={
-                                                        <IconButton size="small">
-                                                            <CloseIcon style={{ color: 'red' }} />
-                                                        </IconButton>
-                                                    }
-                                                    style={getChipStyle(item)}
-                                                />
-                                            ))}
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
-
-            {/* Modal for Transfer List */}
-            <Modal open={open} onClose={handleModalClose}>
-                <div style={{ width: '80%', margin: 'auto', marginTop: '5%', padding: '20px', backgroundColor: 'white' }}>
-                    <Typography variant="h6" gutterBottom>
-                        Ajouter des éléments à {selectedCard}
-                    </Typography>
-                    <TransferList
-                        leftItems={modalData}
-                        rightItems={cardData[selectedCard] || []}
-                        onAdd={handleModalAdd}
-                    />
-                </div>
-            </Modal>
-        </>
-    );
-}
+export default NewExec

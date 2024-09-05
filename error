@@ -1,284 +1,111 @@
-import React, { Component } from 'react';
-import ReactLoading from "react-loading";
-
-import 'react-table/react-table.css';
-import '../css/svg.css';
-
+import React, { useEffect, useState } from 'react';
 import Header from './partials/Header';
-// import Sidebar from './partials/Sidebar';
 import Footer from './partials/Footer';
-
+import NewSidebar from './partials/NewSidebar';
 import logo from '../imgs/logosg.png';
-import withAuth from "./withAuth";
+import month from "../imgs/month.svg";
+import trim from "../imgs/trim.svg";
+import hebdo from "../imgs/hebdo.svg";
 import { getCookie } from "./utils";
 
-import month from "../imgs/month.svg"
-import trim from "../imgs/trim.svg"
-import hebdo from "../imgs/hebdo.svg"
-import NewSidebar from './partials/NewSidebar';
-import "../css/newsidebar.css"
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-// class NewExec extends Component {
-
-//     state = { type: '', show_load: 'none' }
-
-//     execute_echt = (type) => {
-//         var url = "";
-//         // loading
-//         this.setState({ show_load: 'flex' });
-//         //
-//         if (type == "m") { url = '/api/run_mois' }
-//         else if (type == "t") { url = '/api/run_trimestre' }
-//         else { url = 'api/run_semestre' }
-//         fetch(url,
-//             {
-//                 method: 'GET',
-//                 mode: 'cors',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'X-CSRF-TOKEN': getCookie('csrf_refresh_token')
-//                 }
-//             }).then(response => {
-//                 if (response.status !== 200) {
-//                     if (response.status === 401) { window.location.replace('/login') }
-//                     throw new Error('Access denied');
-//                 }
-//                 return response.json();
-//             }).then(json => {
-//                 console.log('detail run api', json.code)
-//                 if (json.code === 'OK') this.setState({ show_load: 'none' });
-//             }).catch((error) => console.log(error));
-//     }
-
-
-//     render() {
-        
-//     }
-// }
-
-// export default withAuth()(NewExec);
-
-
 const NewExec = () => {
-	const [dataMensuel, setDataMensuel] = useState({informations:""})
-	const [dataTrimestriel, setDataTrimestriel] = useState({informations:""})
-	const [dataSemestriel, setDataSemestriel] = useState({informations:""})
-	useEffect(()=>{
-		fetch('/api/get_contrd',{
-			method:"POST",
-			mode:"cors",
-			headers: {
-				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
-			  },
-			  body: JSON.stringify({periode:"M"}), //"2", "3", "4"
-		}).then((respone)=>{
-			if (respone.status !== 200) {
-				if(respone.status===401){window.location.replace('/login')}
-				// throw new Error('Access denied');
-			}
-			return respone.json()
-		}).then((data)=>{
-			console.log("DATA_MENSUEL: ", data);
-			setDataMensuel({informations:data.informations})
-		})
+  const [dataMensuel, setDataMensuel] = useState({ informations: "" });
+  const [dataTrimestriel, setDataTrimestriel] = useState({ informations: "" });
+  const [dataSemestriel, setDataSemestriel] = useState({ informations: "" });
 
-		fetch('/api/get/geole',{
-			method:"POST",
-			mode:"cors",
-			headers: {
-				"Content-Type": "application/json",
-				// "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
-			  },
-			  body: JSON.stringify({periode:"T"}), //"M", "T", "SMTR"
-		}).then((respone)=>{
-			if (respone.status !== 200) {
-				if(respone.status===401){window.location.replace('/login')}
-				// throw new Error('Access denied');
-			}
-			return respone.json()
-		}).then((data)=>{
-			console.log("DATA_TRIMESTRIEL: ", data);
-			setDataTrimestriel({informations:data.informations})
-		})
+  useEffect(() => {
+    const fetchData = (periode, setData) => {
+      fetch('/api/get_contrd', {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+        },
+        body: JSON.stringify({ periode }),
+      }).then(response => {
+        if (response.status !== 200) {
+          if (response.status === 401) {
+            window.location.replace('/login');
+          }
+          throw new Error('Access denied');
+        }
+        return response.json();
+      }).then(data => {
+        console.log(`DATA_${periode}: `, data);
+        setData({ informations: data.informations });
+      }).catch(error => console.log(error));
+    };
 
-		fetch('/api/get/e',{
-			method:"POST",
-			mode:"cors",
-			headers: {
-				"Content-Type": "application/json",
-				// "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
-			  },
-			  body: JSON.stringify({periode:"SMTR"}), //"M", "T", "SMTR"
-		}).then((respone)=>{
-			if (respone.status !== 200) {
-				if(respone.status===401){window.location.replace('/login')}
-				// throw new Error('Access denied');
-			}
-			return respone.json()
-		}).then((data)=>{
-			console.log("DATA_SEMESTRIEL: ", data);
-			setDataSemestriel({informations:data.informations})
-		})
-	}, [])
+    fetchData("2", setDataMensuel);    // Mensuel
+    fetchData("3", setDataTrimestriel); // Trimestriel
+    fetchData("4", setDataSemestriel);  // Semestriel
+  }, []);
 
+  const renderCard = (title, imgSrc, totalControle, link) => (
+    <div className="col-xl-4 col-lg-4">
+      <a href={link} title='Cliquez ICI'>
+        <div className="card l-bg-cherry hover" style={{ background: "linear-gradient(to right, #493240, #f09)", color: "#fff" }}>
+          <div className="card-statistic-3 p-4">
+            <div className="card-icon card-icon-large">
+              <img src={imgSrc} width={50} height={50} alt={title} />
+            </div>
+            <div className="mb-4">
+              <h5 className="card-title mb-0">{title}</h5>
+            </div>
+            <div className="row align-items-center mb-2 d-flex">
+              <div className="col-8">
+                <h4 className="d-flex align-items-center mb-0">
+                  Total controle : {totalControle}
+                </h4>
+              </div>
+            </div>
+            <div className="progress mt-1 " style={{ height: "8px" }}>
+              <div className="progress-bar l-bg-cyan" role="progressbar" style={{ width: "25%" }}></div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  );
 
+  return (
+    <div>
+      <Header />
+      <div className="wrapper">
+        <NewSidebar />
+        <div className="main-panel">
+          <nav className="navbar navbar-expand-lg navbar-absolute fixed-top" style={{ borderRadius: "2px", backgroundColor: "#18283b" }}>
+            <div className="container-fluid">
+              <div className="navbar-wrapper">
+                <a className="navbar-brand" href="#">Echantillonnage</a>
+              </div>
+            </div>
+          </nav>
+          <div className="content">
+            <div className="container-fluid">
+              <div className='container' style={{
+                width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", height: "70vh"
+              }}>
+                <div className="row">
+                  {renderCard("Mensuel", hebdo, dataMensuel.informations.Total_controle, '/control-details/M')}
+                  {renderCard("Trimestriel", month, dataTrimestriel.informations.Total_controle, '/control-details/T')}
+                  {renderCard("Semestriel", trim, dataSemestriel.informations.Total_controle, '/control-details/SMTR')}
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer className="page-footer text-center">
+            <div className="mx-auto">
+              <img src={logo} className="logo_dash_size" alt="SocGen" />
+              <a href="https://societegenerale.ci" target="_blank" style={{ color: 'rgb(224, 7, 7)' }}>Societe Generale</a>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+};
 
-
-	}
-	return (
-		<div>
-			<Header />
-			<div className="wrapper">
-				{/* <Sidebar /> */}
-				<NewSidebar />
-				<div className="main-panel">
-					<nav className="navbar navbar-expand-lg navbar-absolute fixed-top" style={{borderRadius: "2px", backgroundColor:"#18283b"}}>
-						<div className="container-fluid">
-							<div className="navbar-wrapper">
-								{/* <i className="material-icons">home</i> */}
-								<a className="navbar-brand" href="#">Echantillonnage</a>
-							</div>
-							<button className="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-								<span className="sr-only">Toggle navigation</span>
-								<span className="navbar-toggler-icon icon-bar"></span>
-								<span className="navbar-toggler-icon icon-bar"></span>
-								<span className="navbar-toggler-icon icon-bar"></span>
-							</button>
-							<div className="collapse navbar-collapse justify-content-end">
-								<ul className="navbar-nav">
-									<li className="nav-item"></li>
-									<li className="nav-item">
-										<button className="btn btn-primary" onClick={()=>{}/*this.props.logout*/}>
-											<i className="material-icons">settings_power</i>
-											<p className="d-lg-none d-md-block"> Deconnexion </p>
-										</button>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</nav>
-					<div className="content">
-						<div className="container-fluid">
-							<div className='container' style={{
-								width: "100%",
-								display: "flex",
-								justifyContent: "center",
-								// alignItems: "center",
-								flexDirection: "column",
-								height: "70vh"
-							}}>
-								<div className="row">
-									<div className="col-xl-4 col-lg-4">
-									<a href='#' title='Cliquez ICI'>
-										<div className="card l-bg-cherry hover" style={{ background: "linear-gradient(to right, #493240, #f09)", color: "#fff"}}>
-											<div className="card-statistic-3 p-4">
-												<a href='/control-details/M'>
-												<div className="card-icon card-icon-large">
-													{/* <i className="fas fa-shopping-cart"></i> */}
-													<img src={hebdo} width={50} height={50} alt='hedbo'/>
-													</div>
-												<div className="mb-4">
-													<h5 className="card-title mb-0" style={{":hover":{color:"red"}}}>Mensuel</h5>
-												</div>
-												</a>
-												<div className="row align-items-center mb-2 d-flex">
-													<div className="col-8">
-													{/* Total controle : {dataMensuel.informations.Total_controle} */}
-													<h4 className="d-flex align-items-center mb-0">
-													Total controle : {dataMensuel.informations.Total_controle}
-													</h4>
-													</div>
-													{/* <div className="col-4 text-right">
-														<span>Obsolète : {dataMensuel.informations.Nombre_Obsolete} </span>
-													</div> */}
-												</div>
-												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
-													<div className="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
-												</div>
-											</div>
-										</div>
-										</a>
-									</div>
-									<div className="col-xl-4 col-lg-4">
-									<a href='#' title='Cliquez ICI'>
-										<div className="card l-bg-blue-dark" style={{ background: "linear-gradient(to right, #373b44, #4286f4)", color: "#fff" }}>
-											<div className="card-statistic-3 p-4">
-											   <a href='/control-details/T'>
-											   <div className="card-icon card-icon-large">
-													{/* <i className="fas fa-users"></i> */}
-													<img src={month} width={50} height={50} alt='month'/>
-													</div>
-												<div className="mb-4">
-													<h5 className="card-title mb-0">Trismetriel</h5>
-												</div>
-											   </a>
-												<div className="row align-items-center mb-2 d-flex">
-													<div className="col-8">
-														<h4 className="d-flex align-items-center mb-0">
-														Total controle : {dataTrimestriel.informations.Total_controle}
-														</h4>
-													</div>
-													{/* <div className="col-4 text-right">
-														<span>Obsolète : {dataTrimestriel.informations.Nombre_Obsolete}</span>
-													</div> */}
-												</div>
-												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
-													<div className="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
-												</div>
-											</div>
-										</div>
-										</a>
-									</div>
-									<div className="col-xl-4 col-lg-4">
-										<a href='/control-details/SMTR' title='Cliquez ICI'>
-										<div className="card l-bg-green-dark" style={{ background: "linear-gradient(to right, #0a504a, #38ef7d)", color: "#fff" }}>
-											<div className="card-statistic-3 p-4">
-												
-												<div className="card-icon card-icon-large">
-													{/* <i className="fas fa-ticket-alt"></i> */}
-													<img src={trim} width={50} height={50} alt='trimestre'/>
-													</div>
-												<div className="mb-4">
-													<h5 className="card-title mb-0">Semestriel</h5>
-												</div>
-												<div className="row align-items-center mb-2 d-flex">
-													<div className="col-8">
-														<h4 className="d-flex align-items-center mb-0">
-														Total controle : {dataSemestriel.informations.Total_controle}
-														</h4>
-													</div>
-													{/* <div className="col-4 text-right">
-														<span>Obsolète : {dataSemestriel.informations.Nombre_Obsolete}</span>
-													</div> */}
-												</div>
-												<div className="progress mt-1 " data-height="8" style={{ height: "8px" }}>
-													<div className="progress-bar l-bg-orange" role="progressbar" data-width="75%" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style={{ width: "25%" }}></div>
-												</div>
-											</div>
-										</div>
-										</a>
-									</div>
-								</div>
-							</div>
-						
-
-
-						</div>
-					</div>
-					<footer className="page-footer text-center">
-						<div className="mx-auto">
-							<img src={logo} className="logo_dash_size" alt="SocGen" />
-							<a href="https://societegenerale.ci" target="_blank" style={{ 'color': 'rgb(224, 7, 7)' }}>Societe Generale</a>
-						</div>
-					</footer>
-				</div>
-			</div>
-			<Footer />
-		</div>
-	)
-}
-
-export default NewExec
+export default NewExec;
